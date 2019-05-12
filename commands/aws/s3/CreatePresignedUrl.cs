@@ -4,21 +4,29 @@ using CoarUtils.commands.logging;
 using CoarUtils.commands.web;
 using Newtonsoft.Json;
 using System;
+using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
 
   //TODO: on fail behavior ... what to do?
   public class CreatePresignedUrl {
-    public static bool Execute(
+    public static void Execute(
+      out HttpStatusCode hsc,
+      out string status,
+      out string url,
+      string awsAccessKey,
+      string awsSecretKey,
       string bucketName,
       string objectKey,
-      out string url,
+      Amazon.RegionEndpoint re,
       int numberOfMinutes = 30
     ) {
       url = "";
+      hsc = HttpStatusCode.BadRequest;
+      status = "";
 
       try {
-        using (var s3Client = new AmazonS3Client(Amazon.RegionEndpoint.USEast1)) {
+        using (var s3Client = new AmazonS3Client(awsAccessKey, awsSecretKey, re)) {
           var gpsur = new GetPreSignedUrlRequest {
             BucketName = bucketName,
             Key = objectKey,
@@ -26,13 +34,18 @@ namespace CoarUtils.commands.aws.s3 {
           };
           url = s3Client.GetPreSignedURL(gpsur);
         }
-        return true;
+        hsc = HttpStatusCode.OK;
+        return;
       } catch (Exception ex) {
         LogIt.E(ex.Message);
-        return false;
+        hsc = HttpStatusCode.InternalServerError;
+        status = "unexecpected error";
+        return;
       } finally {
         LogIt.I(JsonConvert.SerializeObject(
           new {
+            hsc,
+            status,
             bucketName,
             objectKey,
             url,
