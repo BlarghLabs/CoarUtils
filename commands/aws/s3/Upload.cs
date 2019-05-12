@@ -2,12 +2,16 @@
 using Amazon.S3.Transfer;
 using CoarUtils.commands.logging;
 using CoarUtils.lib;
+using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Upload {
-    public static bool Execute(
+    public static void Execute(
+      out HttpStatusCode hsc,
+      out string status,
       string awsAccessKey,
       string awsSecretKey,
       Amazon.RegionEndpoint re,
@@ -18,6 +22,8 @@ namespace CoarUtils.commands.aws.s3 {
       out string url
     ) {
       url = "";
+      hsc = HttpStatusCode.BadRequest;
+      status = "";
       try {
         using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
           var tuur = new TransferUtilityUploadRequest {
@@ -29,14 +35,28 @@ namespace CoarUtils.commands.aws.s3 {
           tu.Upload(tuur);
           url = Constants.S3_BASE + bucketName + "/" + toPath;
         }
-        return true;
+        hsc = HttpStatusCode.OK;
+        return;
       } catch (Exception ex) {
-        LogIt.E(ex);
-        return false;
+        LogIt.E(ex.Message);
+        hsc = HttpStatusCode.InternalServerError;
+        status = "unexecpected error";
+        return;
+      } finally {
+        LogIt.I(JsonConvert.SerializeObject(
+          new {
+            hsc,
+            status,
+            url,
+            //ipAddress = GetPublicIpAddress.Execute(),
+            //executedBy = GetExecutingUsername.Execute()
+          }, Formatting.Indented));
       }
     }
 
-    public static bool Execute(
+    public static void Execute(
+      out HttpStatusCode hsc,
+      out string status,
       string awsAccessKey,
       string awsSecretKey,
       Amazon.RegionEndpoint re,
@@ -46,6 +66,8 @@ namespace CoarUtils.commands.aws.s3 {
       S3CannedACL acl,
       out string url
     ) {
+      hsc = HttpStatusCode.BadRequest;
+      status = "";
       url = "";
       try {
         using (var ms = new MemoryStream(ba)) {
@@ -61,16 +83,30 @@ namespace CoarUtils.commands.aws.s3 {
             tu.Upload(uploadMultipartRequest);
           }
           url = Constants.S3_BASE + bucketName + "/" + key;
-          return true;
+          hsc = HttpStatusCode.OK;
+          return;
         }
       } catch (Exception ex) {
-        LogIt.E(ex);
-        return false;
+        LogIt.E(ex.Message);
+        hsc = HttpStatusCode.InternalServerError;
+        status = "unexecpected error";
+        return;
+      } finally {
+        LogIt.I(JsonConvert.SerializeObject(
+          new {
+            hsc,
+            status,
+            url,
+            //ipAddress = GetPublicIpAddress.Execute(),
+            //executedBy = GetExecutingUsername.Execute()
+          }, Formatting.Indented));
       }
     }
 
     //TODO: do i really want all these to be public read?! are we locking down elsewhre w/ cors or bucket policy?
-    public static bool Execute(
+    public static void Execute(
+      out HttpStatusCode hsc,
+      out string status,
       string awsAccessKey,
       string awsSecretKey,
       Amazon.RegionEndpoint re,
@@ -80,6 +116,8 @@ namespace CoarUtils.commands.aws.s3 {
       S3CannedACL acl,
       out string url
     ) {
+      hsc = HttpStatusCode.BadRequest;
+      status = "";
       url = "";
       try {
         var uploadMultipartRequest = new TransferUtilityUploadRequest {
@@ -93,10 +131,22 @@ namespace CoarUtils.commands.aws.s3 {
           tu.Upload(uploadMultipartRequest);
         }
         url = Constants.S3_BASE + bucketName + "/" + key;
-        return true;
+        hsc = HttpStatusCode.OK;
+        return;
       } catch (Exception ex) {
-        LogIt.E(ex);
-        return false;
+        LogIt.E(ex.Message);
+        hsc = HttpStatusCode.InternalServerError;
+        status = "unexecpected error";
+        return;
+      } finally {
+        LogIt.I(JsonConvert.SerializeObject(
+          new {
+            hsc,
+            status,
+            url,
+            //ipAddress = GetPublicIpAddress.Execute(),
+            //executedBy = GetExecutingUsername.Execute()
+          }, Formatting.Indented));
       }
     }
   }
