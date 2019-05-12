@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <language>en-US</language>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <!--
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    -->
+    <copyright>Copyright 2019</copyright>
+    <tags></tags>
+    <frameworkAssemblies>
+      <!--<frameworkAssembly assemblyName="Microsoft.AspNetCore.Http.Abstractions" targetFramework="" />-->
+    </frameworkAssemblies>
+    <dependencies>
+      <dependency id="Amazon.Lambda.Core" Version="1.1.0" />
+      <dependency id="Amazon.Lambda.Serialization.Json" Version="1.5.0" />
+      <dependency id="Amazon.S3" Version="0.12.8" />
+      <dependency id="AWSSDK.Core" Version="3.3.101.9" />
+      <dependency id="AWSSDK.S3" Version="3.3.101.16" />
+      <dependency id="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
+      <dependency id="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
+      <dependency id="Microsoft.EntityFrameworkCore.Relational" Version="2.2.4" />
+      <dependency id="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4"/>      
+      
+    </dependencies>
+  </metadata>
+  <files>
+    <!--<file src="README" target="content\README" />-->
+  </files>
+</package>
