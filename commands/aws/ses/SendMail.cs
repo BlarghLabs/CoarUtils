@@ -17,6 +17,10 @@ namespace CoarUtils.commands.aws.ses {
       out HttpStatusCode hsc,
       out string status,
       MailMessage mm,
+      string username,
+      string password,
+      string host,
+      int port,
       int max_retries = 3,
       bool sendAsync = false
     ) {
@@ -24,6 +28,10 @@ namespace CoarUtils.commands.aws.ses {
       status = "";
       try {
         using (var sc = new SmtpClient()) {
+          sc.Host = host;
+          sc.Port = port;
+          sc.EnableSsl = true;
+          sc.Credentials = new NetworkCredential(username, password);
           for (int i = 0; i < max_retries; i++) {
             try {
               sc.SendCompleted += new SendCompletedEventHandler(SendCompleted);
@@ -52,10 +60,10 @@ namespace CoarUtils.commands.aws.ses {
           LogIt.I(JsonConvert.SerializeObject(new {
             hsc,
             status,
-            from = new { mm.From.Address, mm.From.DisplayName },
-            to = mm.To.Select(x => new { x.Address, x.DisplayName }).ToList(),
-            replyTo = mm.ReplyToList.Select(x => new { x.Address, x.DisplayName }).ToList(),
-            subject = mm.Subject,
+            from = mm == null? null : new { mm.From.Address, mm.From.DisplayName },
+            to = mm == null ? null : mm.To.Select(x => new { x.Address, x.DisplayName }).ToList(),
+            replyTo = mm == null ? null : mm.ReplyToList.Select(x => new { x.Address, x.DisplayName }).ToList(),
+            subject = mm == null ? null : mm.Subject,
           }, Formatting.Indented));
         } catch (Exception ex1) {
           LogIt.E(ex1);
