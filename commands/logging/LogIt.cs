@@ -15,7 +15,7 @@ namespace CoarUtils.commands.logging {
     public static void Execute(
       severity s,
       object o,
-      bool removeNewlinesFromMessage = false
+      bool removeNewlinesFromMessage = true
     ) {
       try {
         //dont check forever
