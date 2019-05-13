@@ -17,7 +17,7 @@ namespace CoarUtils.commands.aws.s3 {
       Amazon.RegionEndpoint re,
       string bucketName,
       string filePath,
-      string toPath,
+      string key,
       S3CannedACL acl,
       out string url
     ) {
@@ -29,11 +29,11 @@ namespace CoarUtils.commands.aws.s3 {
           var tuur = new TransferUtilityUploadRequest {
             FilePath = filePath,
             BucketName = bucketName,
-            Key = toPath,
+            Key = key,
             CannedACL = acl
           };
           tu.Upload(tuur);
-          url = Constants.S3_BASE + bucketName + "/" + toPath;
+          url = Constants.S3_BASE + bucketName + "/" + key;
         }
         hsc = HttpStatusCode.OK;
         return;
