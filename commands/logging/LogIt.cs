@@ -1,5 +1,7 @@
 ﻿using Amazon.Lambda.Core;
 using CoarUtils.commands.reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -126,6 +128,45 @@ namespace CoarUtils.commands.logging {
     }
 
     public static void E(object o) {
+      try {
+        o = o ?? "";
+        var t = o.GetType();
+        if (!t.Equals(typeof(Exception)) & !typeof(Exception).IsAssignableFrom(t)) {
+          Execute(o:o, s: severity.error);
+        } else {
+          var ex = (Exception)o;
+          dynamic error = new JObject();
+          error.message = ex.Message;
+          error.stackTrace = ex.StackTrace;
+
+          if (
+            (ex.InnerException != null)
+            &&
+            !string.IsNullOrEmpty(ex.InnerException.Message)
+            &&
+            ex.Message.Contains("See the inner exception for details.")
+          ) {
+            if (!ex.InnerException.Message.Contains("See the inner exception for details.")) {
+              error.innerExceptionMessage = ex.InnerException.Message;
+            } else if (
+              (ex.InnerException.InnerException != null)
+              &&
+              !string.IsNullOrEmpty(ex.InnerException.InnerException.Message)
+              &&
+              !ex.InnerException.InnerException.Message.Contains("See the inner exception for details")
+            ) {
+              error.innerExceptionMessage = ex.InnerException.InnerException.Message;
+            }
+          }
+
+          string json = JsonConvert.SerializeObject(error, Formatting.Indented);
+          Execute(o: json, s: severity.error);
+        }
+      } catch {
+        Console.Error.WriteLine("I messed up, this all should be safe from exception");
+      }
+
+
       Execute(s: severity.error, o: o);
     }
     public static void D(object o) {
