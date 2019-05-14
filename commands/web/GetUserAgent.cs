@@ -42,7 +42,7 @@ namespace CoarUtils.commands.web {
 
       //  return ip;
       //} catch (Exception ex) {
-      //  LogIt.E(ex.Message);
+      //  LogIt.E(ex);
       //} finally {
       //  LogIt.D(JsonConvert.SerializeObject(new {
       //    ip,
