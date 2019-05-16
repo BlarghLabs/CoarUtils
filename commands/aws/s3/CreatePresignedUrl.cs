@@ -17,7 +17,7 @@ namespace CoarUtils.commands.aws.s3 {
       string awsAccessKey,
       string awsSecretKey,
       string bucketName,
-      string objectKey,
+      string key,
       Amazon.RegionEndpoint re,
       int numberOfMinutes = 30
     ) {
@@ -29,7 +29,7 @@ namespace CoarUtils.commands.aws.s3 {
         using (var s3Client = new AmazonS3Client(awsAccessKey, awsSecretKey, re)) {
           var gpsur = new GetPreSignedUrlRequest {
             BucketName = bucketName,
-            Key = objectKey,
+            Key = key,
             Expires = DateTime.UtcNow.AddMinutes(numberOfMinutes)
           };
           url = s3Client.GetPreSignedURL(gpsur);
@@ -47,7 +47,7 @@ namespace CoarUtils.commands.aws.s3 {
             hsc,
             status,
             bucketName,
-            objectKey,
+            key,
             url,
             numberOfMinutes,
             ipAddress = GetPublicIpAddress.Execute(),
