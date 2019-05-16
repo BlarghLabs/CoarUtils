@@ -1,7 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Transfer;
 using CoarUtils.commands.logging;
-using CoarUtils.lib;
 using Newtonsoft.Json;
 using System;
 using System.IO;

@@ -1,5 +1,5 @@
 ﻿using Amazon.S3;
-using CoarUtils.lib;
+using CoarUtils;
 
 namespace CoarUtils.commands.aws.s3 {
 
