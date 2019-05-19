@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>1.0.0.42</Version>
   </PropertyGroup>
@@ -22,6 +23,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
+  
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="dotnet pack --no-build" />
   </Target>
