@@ -55,6 +55,13 @@ namespace CoarUtils.commands.logging {
         var space = " ";
         var log = $"{dts}{space}|{ss}|{@class}|{method}|{msg}";
 
+        if (s == severity.error) {
+          Console.ForegroundColor = ConsoleColor.Red;
+        } else if (s == severity.warning) {
+          Console.ForegroundColor = ConsoleColor.Yellow;
+        } else {
+          Console.ForegroundColor = ConsoleColor.White;
+        }
         LambdaLogger.Log(log);
       } catch (Exception ex) {
         E("error in LogIt|" + ex.Message);
