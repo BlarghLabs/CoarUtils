@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
+using System.Web;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Upload {
@@ -32,7 +33,7 @@ namespace CoarUtils.commands.aws.s3 {
             CannedACL = acl
           };
           tu.Upload(tuur);
-          url = Constants.S3_BASE + bucketName + "/" + key;
+          url = Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key);
         }
         hsc = HttpStatusCode.OK;
         return;
@@ -81,7 +82,7 @@ namespace CoarUtils.commands.aws.s3 {
           using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
             tu.Upload(uploadMultipartRequest);
           }
-          url = Constants.S3_BASE + bucketName + "/" + key;
+          url = Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key);
           hsc = HttpStatusCode.OK;
           return;
         }
@@ -129,7 +130,7 @@ namespace CoarUtils.commands.aws.s3 {
         using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
           tu.Upload(uploadMultipartRequest);
         }
-        url = Constants.S3_BASE + bucketName + "/" + key;
+        url = Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key);
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
