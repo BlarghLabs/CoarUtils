@@ -3,3 +3,5 @@
 
 [![Build Status](https://sobelito.visualstudio.com/CoarUtils/_apis/build/status/BlarghLabs.CoarUtils?branchName=master)](https://sobelito.visualstudio.com/CoarUtils/_build/latest?definitionId=1&branchName=master)
 
+![GitHubWorkflowBuildStatus](https://github.com/BlarghLabs/CoarUtils/workflows/dotnetcore/badge.svg)
+
