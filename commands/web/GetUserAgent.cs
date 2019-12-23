@@ -15,8 +15,8 @@ namespace CoarUtils.commands.web {
     public static string Execute(
       HttpContext context = null
     ) {
-      var headerVersion = "";
-      var userAgent  = "";
+      //var headerVersion = "";
+      //var userAgent  = "";
       //try {
       //  //https://stackoverflow.com/questions/38571032/how-to-get-httpcontext-current-in-asp-net-core
       //  //TODO: get if not passed
