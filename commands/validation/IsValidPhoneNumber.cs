@@ -1,18 +1,11 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.commands.strings;
 using PhoneNumbers;
 using System;
 using System.Globalization;
 
 namespace CoarUtils.commands.validation {
   public class IsValidPhoneNumber {
-    public static string StripNonNumericCharacters(string number) {
-      string numbersOnly = "";
-      for (int i = 0; i < number.Length; i++) {
-        numbersOnly += Char.IsNumber(number[i]) ? number[i].ToString() : "";
-      }
-      return numbersOnly;
-    }
-
     public static bool Execute(
       ref string phoneNumber,
       ref string phoneNumberCountryCode
@@ -41,7 +34,7 @@ namespace CoarUtils.commands.validation {
           phoneNumber = pnu.Format(pn, PhoneNumberFormat.E164);
         } else {
           //normalize phone number
-          phoneNumber = StripNonNumericCharacters(phoneNumber);
+          phoneNumber = StripNonNumericCharacters.Execute(phoneNumber);
           pn = pnu.Parse(phoneNumber, phoneNumberCountryCode.ToUpper());
           if (!pnu.IsValidNumber(pn)) {
             LogIt.W("unrecognized phone number format");
