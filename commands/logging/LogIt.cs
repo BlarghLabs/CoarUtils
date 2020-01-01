@@ -2,18 +2,38 @@
 using CoarUtils.commands.reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog;
 using System;
 using System.Diagnostics;
 using System.Net;
 
 namespace CoarUtils.commands.logging {
   public class LogIt {
+    private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
+
     public enum severity {
       info,
       error,
       warning,
       debug,
     };
+
+    public static LogLevel GetNLoggerLogLevel(severity s) {
+      switch (s) {
+        case severity.debug:
+          return LogLevel.Debug;
+        case severity.info:
+          return LogLevel.Info;
+        case severity.error:
+          return LogLevel.Error;
+        case severity.warning:
+          return LogLevel.Warn;
+        default:
+          //why required?
+          return LogLevel.Info;
+      }
+    }
+
 
     public static void Execute(
       severity s,
@@ -62,7 +82,12 @@ namespace CoarUtils.commands.logging {
         } else {
           Console.ForegroundColor = ConsoleColor.White;
         }
+        //TODO: check exists
         LambdaLogger.Log(log);
+        //if (_log != null) {
+        //  _log.Log(logLevel: GetLogLevel(s), log);
+        //}
+        nlogger.Log(level: GetNLoggerLogLevel(s), message: log);
       } catch (Exception ex) {
         E("error in LogIt|" + ex.Message);
       }
@@ -116,7 +141,12 @@ namespace CoarUtils.commands.logging {
         var space = " ";
         var log = $"{dts}{space}|{ss}|{@class}|{method}|{msg}";
 
+        //TODO: check exists
         LambdaLogger.Log(log);
+        //if (_log != null) {
+        //  _log.Log(logLevel: GetLogLevel(s), log);
+        //}
+        nlogger.Log(level: GetNLoggerLogLevel(s), message: log);
       } catch (Exception ex) {
         E("error in LogIt|" + ex.Message);
       }
@@ -128,7 +158,13 @@ namespace CoarUtils.commands.logging {
       string message
     ) {
       try {
-        LambdaLogger.Log($"{s.ToString().ToUpper()}|{WhereAmI.Execute(stepUp: 3)}|{ message}");
+        var log = $"{s.ToString().ToUpper()}|{WhereAmI.Execute(stepUp: 3)}|{ message}";
+        //TODO: check exists
+        LambdaLogger.Log(log);
+        //if (_log != null) {
+        //  _log.Log(logLevel: GetLogLevel(s), log);
+        //}
+        nlogger.Log(level: GetNLoggerLogLevel(s), message: log);
       } catch (Exception ex) {
         LogIt.E("error in LogIt|" + ex.Message);
       }
@@ -139,7 +175,7 @@ namespace CoarUtils.commands.logging {
         o = o ?? "";
         var t = o.GetType();
         if (!t.Equals(typeof(Exception)) & !typeof(Exception).IsAssignableFrom(t)) {
-          Execute(o:o, s: severity.error);
+          Execute(o: o, s: severity.error);
         } else {
           var ex = (Exception)o;
           dynamic error = new JObject();
