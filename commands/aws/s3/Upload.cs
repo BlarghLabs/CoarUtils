@@ -19,7 +19,8 @@ namespace CoarUtils.commands.aws.s3 {
       string filePath,
       string key,
       S3CannedACL acl,
-      out string url
+      out string url,
+      string contentType = null
     ) {
       url = "";
       hsc = HttpStatusCode.BadRequest;
@@ -32,6 +33,9 @@ namespace CoarUtils.commands.aws.s3 {
             Key = key,
             CannedACL = acl
           };
+          if (!string.IsNullOrWhiteSpace(contentType)) {
+            tuur.ContentType = contentType;
+          }
           tu.Upload(tuur);
           url = Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key);
         }
@@ -64,7 +68,8 @@ namespace CoarUtils.commands.aws.s3 {
       string bucketName,
       byte[] ba,
       string key,
-      S3CannedACL acl
+      S3CannedACL acl,
+      string contentType = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -78,7 +83,9 @@ namespace CoarUtils.commands.aws.s3 {
             InputStream = ms,
             //PartSize = 123?
           };
-
+          if (!string.IsNullOrWhiteSpace(contentType)) {
+            uploadMultipartRequest.ContentType = contentType;
+          }
           using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
             tu.Upload(uploadMultipartRequest);
           }
@@ -114,7 +121,8 @@ namespace CoarUtils.commands.aws.s3 {
       MemoryStream ms,
       string key,
       S3CannedACL acl,
-      out string url
+      out string url,
+      string contentType = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -126,6 +134,9 @@ namespace CoarUtils.commands.aws.s3 {
           CannedACL = acl,
           InputStream = ms,
         };
+        if (!string.IsNullOrWhiteSpace(contentType)) {
+          uploadMultipartRequest.ContentType = contentType;
+        }
 
         using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
           tu.Upload(uploadMultipartRequest);
