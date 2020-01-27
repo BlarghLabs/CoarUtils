@@ -37,7 +37,8 @@ namespace CoarUtils.commands.aws.s3 {
             tuur.ContentType = contentType;
           }
           tu.Upload(tuur);
-          url = Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key);
+          //why encoding?
+          url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
         }
         hsc = HttpStatusCode.OK;
         return;
@@ -89,7 +90,8 @@ namespace CoarUtils.commands.aws.s3 {
           using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
             tu.Upload(uploadMultipartRequest);
           }
-          url = Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key);
+          //why encoding?
+          url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
           hsc = HttpStatusCode.OK;
           return;
         }
@@ -141,7 +143,8 @@ namespace CoarUtils.commands.aws.s3 {
         using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
           tu.Upload(uploadMultipartRequest);
         }
-        url = Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key);
+        //why encoding?
+        url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
