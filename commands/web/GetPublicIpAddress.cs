@@ -13,26 +13,28 @@ namespace CoarUtils.commands.web {
     /// </summary>
     /// <returns></returns>
     public static string Execute(
-      HttpContext context = null
+      HttpContext hc = null
     ) {
       var remoteIpAddress = "";
       var xForwardedFor = "";
       var remoteAddr = "";
       var ip = "";
+      var status = "";
       try {
         //https://stackoverflow.com/questions/38571032/how-to-get-httpcontext-current-in-asp-net-core
         //TODO: get if not passed
 
-        if ((context == null) || (context.Request == null)) {
+        if ((hc == null) || (hc.Request == null)) {
+          status = "http context was null";
           return null;
         }
 
-        remoteIpAddress = context.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
-        if (!string.IsNullOrEmpty(context.Request.Headers["X-Forwarded-For"])) {
-          xForwardedFor = context.Request.Headers["X-Forwarded-For"];
+        remoteIpAddress = hc.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
+        if (!string.IsNullOrEmpty(hc.Request.Headers["X-Forwarded-For"])) {
+          xForwardedFor = hc.Request.Headers["X-Forwarded-For"];
         }
-        if (!string.IsNullOrEmpty(context.Request.Headers["REMOTE_ADDR"])) {
-          remoteAddr = context.Request.Headers["REMOTE_ADDR"];
+        if (!string.IsNullOrEmpty(hc.Request.Headers["REMOTE_ADDR"])) {
+          remoteAddr = hc.Request.Headers["REMOTE_ADDR"];
         }
 
         var loIp = new List<string> { xForwardedFor, remoteAddr, remoteIpAddress };
@@ -48,6 +50,7 @@ namespace CoarUtils.commands.web {
       } finally {
         LogIt.D(JsonConvert.SerializeObject(new {
           ip,
+          status,
           remoteIpAddress,
           xForwardedFor,
           remoteAddr
