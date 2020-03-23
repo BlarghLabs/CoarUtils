@@ -2,11 +2,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.0.925</Version>
+    <Version>1.0.0.928</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
