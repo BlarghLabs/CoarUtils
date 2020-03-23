@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RuntimeFrameworkVersion>2.2.0</RuntimeFrameworkVersion>
+
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>1.0.0.928</Version>
