@@ -1,5 +1,7 @@
 ﻿using Amazon.S3;
 using CoarUtils;
+using System;
+using System.Threading;
 
 namespace CoarUtils.commands.aws.s3 {
 
@@ -32,6 +34,12 @@ namespace CoarUtils.commands.aws.s3 {
 
         //status wasn't not found, so throw the exception
         throw;
+      } catch (Exception ex) {
+        if (ex.Message.Contains("Error making request with Error Code NotFound and Http Status Code NotFound")) {
+          return false;
+        }
+        //?
+        throw;
       }
     }
 
@@ -62,10 +70,15 @@ namespace CoarUtils.commands.aws.s3 {
 
         //?
         throw;
+      } catch (Exception ex) {
+        if (ex.Message.Contains("Error making request with Error Code NotFound and Http Status Code NotFound")) {
+          contentLength = 0;
+          return false;
+        }
+        //?
+        throw;
       }
     }
-
   }
 }
-
 

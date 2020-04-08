@@ -6,7 +6,7 @@
     <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.0.983</Version>
+    <Version>1.0.0.1002</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
@@ -14,9 +14,8 @@
     <PackageReference Update="Microsoft.NETCore.App" Version="2.1.0" />
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
-    <PackageReference Include="Amazon.S3" Version="0.15.0" />
-    <PackageReference Include="AWSSDK.Core" Version="3.3.104.9" />
-    <PackageReference Include="AWSSDK.S3" Version="3.3.110.5" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.106.2" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.110.49" />
     <PackageReference Include="libphonenumber-csharp" Version="8.11.1" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
     <!--<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />-->
@@ -37,6 +36,7 @@
 
   <ItemGroup>
     <Folder Include="commands\aws\ec2\" />
+    <Folder Include="commands\aws\sqs\" />
   </ItemGroup>
 </Project>
 
