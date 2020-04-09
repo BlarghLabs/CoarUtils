@@ -9,7 +9,11 @@ using System.Net;
 
 namespace CoarUtils.commands.logging {
   public class LogIt {
+    //this was causing innocious double console log (but only once to file)
+    public static bool doNotlogToLambda { get; set; }
+
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
+
 
     public enum severity {
       info,
@@ -83,7 +87,9 @@ namespace CoarUtils.commands.logging {
           Console.ForegroundColor = ConsoleColor.White;
         }
         //TODO: check exists
-        LambdaLogger.Log(log);
+        if (!doNotlogToLambda) {
+          LambdaLogger.Log(log);
+        }
         //if (_log != null) {
         //  _log.Log(logLevel: GetLogLevel(s), log);
         //}
