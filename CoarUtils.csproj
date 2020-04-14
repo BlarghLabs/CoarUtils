@@ -6,7 +6,7 @@
     <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.0.1010</Version>
+    <Version>1.0.0.1068</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
