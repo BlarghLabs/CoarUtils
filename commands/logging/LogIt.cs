@@ -6,22 +6,18 @@ using NLog;
 using System;
 using System.Diagnostics;
 using System.Net;
-
 namespace CoarUtils.commands.logging {
   public class LogIt {
     //this was causing innocious double console log (but only once to file)
     public static bool doNotlogToLambda { get; set; }
-
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
-
-
     public enum severity {
       info,
       error,
       warning,
       debug,
+      success,
     };
-
     public static LogLevel GetNLoggerLogLevel(severity s) {
       switch (s) {
         case severity.debug:
@@ -32,13 +28,13 @@ namespace CoarUtils.commands.logging {
           return LogLevel.Error;
         case severity.warning:
           return LogLevel.Warn;
+        case severity.success:
+          return LogLevel.Info;
         default:
           //why required?
           return LogLevel.Info;
       }
     }
-
-
     public static void Execute(
       severity s,
       object o,
@@ -53,7 +49,6 @@ namespace CoarUtils.commands.logging {
         if (methodInfo.DeclaringType.Name == typeof(LogIt).Name) {
           methodInfo = new StackFrame(3).GetMethod();
         }
-
         //for format consistency
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/bb926074-d593-4e0b-8754-7026acc607ec/datetime-tostring-colon-replaced-with-period?forum=csharpgeneral
         var dt = DateTime.UtcNow;
@@ -74,13 +69,13 @@ namespace CoarUtils.commands.logging {
           : msg.Replace("\r\n", " ").Replace("\n", " ")
         ; //currently just a string
         //var whereIAm = WhereAmI.Execute(stepUp: 3);
-
         //this is for cloud watch logs which requires space after timestamp: http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/send_logs_to_cwl.html
         var space = " ";
         var log = $"{dts}{space}|{ss}|{@class}|{method}|{msg}";
-
         if (s == severity.error) {
           Console.ForegroundColor = ConsoleColor.Red;
+        } else if (s == severity.success) {
+          Console.ForegroundColor = ConsoleColor.Green;
         } else if (s == severity.warning) {
           Console.ForegroundColor = ConsoleColor.Yellow;
         } else {
@@ -112,7 +107,6 @@ namespace CoarUtils.commands.logging {
         if (methodInfo.DeclaringType.Name == typeof(LogIt).Name) {
           methodInfo = new StackFrame(3).GetMethod();
         }
-
         //for format consistency
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/bb926074-d593-4e0b-8754-7026acc607ec/datetime-tostring-colon-replaced-with-period?forum=csharpgeneral
         var dt = DateTime.UtcNow;
@@ -142,11 +136,9 @@ namespace CoarUtils.commands.logging {
           : msg.Replace("\r\n", " ").Replace("\n", " ")
         ; //currently just a string
         //var whereIAm = WhereAmI.Execute(stepUp: 3);
-
         //this is for cloud watch logs which requires space after timestamp: http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/send_logs_to_cwl.html
         var space = " ";
         var log = $"{dts}{space}|{ss}|{@class}|{method}|{msg}";
-
         //TODO: check exists
         LambdaLogger.Log(log);
         //if (_log != null) {
@@ -157,8 +149,6 @@ namespace CoarUtils.commands.logging {
         E("error in LogIt|" + ex.Message);
       }
     }
-
-
     public static void Execute(
       severity s,
       string message
@@ -175,7 +165,6 @@ namespace CoarUtils.commands.logging {
         LogIt.E("error in LogIt|" + ex.Message);
       }
     }
-
     public static void E(object o) {
       try {
         o = o ?? "";
@@ -187,7 +176,6 @@ namespace CoarUtils.commands.logging {
           dynamic error = new JObject();
           error.message = ex.Message;
           error.stackTrace = ex.StackTrace;
-
           if (
             (ex.InnerException != null)
             &&
@@ -207,15 +195,12 @@ namespace CoarUtils.commands.logging {
               error.innerExceptionMessage = ex.InnerException.InnerException.Message;
             }
           }
-
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
           Execute(o: json, s: severity.error);
         }
       } catch {
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
       }
-
-
       Execute(s: severity.error, o: o);
     }
     public static void D(object o) {
@@ -227,18 +212,8 @@ namespace CoarUtils.commands.logging {
     public static void W(object o) {
       Execute(s: severity.warning, o: o);
     }
-
-    //public static void E(string message) {
-    //  Execute(s: severity.error, message: message);
-    //}
-    //public static void D(string message) {
-    //  Execute(s: severity.debug, message: message);
-    //}
-    //public static void I(string message) {
-    //  Execute(s: severity.info, message: message);
-    //}
-    //public static void W(string message) {
-    //  Execute(s: severity.warning, message: message);
-    //}
+    public static void S(object o) {
+      Execute(s: severity.success, o: o);
+    }
   }
 }

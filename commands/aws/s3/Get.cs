@@ -102,9 +102,9 @@ namespace CoarUtils.commands.aws.s3 {
       }
     }
 
-    public static void Execute(request m, out HttpStatusCode hsc) {
-      throw new NotImplementedException();
-    }
+    //public static void Execute(request m, out HttpStatusCode hsc) {
+    //  throw new NotImplementedException();
+    //}
   }
 }
 
