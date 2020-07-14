@@ -77,7 +77,7 @@ namespace CoarUtils.commands.aws.s3 {
             request.MetadataDirective = S3MetadataDirective.REPLACE;
             request.ContentType = m.contentType;
           }
-          var response = s3c.CopyObjectAsync(request).Result;
+          var response = s3c.CopyObjectAsync(request, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
           hsc = response.HttpStatusCode;
           return;
           //fileLengthBytes = cor.
