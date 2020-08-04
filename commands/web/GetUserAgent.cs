@@ -1,10 +1,4 @@
-﻿using CoarUtils.commands.logging;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace CoarUtils.commands.web {
   public class GetUserAgent {
@@ -13,17 +7,19 @@ namespace CoarUtils.commands.web {
     /// </summary>
     /// <returns></returns>
     public static string Execute(
-      HttpContext context = null
+      HttpContext hc = null
     ) {
-      //var headerVersion = "";
-      //var userAgent  = "";
-      //try {
-      //  //https://stackoverflow.com/questions/38571032/how-to-get-httpcontext-current-in-asp-net-core
-      //  //TODO: get if not passed
+      if (
+        (hc == null)
+        ||
+        (hc.Request == null)
+        ||
+        (hc.Request.Headers == null)
+        ) {
+        return null;
+      }
+      return hc.Request.Headers["User-Agent"];
 
-      //  if ((context == null) || (context.Request == null)) {
-      //    return null;
-      //  }
 
       //  remoteIpAddress = context.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString();
       //  if (!string.IsNullOrEmpty(context.Request.Headers["X-Forwarded-For"])) {
@@ -51,7 +47,6 @@ namespace CoarUtils.commands.web {
       //    remoteAddr
       //  }, Formatting.Indented));
       //}
-      return null;
     }
   }
 }
