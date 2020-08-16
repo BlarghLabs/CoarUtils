@@ -53,7 +53,7 @@ namespace CoarUtils.commands.aws.s3 {
             hsc,
             status,
             url,
-            //ipAddress = GetPublicIpAddress.Execute(),
+            //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
       }
@@ -106,7 +106,7 @@ namespace CoarUtils.commands.aws.s3 {
             hsc,
             status,
             url,
-            //ipAddress = GetPublicIpAddress.Execute(),
+            //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
       }
@@ -158,7 +158,7 @@ namespace CoarUtils.commands.aws.s3 {
             hsc,
             status,
             url,
-            //ipAddress = GetPublicIpAddress.Execute(),
+            //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
       }

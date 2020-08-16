@@ -2,6 +2,7 @@
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
 using CoarUtils.commands.web;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -19,6 +20,7 @@ namespace CoarUtils.commands.aws.s3 {
       string bucketName,
       string key,
       Amazon.RegionEndpoint re,
+      HttpContext hc = null,
       int numberOfMinutes = 30
     ) {
       url = "";
@@ -50,7 +52,7 @@ namespace CoarUtils.commands.aws.s3 {
             key,
             url,
             numberOfMinutes,
-            ipAddress = GetPublicIpAddress.Execute(),
+            ipAddress = GetPublicIpAddress.Execute(hc),
             executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
       }
