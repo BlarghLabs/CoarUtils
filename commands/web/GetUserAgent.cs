@@ -7,7 +7,7 @@ namespace CoarUtils.commands.web {
     /// </summary>
     /// <returns></returns>
     public static string Execute(
-      HttpContext hc = null
+      HttpContext hc
     ) {
       if (
         (hc == null)

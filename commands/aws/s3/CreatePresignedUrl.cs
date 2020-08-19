@@ -19,6 +19,7 @@ namespace CoarUtils.commands.aws.s3 {
       string bucketName,
       string key,
       Amazon.RegionEndpoint re,
+      Microsoft.AspNetCore.Http.HttpContext hc = null,
       int numberOfMinutes = 30
     ) {
       url = "";
@@ -50,7 +51,7 @@ namespace CoarUtils.commands.aws.s3 {
             key,
             url,
             numberOfMinutes,
-            ipAddress = GetPublicIpAddress.Execute(),
+            ipAddress = GetPublicIpAddress.Execute(hc),
             executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
       }

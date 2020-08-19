@@ -27,7 +27,7 @@ namespace CoarUtils.commands.aws.s3 {
       out string status,
       string awsAccessKey,
       string awsSecretKey,
-      CancellationToken? ct = null
+      Microsoft.AspNetCore.Http.HttpContext hc = null, CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -93,7 +93,7 @@ namespace CoarUtils.commands.aws.s3 {
             hsc,
             status,
             m,
-            //ipAddress = GetPublicIpAddress.Execute(),
+            //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
       }
