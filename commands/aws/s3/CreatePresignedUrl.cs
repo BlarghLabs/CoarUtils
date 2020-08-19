@@ -2,6 +2,7 @@
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
 using CoarUtils.commands.web;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -19,7 +20,7 @@ namespace CoarUtils.commands.aws.s3 {
       string bucketName,
       string key,
       Amazon.RegionEndpoint re,
-      Microsoft.AspNetCore.Http.HttpContext hc = null,
+      HttpContext hc = null,
       int numberOfMinutes = 30
     ) {
       url = "";
