@@ -6,7 +6,7 @@ using System.Threading;
 namespace CoarUtils.commands.web {
   public class GetExecutingUsername {
     public static string Execute(
-      IPrincipal ip
+      IPrincipal ip = null
     ) {
       string executedBy = null;
       try {
