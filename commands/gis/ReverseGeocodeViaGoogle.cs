@@ -35,7 +35,7 @@ namespace CoarUtils.commands.gis {
           status = "params were null";
           return;
         }
-        if ((m.lat == 0) && (m.lat == 0)) {
+        if ((m.lat == 0) && (m.lng == 0)) {
           hsc = HttpStatusCode.BadRequest;
           status = "lat and long ZERO";
           return;
