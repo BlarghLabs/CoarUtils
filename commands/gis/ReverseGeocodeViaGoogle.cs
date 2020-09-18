@@ -35,6 +35,11 @@ namespace CoarUtils.commands.gis {
           status = "params were null";
           return;
         }
+        if ((m.lat == 0) && (m.lat == 0)) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "lat and long ZERO";
+          return;
+        }
         var resource = "maps/api/geocode/json?latlng=" + m.lat.ToString() + "," + m.lng.ToString() + "&key=" + m.apiKey;
         var client = new RestClient("https://maps.googleapis.com/");
         var request = new RestRequest(resource, Method.GET);
@@ -52,57 +57,19 @@ namespace CoarUtils.commands.gis {
         }
         var content = response.Content;
         dynamic json = JObject.Parse(content);
-        //dynamic address_components = json.results[0].address_components;
+        var apiStatus = json.status.Value;
+        if (apiStatus != "OK") {
+          hsc = HttpStatusCode.BadRequest;
+          status = $"api status result was {apiStatus}";
+          return;
+        }
+        if (json.results.Count == 0) {
+          hsc = HttpStatusCode.BadRequest;
+          status = $"results count was ZERO";
+          return;
+        }
+        r.address = json.results[0].formatted_address.Value;
 
-        //for (int i = 0; i < address_components.Count; i++) {
-        //  var ac = address_components[i];
-        //  var lot = ac.types;
-        //  for (int j = 0; j < ac.types.Count; j++) {
-        //    var t = (string)ac.types[j].Value;
-        //    if (t.Equals("street_number")) {
-        //      af.line1 = ac.short_name.Value;
-        //      break;
-        //    }
-        //  }
-        //  for (int j = 0; j < ac.types.Count; j++) {
-        //    var t = (string)ac.types[j].Value;
-        //    if (t.Equals("route")) {
-        //      af.street = ac.short_name.Value;
-        //      break;
-        //    }
-        //  }
-        //  for (int j = 0; j < ac.types.Count; j++) {
-        //    var t = (string)ac.types[j].Value;
-        //    if (t.Equals("sublocality")) {
-        //      af.city = ac.short_name.Value;
-        //      break;
-        //    }
-        //  }
-        //  for (int j = 0; j < ac.types.Count; j++) {
-        //    var t = (string)ac.types[j].Value;
-        //    if (t.Equals("administrative_area_level_1")) {
-        //      af.statecode = ac.short_name.Value;
-        //      af.state = ac.long_name.Value;
-        //      break;
-        //    }
-        //  }
-        //  for (int j = 0; j < ac.types.Count; j++) {
-        //    var t = (string)ac.types[j].Value;
-        //    if (t.Equals("country")) {
-        //      af.countrycode = ac.short_name.Value;
-        //      break;
-        //    }
-        //  }
-        //  for (int j = 0; j < ac.types.Count; j++) {
-        //    var t = (string)ac.types[j].Value;
-        //    if (t.Equals("postal_code")) {
-        //      af.postal = ac.short_name.Value;
-        //      break;
-        //    }
-        //  }
-
-        //}
-        //return true;
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
@@ -111,6 +78,7 @@ namespace CoarUtils.commands.gis {
         status = "unexecpected error";
         return;
       } finally {
+        m.apiKey = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(
           new {
             hsc,
