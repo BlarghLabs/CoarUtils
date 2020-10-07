@@ -38,6 +38,7 @@ namespace CoarUtils.commands.logging {
     public static void Execute(
       severity s,
       object o,
+      string instanceId = null,
       bool removeNewlinesFromMessage = true
     ) {
       try {
@@ -71,7 +72,8 @@ namespace CoarUtils.commands.logging {
         //var whereIAm = WhereAmI.Execute(stepUp: 3);
         //this is for cloud watch logs which requires space after timestamp: http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/send_logs_to_cwl.html
         var space = " ";
-        var log = $"{dts}{space}|{ss}|{@class}|{method}|{msg}";
+        var instance = string.IsNullOrWhiteSpace(instanceId) ? "" : $"|{instanceId}";
+        var log = $"{dts}{space}|{ss}|{@class}|{method}{instance}|{msg}";
         if (s == severity.error) {
           Console.ForegroundColor = ConsoleColor.Red;
         } else if (s == severity.success) {
@@ -165,7 +167,7 @@ namespace CoarUtils.commands.logging {
         LogIt.E("error in LogIt|" + ex.Message);
       }
     }
-    public static void E(object o) {
+    public static void E(object o, string instanceId = null) {
       try {
         o = o ?? "";
         var t = o.GetType();
@@ -196,24 +198,25 @@ namespace CoarUtils.commands.logging {
             }
           }
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
-          Execute(o: json, s: severity.error);
+
+          Execute(o: json, s: severity.error, instanceId: instanceId);
         }
       } catch {
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
       }
       Execute(s: severity.error, o: o);
     }
-    public static void D(object o) {
-      Execute(s: severity.debug, o: o);
+    public static void D(object o, string instanceId = null) {
+      Execute(s: severity.debug, o: o, instanceId: instanceId);
     }
-    public static void I(object o) {
-      Execute(s: severity.info, o: o);
+    public static void I(object o, string instanceId = null) {
+      Execute(s: severity.info, o: o, instanceId: instanceId);
     }
-    public static void W(object o) {
-      Execute(s: severity.warning, o: o);
+    public static void W(object o, string instanceId = null) {
+      Execute(s: severity.warning, o: o, instanceId: instanceId);
     }
-    public static void S(object o) {
-      Execute(s: severity.success, o: o);
+    public static void S(object o, string instanceId = null) {
+      Execute(s: severity.success, o: o, instanceId: instanceId);
     }
   }
 }
