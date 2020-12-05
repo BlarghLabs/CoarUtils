@@ -13,8 +13,7 @@ namespace CoarUtils.commands.web {
     /// </summary>
     /// <returns></returns>
     public static string Execute(
-      //TODO: make required
-      HttpContext hc = null
+      HttpContext hc
     ) {
       var remoteIpAddress = "";
       var xForwardedFor = "";
