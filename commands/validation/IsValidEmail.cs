@@ -9,7 +9,8 @@ namespace CoarUtils.commands.validation {
           return false;
         }
         var ma = new MailAddress(email, displayName, Encoding.UTF8);
-        return true;
+        //was true, but above will actually parse foo bar <foo@bar.baz> as valid;
+        return (ma.Address == email); 
       } catch /* (Exception ex) */ {
         return false;
       }
