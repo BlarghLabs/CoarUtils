@@ -21,7 +21,7 @@ namespace CoarUtils.commands.gis {
 
     public static bool Execute(Coordinate c, List<Polygon> lop) {
       foreach (var p in lop) {
-        if (Execute(p, c)) {
+        if (Execute(p: p, c: c)) {
           return true;
         }
       }
@@ -64,5 +64,4 @@ namespace CoarUtils.commands.gis {
     }
   }
 
-}
 }
