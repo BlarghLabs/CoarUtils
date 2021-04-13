@@ -14,7 +14,7 @@ namespace CoarUtils.commands.web {
     }
 
     public static string ConvertHtml(string html) {
-      HtmlDocument doc = new HtmlDocument();
+      var doc = new HtmlDocument();
       doc.LoadHtml(html);
       return ConvertDoc(doc);
     }
