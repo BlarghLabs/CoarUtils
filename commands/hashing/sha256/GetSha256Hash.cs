@@ -14,7 +14,7 @@ namespace CoarUtils.commands.hashing.sha256 {
     //  var base64 = CoarUtils.commands.base64.Base64Encode.Execute(sb.ToString());
     //  return base64;
     //}
-    
+
     //for later to add salt: https://stackoverflow.com/questions/2138429/hash-and-salt-passwords-in-c-sharp
     //https://www.c-sharpcorner.com/article/compute-sha256-hash-in-c-sharp/
     public static string Execute(string data) {
@@ -30,5 +30,6 @@ namespace CoarUtils.commands.hashing.sha256 {
         }
         return sb.ToString();
       }
+    }
   }
 }
