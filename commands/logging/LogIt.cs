@@ -206,16 +206,16 @@ namespace CoarUtils.commands.logging {
       }
       Execute(s: severity.error, o: o);
     }
-    public static void D(object o, string instanceId = null) {
+    public static void D(object o = null, string instanceId = null) {
       Execute(s: severity.debug, o: o, instanceId: instanceId);
     }
-    public static void I(object o, string instanceId = null) {
+    public static void I(object o= null, string instanceId = null) {
       Execute(s: severity.info, o: o, instanceId: instanceId);
     }
-    public static void W(object o, string instanceId = null) {
+    public static void W(object o = null, string instanceId = null) {
       Execute(s: severity.warning, o: o, instanceId: instanceId);
     }
-    public static void S(object o, string instanceId = null) {
+    public static void S(object o = null, string instanceId = null) {
       Execute(s: severity.success, o: o, instanceId: instanceId);
     }
   }
