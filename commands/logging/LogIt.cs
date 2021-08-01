@@ -76,10 +76,12 @@ namespace CoarUtils.commands.logging {
         var log = $"{dts}{space}|{ss}|{@class}|{method}{instance}|{msg}";
         if (s == severity.error) {
           Console.ForegroundColor = ConsoleColor.Red;
+          Console.Beep(38, 1000);
         } else if (s == severity.success) {
           Console.ForegroundColor = ConsoleColor.Green;
         } else if (s == severity.warning) {
           Console.ForegroundColor = ConsoleColor.Yellow;
+          Console.Beep(3800, 500);
         } else {
           Console.ForegroundColor = ConsoleColor.White;
         }
