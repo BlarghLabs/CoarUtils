@@ -13,7 +13,8 @@ namespace CoarUtils.commands.web {
     /// </summary>
     /// <returns></returns>
     public static string Execute(
-      HttpContext hc
+      HttpContext hc,
+      bool log = false
     ) {
       var remoteIpAddress = "";
       var xForwardedFor = "";
@@ -48,13 +49,15 @@ namespace CoarUtils.commands.web {
       } catch (Exception ex) {
         LogIt.E(ex);
       } finally {
-        LogIt.D(JsonConvert.SerializeObject(new {
-          ip,
-          status,
-          remoteIpAddress,
-          xForwardedFor,
-          remoteAddr
-        }, Formatting.Indented));
+        if (log) {
+          LogIt.D(JsonConvert.SerializeObject(new {
+            ip,
+            status,
+            remoteIpAddress,
+            xForwardedFor,
+            remoteAddr
+          }, Formatting.Indented));
+        }
       }
       return null;
     }

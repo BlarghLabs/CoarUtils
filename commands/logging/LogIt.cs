@@ -8,6 +8,10 @@ using System.Diagnostics;
 using System.Net;
 namespace CoarUtils.commands.logging {
   public class LogIt {
+    public LogIt() {
+      doNotlogToLambda = true;
+    }
+
     //this was causing innocious double console log (but only once to file)
     public static bool doNotlogToLambda { get; set; }
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
@@ -76,10 +80,12 @@ namespace CoarUtils.commands.logging {
         var log = $"{dts}{space}|{ss}|{@class}|{method}{instance}|{msg}";
         if (s == severity.error) {
           Console.ForegroundColor = ConsoleColor.Red;
+          Console.Beep();// 38, 1000);
         } else if (s == severity.success) {
           Console.ForegroundColor = ConsoleColor.Green;
         } else if (s == severity.warning) {
           Console.ForegroundColor = ConsoleColor.Yellow;
+          Console.Beep(); // 3800, 500);
         } else {
           Console.ForegroundColor = ConsoleColor.White;
         }
@@ -209,7 +215,7 @@ namespace CoarUtils.commands.logging {
     public static void D(object o = null, string instanceId = null) {
       Execute(s: severity.debug, o: o, instanceId: instanceId);
     }
-    public static void I(object o= null, string instanceId = null) {
+    public static void I(object o = null, string instanceId = null) {
       Execute(s: severity.info, o: o, instanceId: instanceId);
     }
     public static void W(object o = null, string instanceId = null) {
