@@ -8,12 +8,12 @@ using System.Diagnostics;
 using System.Net;
 namespace CoarUtils.commands.logging {
   public class LogIt {
-    public LogIt() {
-      doNotlogToLambda = true;
-    }
+    //public LogIt() {
+    //  doNotlogToLambda = true;
+    //}
 
     //this was causing innocious double console log (but only once to file)
-    public static bool doNotlogToLambda { get; set; }
+    public static bool doNotlogToLambda { get; set; } = true;
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
     public enum severity {
       info,
