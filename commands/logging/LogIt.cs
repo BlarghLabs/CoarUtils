@@ -13,7 +13,7 @@ namespace CoarUtils.commands.logging {
     //}
 
     //this was causing innocious double console log (but only once to file)
-    public static bool doNotlogToLambda { get; set; } = true;
+    public static bool doNotlogToLambda { get; set; } = false;
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
     public enum severity {
       info,
