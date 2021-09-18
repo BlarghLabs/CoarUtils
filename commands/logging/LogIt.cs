@@ -210,6 +210,7 @@ namespace CoarUtils.commands.logging {
       } catch {
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
       }
+      //is this supposed to be here twice?
       Execute(s: severity.error, o: o);
     }
     public static void D(object o = null, string instanceId = null) {
