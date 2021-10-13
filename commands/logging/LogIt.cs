@@ -205,7 +205,8 @@ namespace CoarUtils.commands.logging {
           }
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
 
-          Execute(o: json, s: severity.error, instanceId: instanceId);
+           Execute(o: json, s: severity.error, instanceId: instanceId);
+          return; //?
         }
       } catch {
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
