@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace CoarUtils.commands.strings {
   public class StripNonNumericCharacters {
@@ -9,6 +10,15 @@ namespace CoarUtils.commands.strings {
       }
       return numbersOnly;
     }
+
+    public static string Execute2(string input) {
+      if (string.IsNullOrWhiteSpace(input)) {
+        return "";
+      }
+      return new string(input.Where(c => char.IsDigit(c)).ToArray());
+    }
+
+
   }
 }
 
