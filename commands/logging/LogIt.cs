@@ -43,7 +43,8 @@ namespace CoarUtils.commands.logging {
       severity s,
       object o,
       string instanceId = null,
-      bool removeNewlinesFromMessage = true
+      bool removeNewlinesFromMessage = true,
+      bool beepOnWarning = true
     ) {
       try {
         //dont check forever
@@ -85,7 +86,9 @@ namespace CoarUtils.commands.logging {
           Console.ForegroundColor = ConsoleColor.Green;
         } else if (s == severity.warning) {
           Console.ForegroundColor = ConsoleColor.Yellow;
-          Console.Beep(); // 3800, 500);
+          if (beepOnWarning) {
+            Console.Beep(); // 3800, 500);          
+          }
         } else {
           Console.ForegroundColor = ConsoleColor.White;
         }
@@ -220,8 +223,8 @@ namespace CoarUtils.commands.logging {
     public static void I(object o = null, string instanceId = null) {
       Execute(s: severity.info, o: o, instanceId: instanceId);
     }
-    public static void W(object o = null, string instanceId = null) {
-      Execute(s: severity.warning, o: o, instanceId: instanceId);
+    public static void W(object o = null, string instanceId = null, bool beep = true) {
+      Execute(s: severity.warning, o: o, instanceId: instanceId, beepOnWarning: beep);
     }
     public static void S(object o = null, string instanceId = null) {
       Execute(s: severity.success, o: o, instanceId: instanceId);
