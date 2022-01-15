@@ -2,6 +2,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -27,7 +28,8 @@ namespace CoarUtils.commands.aws.s3 {
       out string status,
       string awsAccessKey,
       string awsSecretKey,
-      Microsoft.AspNetCore.Http.HttpContext hc = null, CancellationToken? ct = null
+      HttpContext hc = null, 
+      CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
