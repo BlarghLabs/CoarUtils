@@ -44,12 +44,12 @@ namespace CoarUtils.commands.random.words {
         var client = new RestClient("https://random-word-api.herokuapp.com/");
         var request = new RestRequest(
           resource: resource,
-          method: Method.GET
+          method: Method.Get
         );
-        if (wp != null) {
-          client.Proxy = wp;
-        }
-        var response = client.Execute(request);
+        //if (wp != null) {
+        //  client.Proxy = wp;
+        //}
+        var response = client.ExecuteAsync(request).Result;
 
         if (response.ErrorException != null) {
           status = $"response had error exception: {response.ErrorException.Message}";

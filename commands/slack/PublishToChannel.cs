@@ -43,7 +43,7 @@ namespace CoarUtils.commands.slack {
         resource = resource.Replace(BASE, "");
         var request = new RestRequest {
           Resource = resource,
-          Method = Method.POST,
+          Method = Method.Post,
           RequestFormat = DataFormat.Json,
         };
         content = h + content.Replace("\"", "'");
@@ -51,7 +51,7 @@ namespace CoarUtils.commands.slack {
           text = content
         });
 
-        var response = client.Execute(request);
+        var response = client.ExecuteAsync(request).Result;
         //var content = response.Content;
         if (response.ErrorException != null) {
           throw response.ErrorException;

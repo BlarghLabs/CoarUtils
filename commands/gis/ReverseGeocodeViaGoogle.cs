@@ -42,9 +42,9 @@ namespace CoarUtils.commands.gis {
         }
         var resource = "maps/api/geocode/json?latlng=" + m.lat.ToString() + "," + m.lng.ToString() + "&key=" + m.apiKey;
         var client = new RestClient("https://maps.googleapis.com/");
-        var request = new RestRequest(resource, Method.GET);
+        var request = new RestRequest(resource, Method.Get);
         request.RequestFormat = DataFormat.Json;
-        var response = client.Execute(request);
+        var response = client.ExecuteAsync(request).Result;
         if (response.ErrorException != null) {
           hsc = HttpStatusCode.BadRequest;
           status = response.ErrorException.Message;
