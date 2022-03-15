@@ -5,8 +5,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.435</Version>
+    <Version>1.0.1.568</Version>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="commands\random\words\RandomWords.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.Core" Version="1.2.0" />
