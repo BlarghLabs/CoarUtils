@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.568</Version>
+    <Version>1.0.1.599</Version>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="commands\random\words\RandomWords.json" />
