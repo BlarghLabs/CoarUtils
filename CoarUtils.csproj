@@ -2,10 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.634</Version>
+    <Version>1.0.1.750</Version>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="commands\random\words\RandomWords.json" />
@@ -14,7 +16,8 @@
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.Core" Version="1.2.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.8.0" />
-    <PackageReference Include="AWSSDK.Core" Version="3.7.10.5" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.10.11" />
+    <PackageReference Include="AWSSDK.ElasticLoadBalancing" Version="3.7.0.150" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.8.11" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.40" />
     <PackageReference Include="libphonenumber-csharp" Version="8.12.38" />
@@ -32,7 +35,7 @@
     <PackageReference Include="RestSharp" Version="107.1.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.6.3" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.3.39" />
-
+    <PackageReference Include="AWSSDK.EC2" Version="3.7.66" />
   </ItemGroup>
 </Project>
 
