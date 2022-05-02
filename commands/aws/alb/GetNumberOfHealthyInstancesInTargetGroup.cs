@@ -1,22 +1,24 @@
 ﻿using Amazon;
-using Amazon.ElasticLoadBalancing;
-using Amazon.ElasticLoadBalancing.Model;
+using Amazon.ElasticLoadBalancingV2;
+using Amazon.ElasticLoadBalancingV2.Model;
 using CoarUtils.commands.logging;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace CoarUtils.commands.aws.elb {
+namespace CoarUtils.commands.aws.alb {
   public class GetNumberOfHealthyInstancesInTargetGroup {
     #region models
     public class request {
       public string awsAccessKey { get; set; }
       public string awsSecretKey { get; set; }
       public RegionEndpoint re { get; set; }
-      public string loadBalancerName { get; set; }
+      public string targetGroupArn { get; set; }
+      public string loadBalancerArn { get; set; }
     }
 
     public class response {
+      public bool isActive { get; set; }
       public int healthy { get; set; }
       public int unhealthy { get; set; }
       public int total { get; set; }
@@ -36,20 +38,37 @@ namespace CoarUtils.commands.aws.elb {
       hsc = HttpStatusCode.BadRequest;
       status = "";
       try {
-        using (var aelbc = new AmazonElasticLoadBalancingClient(
+        using (var aelbc = new AmazonElasticLoadBalancingV2Client(
           awsAccessKeyId: m.awsAccessKey,
           awsSecretAccessKey: m.awsSecretKey,
           region: m.re
         )) {
-          var dlbr = aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
-             LoadBalancerNames = new List<string> { 
-               m.loadBalancerName
-             },
+          var describeLoadBalancersResponse = aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
+             LoadBalancerArns = new List<string> { m.loadBalancerArn },
           }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
-          r.total = dlbr.LoadBalancerDescriptions[0].Instances.Count;
-          //TODO: get health and unhelathy
+          r.isActive = describeLoadBalancersResponse.LoadBalancers.First().State.Code == LoadBalancerStateEnum.Active;
 
-          hsc = dlbr.HttpStatusCode;
+          //var describeTargetGroupsResponse = aelbc.DescribeTargetGroupsAsync(new DescribeTargetGroupsRequest{
+          //   TargetGroupArns =  new List<string> { m.targetGroupArn },
+          //}, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
+
+          var describeTargetHealthResponse = aelbc.DescribeTargetHealthAsync(new DescribeTargetHealthRequest{
+             TargetGroupArn = m.targetGroupArn,
+          }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
+
+          r.healthy = describeTargetHealthResponse.TargetHealthDescriptions
+            .Count(x => x.TargetHealth.State == TargetHealthStateEnum.Healthy)
+          ;
+          r.unhealthy = describeTargetHealthResponse.TargetHealthDescriptions
+            .Count(x => x.TargetHealth.State != TargetHealthStateEnum.Healthy)
+          ;
+          r.total = describeTargetHealthResponse.TargetHealthDescriptions
+            .Count()
+          ;
+          hsc = describeTargetHealthResponse.HttpStatusCode
+            //&& 
+            //describeLoadBalancersResponse.HttpStatusCode
+          ;
           return;
         }
         //hsc = HttpStatusCode.OK;
