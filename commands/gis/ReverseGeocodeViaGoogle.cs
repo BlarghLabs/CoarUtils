@@ -2,9 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using System;
 using System.Net;
-using System.Threading;
 
 namespace CoarUtils.commands.gis {
 
@@ -17,6 +15,11 @@ namespace CoarUtils.commands.gis {
     }
     public class response {
       public string address { get; set; }
+      public string anonymizedAddress { get; set; }
+      public string city { get; set; }
+      public string state { get; set; }
+      public string postalCode { get; set; }
+      public string country { get; set; }
     }
 
     public static void Execute(
@@ -69,6 +72,30 @@ namespace CoarUtils.commands.gis {
           return;
         }
         r.address = json.results[0].formatted_address.Value;
+
+        if (json.results[0].address_components != null) {
+          foreach (var address_component in json.results[0].address_components) {
+            var types = ((Newtonsoft.Json.Linq.JArray) address_component.types).ToList();
+            if (types.Any(x => (string)x == "postal_code")) {
+              r.postalCode = address_component.long_name.Value;
+            }
+            if (types.Any(x => (string)x == "locality")) {
+              r.city = address_component.long_name.Value;
+            }
+            if (types.Any(x => (string)x == "administrative_area_level_1")) {
+              r.state = address_component.long_name.Value;
+            }
+            if (types.Any(x => (string)x == "country")) {
+              r.country = address_component.long_name.Value;
+            }
+          }
+          var anonymizedAddressComponenets = new List<string> {
+            r.city, r.state,r.postalCode, r.country
+          };
+          if (anonymizedAddressComponenets.Any()) {
+            r.anonymizedAddress = String.Join(", ", anonymizedAddressComponenets);
+          }
+        }
 
         hsc = HttpStatusCode.OK;
         return;
