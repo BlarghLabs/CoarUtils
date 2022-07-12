@@ -73,29 +73,37 @@ namespace CoarUtils.commands.gis {
         }
         r.address = json.results[0].formatted_address.Value;
 
-        if (json.results[0].address_components != null) {
-          foreach (var address_component in json.results[0].address_components) {
-            var types = ((Newtonsoft.Json.Linq.JArray) address_component.types).ToList();
-            if (types.Any(x => (string)x == "postal_code")) {
-              r.postalCode = address_component.long_name.Value;
+        foreach (var results in json.results) {
+          if (results.address_components != null) {
+            foreach (var address_component in results.address_components) {
+              var types = ((JArray)address_component.types).ToList();
+              if (types.Any(x => (string)x == "postal_code")) {
+                r.postalCode = address_component.long_name.Value;
+              }
+              if (types.Any(x => (string)x == "locality")) {
+                r.city = address_component.long_name.Value;
+              }
+              if (types.Any(x => (string)x == "administrative_area_level_1")) {
+                r.state = address_component.long_name.Value;
+              }
+              if (types.Any(x => (string)x == "country")) {
+                r.country = address_component.long_name.Value;
+              }
             }
-            if (types.Any(x => (string)x == "locality")) {
-              r.city = address_component.long_name.Value;
-            }
-            if (types.Any(x => (string)x == "administrative_area_level_1")) {
-              r.state = address_component.long_name.Value;
-            }
-            if (types.Any(x => (string)x == "country")) {
-              r.country = address_component.long_name.Value;
+            var anonymizedAddressComponenets = new List<string> { r.city, r.state, r.postalCode, r.country }
+              .Where(x => !string.IsNullOrWhiteSpace(x))
+              .ToList()
+            ;
+            if (anonymizedAddressComponenets.Any()) {
+              r.anonymizedAddress = String.Join(", ", anonymizedAddressComponenets);
+              break;
             }
           }
-          var anonymizedAddressComponenets = new List<string> {
-            r.city, r.state,r.postalCode, r.country
-          };
-          if (anonymizedAddressComponenets.Any()) {
-            r.anonymizedAddress = String.Join(", ", anonymizedAddressComponenets);
+          if (!string.IsNullOrWhiteSpace(r.anonymizedAddress)) {
+            break;
           }
         }
+
 
         hsc = HttpStatusCode.OK;
         return;
