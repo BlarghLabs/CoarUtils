@@ -53,7 +53,7 @@ namespace CoarUtils.commands.ipgeolocation {
           r.cr = client.City(m.ip);
 
           LogIt.I(JsonConvert.SerializeObject(new {
-            r.cr,
+            //r.cr,
 
             //most common
             countryIsoCode = r.cr.Country.IsoCode, // 'US'
