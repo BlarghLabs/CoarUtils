@@ -14,6 +14,9 @@ namespace CoarUtils.commands.time {
       var ts = new TimeSpan(DateTime.UtcNow.Ticks - dt.Ticks);
       var delta = Math.Abs(ts.TotalSeconds);
 
+      if (ts.TotalSeconds < -3)
+        return "in the future";
+
       if (ts.TotalSeconds < 0)
         return "just now";
 
@@ -81,6 +84,9 @@ namespace CoarUtils.commands.time {
 
       var ts = new TimeSpan(DateTime.UtcNow.Ticks - dt.Ticks);
       var delta = Math.Abs(ts.TotalSeconds);
+
+      if (ts.TotalSeconds < -3)
+        return "in the future";
 
       if (ts.TotalSeconds < 0)
         return "just now";
