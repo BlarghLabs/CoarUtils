@@ -55,30 +55,55 @@ namespace CoarUtils.commands.logging {
         if (methodInfo.DeclaringType.Name == typeof(LogIt).Name) {
           methodInfo = new StackFrame(3).GetMethod();
         }
+        var className = "";
+        if (methodInfo.DeclaringType != null) {
+          if (methodInfo.DeclaringType.Name.StartsWith("<") || methodInfo.DeclaringType.Name.EndsWith(">")) {
+            className = methodInfo.DeclaringType.ReflectedType.Name;
+          } else {
+            className = methodInfo.DeclaringType.Name;
+          }
+        }
+        var method = "";
+        if (methodInfo.DeclaringType != null) {
+          if (methodInfo.Name.Equals("MoveNext")) {
+            if (
+              methodInfo.DeclaringType.Name.Contains("<")
+              &&
+              methodInfo.DeclaringType.Name.Contains(">")
+              &&
+              (methodInfo.DeclaringType.Name.IndexOf("<") < methodInfo.DeclaringType.Name.IndexOf(">"))
+            ) {
+              int pFrom = methodInfo.DeclaringType.Name.IndexOf("<") + "<".Length;
+              int pTo = methodInfo.DeclaringType.Name.LastIndexOf(">");
+              method = methodInfo.DeclaringType.Name.Substring(pFrom, pTo - pFrom);
+            } else {
+              method = methodInfo.DeclaringType.Name;
+            }
+          } else {
+            method = methodInfo.Name;
+          }
+        }
+        var nameSpace = "";
+        if (methodInfo.DeclaringType != null) {
+          nameSpace = methodInfo.DeclaringType.Namespace;
+        }
+
         //for format consistency
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/bb926074-d593-4e0b-8754-7026acc607ec/datetime-tostring-colon-replaced-with-period?forum=csharpgeneral
         var dt = DateTime.UtcNow;
         var dts = dt.ToString("yyyy-MM-dd HH") + ":" + dt.ToString("mm") + ":" + dt.ToString("ss") + "." + dt.ToString("fff");
         var ss = "[" + s.ToString().ToUpper() + "]";
-        var @class = (methodInfo.DeclaringType == null)
-          ? ""
-          : methodInfo.DeclaringType.Name
-        ;
-        var method = (methodInfo.DeclaringType == null)
-          ? ""
-          : methodInfo.Name
-        ;
         o = o ?? "";
         var msg = o.ToString(); //json convert instead?
         msg = !removeNewlinesFromMessage
           ? msg
           : msg.Replace("\r\n", " ").Replace("\n", " ")
         ; //currently just a string
-        //var whereIAm = WhereAmI.Execute(stepUp: 3);
-        //this is for cloud watch logs which requires space after timestamp: http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/send_logs_to_cwl.html
+          //var whereIAm = WhereAmI.Execute(stepUp: 3);
+          //this is for cloud watch logs which requires space after timestamp: http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/send_logs_to_cwl.html
         var space = " ";
         var instance = string.IsNullOrWhiteSpace(instanceId) ? "" : $"|{instanceId}";
-        var log = $"{dts}{space}|{ss}|{@class}|{method}{instance}|{msg}";
+        var log = $"{dts}{space}|{ss}|{nameSpace}|{className}|{method}{instance}|{msg}";
         if (s == severity.error) {
           Console.ForegroundColor = ConsoleColor.Red;
           Console.Beep();// 38, 1000);
@@ -110,13 +135,44 @@ namespace CoarUtils.commands.logging {
       bool removeNewlinesFromMessage = true
     ) {
       try {
-        //dont check forever
         var methodInfo = new StackFrame(1).GetMethod();
         if (methodInfo.DeclaringType.Name == typeof(LogIt).Name) {
           methodInfo = new StackFrame(2).GetMethod();
         }
         if (methodInfo.DeclaringType.Name == typeof(LogIt).Name) {
           methodInfo = new StackFrame(3).GetMethod();
+        }
+        var className = "";
+        if (methodInfo.DeclaringType != null) {
+          if (methodInfo.DeclaringType.Name.StartsWith("<") || methodInfo.DeclaringType.Name.EndsWith(">")) {
+            className = methodInfo.DeclaringType.ReflectedType.Name;
+          } else {
+            className = methodInfo.DeclaringType.Name;
+          }
+        }
+        var method = "";
+        if (methodInfo.DeclaringType != null) {
+          if (methodInfo.Name.Equals("MoveNext")) {
+            if (
+              methodInfo.DeclaringType.Name.Contains("<")
+              &&
+              methodInfo.DeclaringType.Name.Contains(">")
+              &&
+              (methodInfo.DeclaringType.Name.IndexOf("<") < methodInfo.DeclaringType.Name.IndexOf(">"))
+            ) {
+              int pFrom = methodInfo.DeclaringType.Name.IndexOf("<") + "<".Length;
+              int pTo = methodInfo.DeclaringType.Name.LastIndexOf(">");
+              method = methodInfo.DeclaringType.Name.Substring(pFrom, pTo - pFrom);
+            } else {
+              method = methodInfo.DeclaringType.Name;
+            }
+          } else {
+            method = methodInfo.Name;
+          }
+        }
+        var nameSpace = "";
+        if (methodInfo.DeclaringType != null) {
+          nameSpace = methodInfo.DeclaringType.Namespace;
         }
         //for format consistency
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/bb926074-d593-4e0b-8754-7026acc607ec/datetime-tostring-colon-replaced-with-period?forum=csharpgeneral
@@ -132,24 +188,16 @@ namespace CoarUtils.commands.logging {
             break;
         }
         var ss = "[" + s.ToString().ToUpper() + "]";
-        var @class = (methodInfo.DeclaringType == null)
-          ? ""
-          : methodInfo.DeclaringType.Name
-        ;
-        var method = (methodInfo.DeclaringType == null)
-          ? ""
-          : methodInfo.Name
-        ;
         o = o ?? "";
         var msg = o.ToString(); //json convert instead?
         msg = !removeNewlinesFromMessage
           ? msg
           : msg.Replace("\r\n", " ").Replace("\n", " ")
         ; //currently just a string
-        //var whereIAm = WhereAmI.Execute(stepUp: 3);
-        //this is for cloud watch logs which requires space after timestamp: http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/send_logs_to_cwl.html
+          //var whereIAm = WhereAmI.Execute(stepUp: 3);
+          //this is for cloud watch logs which requires space after timestamp: http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/send_logs_to_cwl.html
         var space = " ";
-        var log = $"{dts}{space}|{ss}|{@class}|{method}|{msg}";
+        var log = $"{dts}{space}|{ss}|{nameSpace}|{className}|{method}|{msg}";
         //TODO: check exists
         LambdaLogger.Log(log);
         //if (_log != null) {
@@ -165,7 +213,7 @@ namespace CoarUtils.commands.logging {
       string message
     ) {
       try {
-        var log = $"{s.ToString().ToUpper()}|{WhereAmI.Execute(stepUp: 3)}|{ message}";
+        var log = $"{s.ToString().ToUpper()}|{WhereAmI.Execute(stepUp: 3)}|{message}";
         //TODO: check exists
         LambdaLogger.Log(log);
         //if (_log != null) {
@@ -208,7 +256,7 @@ namespace CoarUtils.commands.logging {
           }
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
 
-          
+
           Execute(o: json, s: severity.error, instanceId: instanceId);
           return; //?
         }
