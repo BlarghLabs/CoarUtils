@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Security.Cryptography;
 
 namespace CoarUtils.commands.hashing.sha1 {
   public class GetFileSha1Hash {
