@@ -9,7 +9,7 @@ using System.Net;
 namespace CoarUtils.commands.aws.alb {
   public class GetNumberOfHealthyInstancesInTargetGroup {
     #region models
-    public class request {
+    public class Request {
       public string awsAccessKey { get; set; }
       public string awsSecretKey { get; set; }
       public RegionEndpoint re { get; set; }
@@ -17,7 +17,7 @@ namespace CoarUtils.commands.aws.alb {
       public string loadBalancerArn { get; set; }
     }
 
-    public class response {
+    public class Response {
       public bool isActive { get; set; }
       public int healthy { get; set; }
       public int unhealthy { get; set; }
@@ -27,14 +27,14 @@ namespace CoarUtils.commands.aws.alb {
     #endregion
 
     public static void Execute(
-      request m,
+      Request m,
       out HttpStatusCode hsc,
-      out response r,
+      out Response r,
       out string status,
       HttpContext hc = null,
       CancellationToken? ct = null
     ) {
-      r = new response { };
+      r = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
       try {

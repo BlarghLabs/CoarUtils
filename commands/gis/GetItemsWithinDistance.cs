@@ -5,7 +5,7 @@ namespace CoarUtils.commands.gis {
   //credit: https://github.com/BlarghLabs/MoarUtils/blob/master/commands/gis/DistCalc.cs
 
   public static class GetItemsWithinDistance {
-    public class request {
+    public class Request {
       public List<Coordinate> loc { get; set; }
       public Coordinate c { get; set; }
       public double allowableDistanceInMiles { get; set; }
@@ -31,7 +31,7 @@ namespace CoarUtils.commands.gis {
     //http://www.lacosmo.com/ortho/ortho.html
 
     public static List<Coordinate> Execute(
-      request m
+      Request m
     ) {
       //only limit results if passed
       if (!m.limitResultsToClosestX.HasValue) {
@@ -41,7 +41,7 @@ namespace CoarUtils.commands.gis {
       var results = new List<Coordinate> { };
       for (int i = 0; i < m.loc.Count; i++) {
         var c1 = m.loc[i];
-        c1.distanceToPoint = CalculateDistance.Execute(m: new CalculateDistance.request {
+        c1.distanceToPoint = CalculateDistance.Execute(m: new CalculateDistance.Request {
           latA = m.c.lat,
           lngA = m.c.lng,
           latB = c1.lat,

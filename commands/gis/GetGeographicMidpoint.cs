@@ -12,8 +12,8 @@ namespace CoarUtils.commands.gis {
       public decimal lat { get; set; }
       public decimal lng { get; set; }
     }
-    public class request {
-      public request() {
+    public class Request {
+      public Request() {
         loc = new List<Coordinate> { };
       }
       public List<Coordinate> loc { get; set; }
@@ -27,7 +27,7 @@ namespace CoarUtils.commands.gis {
 
 
     public static void Execute(
-      request m,
+      Request m,
       out respone r,
       out HttpStatusCode hsc,
       out string status

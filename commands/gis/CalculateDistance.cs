@@ -4,8 +4,8 @@ namespace CoarUtils.commands.gis {
   //credit: https://github.com/BlarghLabs/MoarUtils/blob/master/commands/gis/DistCalc.cs
   public static class CalculateDistance {
     #region models
-    public class request {
-      public request() {
+    public class Request {
+      public Request() {
         measurement = Measurement.miles;
       }
 
@@ -33,7 +33,7 @@ namespace CoarUtils.commands.gis {
     /// Calculate the distance between two geocodes. Defaults to using Miles.
     /// </summary> 
     public static double Execute(
-      request m
+      Request m
     ) {
       var radius = EarthRadiusInMiles;
       if (m.measurement == Measurement.kilometers) {

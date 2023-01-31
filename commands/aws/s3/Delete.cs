@@ -7,7 +7,7 @@ using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Delete {
-    public class request {
+    public class Request {
       public string bucketName { get; set; }
       public string key { get; set; }
       public RegionEndpoint re { get; set; }
@@ -15,7 +15,7 @@ namespace CoarUtils.commands.aws.s3 {
 
 
     public static void Execute(
-      request m,
+      Request m,
       out HttpStatusCode hsc,
       out string status,
       string awsAccessKey,

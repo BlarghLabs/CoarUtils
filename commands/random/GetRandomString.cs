@@ -5,21 +5,21 @@ using Newtonsoft.Json;
 
 namespace CoarUtils.commands.random {
   public static class GetRandomString {
-    public class request {
-      public request() {
+    public class Request {
+      public Request() {
         length = 8;
       }
       public int length { get; set; }
     }
 
-    public class response {
-      public response() {
+    public class Response {
+      public Response() {
       }
       public string result { get; set; }
     }
 
     public static string Execute(
-      request m
+      Request m
     ) {
       var result = "";
       try {

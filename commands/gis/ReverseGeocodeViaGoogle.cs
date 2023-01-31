@@ -8,12 +8,12 @@ namespace CoarUtils.commands.gis {
 
   //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
   public static class ReverseGeocodeViaGoogle {
-    public class request {
+    public class Request {
       public decimal lat { get; set; }
       public decimal lng { get; set; }
       public string apiKey { get; set; }
     }
-    public class response {
+    public class Response {
       public string address { get; set; }
       public string anonymizedAddress { get; set; }
       public string city { get; set; }
@@ -25,13 +25,13 @@ namespace CoarUtils.commands.gis {
     public static void Execute(
       out HttpStatusCode hsc,
       out string status,
-      out response r,
-      request m,
+      out Response r,
+      Request m,
       CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
-      r = new response { };
+      r = new Response { };
       try {
         if (m == null) {
           hsc = HttpStatusCode.BadRequest;

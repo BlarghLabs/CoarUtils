@@ -8,13 +8,13 @@ namespace CoarUtils.commands.ipgeolocation {
 
   public static class GetGeolocation {
     #region models
-    public class request {
+    public class Request {
       public string ip { get; set; }
       public int maxmindAccountId { get; set; }
       public string maxmindAccountKey { get; set; }
     }
 
-    public class response {
+    public class Response {
       public CityResponse cr { get; set; }
     }
     #endregion
@@ -22,11 +22,11 @@ namespace CoarUtils.commands.ipgeolocation {
     public static void Execute(
       out HttpStatusCode hsc,
       out string status,
-      out response r,
-      request m,
+      out Response r,
+      Request m,
       CancellationToken? ct = null
     ) {
-      r = new response { };
+      r = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
 

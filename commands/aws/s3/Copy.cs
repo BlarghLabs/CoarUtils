@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Copy {
-    public class request {
+    public class Request {
       public S3CannedACL destAcl { get; set; }
       public string contentType { get; set; }
       public string destBucketName { get; set; }
@@ -23,7 +23,7 @@ namespace CoarUtils.commands.aws.s3 {
 
 
     public static void Execute(
-      request m,
+      Request m,
       out HttpStatusCode hsc,
       out string status,
       string awsAccessKey,

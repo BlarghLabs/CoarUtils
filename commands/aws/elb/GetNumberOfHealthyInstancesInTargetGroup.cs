@@ -9,14 +9,14 @@ using System.Net;
 namespace CoarUtils.commands.aws.elb {
   public class GetNumberOfHealthyInstancesInTargetGroup {
     #region models
-    public class request {
+    public class Request {
       public string awsAccessKey { get; set; }
       public string awsSecretKey { get; set; }
       public RegionEndpoint re { get; set; }
       public string loadBalancerName { get; set; }
     }
 
-    public class response {
+    public class Response {
       public int healthy { get; set; }
       public int unhealthy { get; set; }
       public int total { get; set; }
@@ -25,14 +25,14 @@ namespace CoarUtils.commands.aws.elb {
     #endregion
 
     public static void Execute(
-      request m,
+      Request m,
       out HttpStatusCode hsc,
-      out response r,
+      out Response r,
       out string status,
       HttpContext hc = null,
       CancellationToken? ct = null
     ) {
-      r = new response { };
+      r = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
       try {

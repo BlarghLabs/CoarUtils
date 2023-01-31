@@ -9,12 +9,12 @@ using System.Threading;
 namespace CoarUtils.commands.random.words {
   public static class GetRandomWordViaRandomWordApi {
 
-    public class request {
+    public class Request {
       public int total => 1; //{ get; set; }
     }
 
-    public class response {
-      public response() {
+    public class Response {
+      public Response() {
         words = new List<string> { };
       }
       public List<string> words { get; set; }
@@ -23,12 +23,12 @@ namespace CoarUtils.commands.random.words {
     public static void Execute(
       out HttpStatusCode hsc,
       out string status,
-      out response r,
-      request m,
+      out Response r,
+      Request m,
       CancellationToken? ct = null,
       WebProxy wp = null
     ) {
-      r = new response { };
+      r = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
 

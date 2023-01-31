@@ -8,7 +8,7 @@ using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Get {
-    public class request {
+    public class Request {
       public string bucketName { get; set; }
       public string key { get; set; }
       public RegionEndpoint re { get; set; }
@@ -16,7 +16,7 @@ namespace CoarUtils.commands.aws.s3 {
 
 
     public static void Execute(
-      request m,
+      Request m,
       out MemoryStream ms,
       out HttpStatusCode hsc,
       out string status,
@@ -59,7 +59,7 @@ namespace CoarUtils.commands.aws.s3 {
 
 
     public static void Execute(
-      request m,
+      Request m,
       out HttpStatusCode hsc,
       out string status,
       string awsAccessKey,
@@ -102,7 +102,7 @@ namespace CoarUtils.commands.aws.s3 {
       }
     }
 
-    //public static void Execute(request m, out HttpStatusCode hsc) {
+    //public static void Execute(Request m, out HttpStatusCode hsc) {
     //  throw new NotImplementedException();
     //}
   }

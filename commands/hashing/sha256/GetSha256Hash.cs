@@ -3,6 +3,7 @@ using System.Text;
 
 namespace CoarUtils.commands.hashing.sha256 {
   public static class GetSha256Hash {
+
     //public static string Execute(string value) {
     //  var sb = new StringBuilder();
     //  using (var hash = SHA256.Create()) {
@@ -31,5 +32,20 @@ namespace CoarUtils.commands.hashing.sha256 {
         return sb.ToString();
       }
     }
+
+    //TODO: ind validate this, then add for byte array
   }
 }
+
+//public static string Execute(byte[] ba) {
+//  string hexStringHash;
+//  using (var sha1 = new SHA1CryptoServiceProvider()) {
+//    hexStringHash = Convert.ToHexString(sha1.ComputeHash(ba));
+//  }
+//  return hexStringHash;
+//}
+
+//public static string Execute(string input) {
+//  var ba = Encoding.UTF8.GetBytes(input);
+//  return Execute(ba);
+//}
