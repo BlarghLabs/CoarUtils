@@ -104,6 +104,17 @@ namespace CoarUtils.commands.gis {
           }
         }
 
+        //could be more efficiently written
+        if (!string.IsNullOrWhiteSpace(r.anonymizedAddress)) {
+          r.anonymizedAddress = r.anonymizedAddress
+            .Replace(", , ,", ",")
+            .Replace(", ,", ",")
+            .Trim()
+          ;
+          if (r.anonymizedAddress.StartsWith(",")) {
+            r.anonymizedAddress = r.anonymizedAddress.Substring(1);
+          }
+        }
 
         hsc = HttpStatusCode.OK;
         return;
