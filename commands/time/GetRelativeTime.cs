@@ -88,7 +88,7 @@ namespace CoarUtils.commands.time {
       if (ts.TotalSeconds < -3)
         return "in the future";
 
-      if (ts.TotalSeconds <= 0)
+      if (ts.TotalSeconds <= 1)
         return "just now";
 
       if (delta < 1 * MINUTE)
