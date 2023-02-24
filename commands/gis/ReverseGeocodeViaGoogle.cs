@@ -25,40 +25,40 @@ namespace CoarUtils.commands.gis {
     public static void Execute(
       out HttpStatusCode hsc,
       out string status,
-      out Response r,
-      Request m,
+      out Response response,
+      Request request,
       CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
-      r = new Response { };
+      response = new Response { };
       try {
-        if (m == null) {
+        if (request == null) {
           hsc = HttpStatusCode.BadRequest;
           status = "params were null";
           return;
         }
-        if ((m.lat == 0) && (m.lng == 0)) {
+        if ((request.lat == 0) && (request.lng == 0)) {
           hsc = HttpStatusCode.BadRequest;
           status = "lat and long ZERO";
           return;
         }
-        var resource = "maps/api/geocode/json?latlng=" + m.lat.ToString() + "," + m.lng.ToString() + "&key=" + m.apiKey;
+        var resource = "maps/api/geocode/json?latlng=" + request.lat.ToString() + "," + request.lng.ToString() + "&key=" + request.apiKey;
         var client = new RestClient("https://maps.googleapis.com/");
-        var request = new RestRequest(resource, Method.Get);
-        request.RequestFormat = DataFormat.Json;
-        var response = client.ExecuteAsync(request).Result;
-        if (response.ErrorException != null) {
+        var restRequest = new RestRequest(resource, Method.Get);
+        restRequest.RequestFormat = DataFormat.Json;
+        var restResponse = client.ExecuteAsync(restRequest).Result;
+        if (restResponse.ErrorException != null) {
           hsc = HttpStatusCode.BadRequest;
-          status = response.ErrorException.Message;
+          status = restResponse.ErrorException.Message;
           return;
         }
-        if (response.StatusCode != HttpStatusCode.OK) {
+        if (restResponse.StatusCode != HttpStatusCode.OK) {
           hsc = HttpStatusCode.BadRequest;
-          status = $"status was {response.StatusCode.ToString()}";
+          status = $"status was {restResponse.StatusCode.ToString()}";
           return;
         }
-        var content = response.Content;
+        var content = restResponse.Content;
         dynamic json = JObject.Parse(content);
         var apiStatus = json.status.Value;
         if (apiStatus != "OK") {
@@ -71,48 +71,48 @@ namespace CoarUtils.commands.gis {
           status = $"results count was ZERO";
           return;
         }
-        r.address = json.results[0].formatted_address.Value;
+        response.address = json.results[0].formatted_address.Value;
 
         foreach (var results in json.results) {
           if (results.address_components != null) {
             foreach (var address_component in results.address_components) {
               var types = ((JArray)address_component.types).ToList();
               if (types.Any(x => (string)x == "postal_code")) {
-                r.postalCode = address_component.long_name.Value;
+                response.postalCode = address_component.long_name.Value;
               }
               if (types.Any(x => (string)x == "locality")) {
-                r.city = address_component.long_name.Value;
+                response.city = address_component.long_name.Value;
               }
               if (types.Any(x => (string)x == "administrative_area_level_1")) {
-                r.state = address_component.long_name.Value;
+                response.state = address_component.long_name.Value;
               }
               if (types.Any(x => (string)x == "country")) {
-                r.country = address_component.long_name.Value;
+                response.country = address_component.long_name.Value;
               }
             }
-            var anonymizedAddressComponenets = new List<string> { r.city, r.state, r.postalCode, r.country }
+            var anonymizedAddressComponenets = new List<string> { response.city, response.state, response.postalCode, response.country }
               .Where(x => !string.IsNullOrWhiteSpace(x))
               .ToList()
             ;
             if (anonymizedAddressComponenets.Any()) {
-              r.anonymizedAddress = String.Join(", ", anonymizedAddressComponenets);
+              response.anonymizedAddress = String.Join(", ", anonymizedAddressComponenets);
               break;
             }
           }
-          if (!string.IsNullOrWhiteSpace(r.anonymizedAddress)) {
+          if (!string.IsNullOrWhiteSpace(response.anonymizedAddress)) {
             break;
           }
         }
 
         //could be more efficiently written
-        if (!string.IsNullOrWhiteSpace(r.anonymizedAddress)) {
-          r.anonymizedAddress = r.anonymizedAddress
+        if (!string.IsNullOrWhiteSpace(response.anonymizedAddress)) {
+          response.anonymizedAddress = response.anonymizedAddress
             .Replace(", , ,", ",")
             .Replace(", ,", ",")
             .Trim()
           ;
-          if (r.anonymizedAddress.StartsWith(",")) {
-            r.anonymizedAddress = r.anonymizedAddress.Substring(1);
+          if (response.anonymizedAddress.StartsWith(",")) {
+            response.anonymizedAddress = response.anonymizedAddress.Substring(1);
           }
         }
 
@@ -124,12 +124,12 @@ namespace CoarUtils.commands.gis {
         status = "unexecpected error";
         return;
       } finally {
-        m.apiKey = "DO_NOT_LOG";
+        request.apiKey = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(
           new {
             hsc,
             status,
-            m,
+            request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
