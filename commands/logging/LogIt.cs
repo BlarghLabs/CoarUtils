@@ -3,18 +3,11 @@ using CoarUtils.commands.reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
-using System;
 using System.Diagnostics;
 using System.Net;
 namespace CoarUtils.commands.logging {
   public class LogIt {
-    //public LogIt() {
-    //  doNotlogToLambda = true;
-    //}
-
-    //this was causing innocious double console log (but only once to file)
-    public static bool doNotlogToLambda { get; set; } = false;
-    private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
+    #region enums
     public enum severity {
       info,
       error,
@@ -22,6 +15,13 @@ namespace CoarUtils.commands.logging {
       debug,
       success,
     };
+    #endregion
+
+    //this was causing innocious double console log (but only once to file)
+    public static bool doNotlogToLambda { get; set; } = false; // = true;
+    private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
+    public const bool DEFAULT_BEEP_BEHAVIOR = false;
+
     public static LogLevel GetNLoggerLogLevel(severity s) {
       switch (s) {
         case severity.debug:
@@ -44,7 +44,8 @@ namespace CoarUtils.commands.logging {
       object o,
       string instanceId = null,
       bool removeNewlinesFromMessage = true,
-      bool beepOnWarning = true
+      bool beepOnWarning = DEFAULT_BEEP_BEHAVIOR,
+      bool beepOnError = DEFAULT_BEEP_BEHAVIOR
     ) {
       try {
         //dont check forever
@@ -106,7 +107,9 @@ namespace CoarUtils.commands.logging {
         var log = $"{dts}{space}|{ss}|{nameSpace}|{className}|{method}{instance}|{msg}";
         if (s == severity.error) {
           Console.ForegroundColor = ConsoleColor.Red;
-          Console.Beep();// 38, 1000);
+          if (beepOnError) {
+            Console.Beep();// 38, 1000);
+          }
         } else if (s == severity.success) {
           Console.ForegroundColor = ConsoleColor.Green;
         } else if (s == severity.warning) {
@@ -272,7 +275,7 @@ namespace CoarUtils.commands.logging {
     public static void I(object o = null, string instanceId = null) {
       Execute(s: severity.info, o: o, instanceId: instanceId);
     }
-    public static void W(object o = null, string instanceId = null, bool beep = true) {
+    public static void W(object o = null, string instanceId = null, bool beep = DEFAULT_BEEP_BEHAVIOR) {
       Execute(s: severity.warning, o: o, instanceId: instanceId, beepOnWarning: beep);
     }
     public static void S(object o = null, string instanceId = null) {
