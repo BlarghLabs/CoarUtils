@@ -14,10 +14,7 @@ namespace CoarUtils.commands.random.words {
     }
 
     public class Response {
-      public Response() {
-        words = new List<string> { };
-      }
-      public List<string> words { get; set; }
+      public List<string> words { get; set; } = new List<string> { };
     }
 
     public static void Execute(

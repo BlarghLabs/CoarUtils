@@ -6,15 +6,10 @@ using Newtonsoft.Json;
 namespace CoarUtils.commands.random {
   public static class GetRandomString {
     public class Request {
-      public Request() {
-        length = 8;
-      }
-      public int length { get; set; }
+      public int length { get; set; } = 8;
     }
 
     public class Response {
-      public Response() {
-      }
       public string result { get; set; }
     }
 
