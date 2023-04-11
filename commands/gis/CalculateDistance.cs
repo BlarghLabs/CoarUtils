@@ -5,15 +5,11 @@ namespace CoarUtils.commands.gis {
   public static class CalculateDistance {
     #region models
     public class Request {
-      public Request() {
-        measurement = Measurement.miles;
-      }
-
       public double latA { get; set; }
       public double lngA { get; set; }
       public double latB { get; set; }
       public double lngB { get; set; }
-      public Measurement measurement { get; set; }
+      public Measurement measurement { get; set; } = Measurement.miles;
 
     }
     #endregion
