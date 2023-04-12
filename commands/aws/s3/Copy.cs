@@ -4,9 +4,7 @@ using Amazon.S3.Model;
 using CoarUtils.commands.logging;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
 using System.Net;
-using System.Threading;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Copy {
@@ -23,7 +21,7 @@ namespace CoarUtils.commands.aws.s3 {
 
 
     public static void Execute(
-      Request m,
+      Request request,
       out HttpStatusCode hsc,
       out string status,
       string awsAccessKey,
@@ -35,10 +33,10 @@ namespace CoarUtils.commands.aws.s3 {
       status = "";
       try {
         if (!Exists.Execute(
-          key: m.sourceKey,
-          bucketName: m.sourceBucketName,
+          key: request.sourceKey,
+          bucketName: request.sourceBucketName,
           url: out string sourceUrl,
-          re: m.re,
+          re: request.re,
           awsAccessKey: awsAccessKey,
           awsSecretKey: awsSecretKey
         )) {
@@ -50,10 +48,10 @@ namespace CoarUtils.commands.aws.s3 {
         //validate dest doesn't already exist, fail if it does bc we aren't validating that it is different? maybe shar eeach in future?
 
         if (Exists.Execute(
-          key: m.destKey,
-          bucketName: m.destBucketName,
+          key: request.destKey,
+          bucketName: request.destBucketName,
           url: out string destUrl,
-          re: m.re,
+          re: request.re,
           awsAccessKey: awsAccessKey,
           awsSecretKey: awsSecretKey
         )) {
@@ -66,20 +64,20 @@ namespace CoarUtils.commands.aws.s3 {
         using (var s3c = new AmazonS3Client(
           awsAccessKeyId: awsAccessKey,
           awsSecretAccessKey: awsSecretKey,
-          region: m.re
+          region: request.re
         )) {
-          var request = new CopyObjectRequest {
-            SourceBucket = m.sourceBucketName,
-            SourceKey = m.sourceKey,
-            DestinationBucket = m.destBucketName,
-            DestinationKey = m.destKey,
-            CannedACL = m.destAcl
+          var copyObjectRequest = new CopyObjectRequest {
+            SourceBucket = request.sourceBucketName,
+            SourceKey = request.sourceKey,
+            DestinationBucket = request.destBucketName,
+            DestinationKey = request.destKey,
+            CannedACL = request.destAcl
           };
-          if (!string.IsNullOrWhiteSpace(m.contentType)) {
-            request.MetadataDirective = S3MetadataDirective.REPLACE;
-            request.ContentType = m.contentType;
+          if (!string.IsNullOrWhiteSpace(request.contentType)) {
+            copyObjectRequest.MetadataDirective = S3MetadataDirective.REPLACE;
+            copyObjectRequest.ContentType = request.contentType;
           }
-          var response = s3c.CopyObjectAsync(request, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
+          var response = s3c.CopyObjectAsync(copyObjectRequest, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
           hsc = response.HttpStatusCode;
           return;
           //fileLengthBytes = cor.
@@ -94,7 +92,7 @@ namespace CoarUtils.commands.aws.s3 {
           new {
             hsc,
             status,
-            m,
+            request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));
