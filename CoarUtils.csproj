@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.3104</Version>
+    <Version>1.0.1.3269</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
@@ -40,6 +40,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.6.3" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.4.21" />
     <PackageReference Include="AWSSDK.EC2" Version="3.7.95.3" />
+    <PackageReference Include="Tiny.RestClient" Version="1.7.1" />
   </ItemGroup>
 </Project>
 
