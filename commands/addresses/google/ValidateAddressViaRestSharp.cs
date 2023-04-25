@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 
 namespace CoarUtils.commands.addresses.google {
-
+  //again, taking 85s
   public static class ValidateAddressViaRestSharp {
     public class Request {
       public string address { get; set; }
@@ -49,7 +49,9 @@ namespace CoarUtils.commands.addresses.google {
           return;
         }
 
+        //85s
         var resource = $"./v1:validateAddress?alt=json&key={request.apiKey}";
+        //var resource = $"/v1:validateAddress?alt=json&key={request.apiKey}";
         //var resource = $"v1:validateAddress?alt=json&key={request.apiKey}";
         //var resource = $"/v1%3AvalidateAddress?alt=json&key={request.apiKey}";
         
@@ -66,7 +68,7 @@ namespace CoarUtils.commands.addresses.google {
             addressLines = new string[] {
               request.address
             },
-            //languageCode = "en"
+            //languageCode = "en",
           },
           previousResponseId = "",
           enableUspsCass = false
@@ -162,3 +164,157 @@ namespace CoarUtils.commands.addresses.google {
     }
   }
 }
+
+#region result
+/*
+ *{
+  "result": {
+    "verdict": {
+      "inputGranularity": "SUB_PREMISE",
+      "validationGranularity": "PREMISE",
+      "geocodeGranularity": "PREMISE",
+      "addressComplete": true,
+      "hasUnconfirmedComponents": true,
+      "hasInferredComponents": true
+    },
+    "address": {
+      "formattedAddress": "2930 Pearl Street Suite 100, Boulder, CO 80301-1124, USA",
+      "postalAddress": {
+        "regionCode": "US",
+        "languageCode": "en",
+        "postalCode": "80301-1124",
+        "administrativeArea": "CO",
+        "locality": "Boulder",
+        "addressLines": [
+          "2930 Pearl St Suite 100"
+        ]
+      },
+      "addressComponents": [
+        {
+          "componentName": {
+            "text": "2930",
+            "languageCode": "en"
+          },
+          "componentType": "street_number",
+          "confirmationLevel": "CONFIRMED"
+        },
+        {
+          "componentName": {
+            "text": "Pearl Street",
+            "languageCode": "en"
+          },
+          "componentType": "route",
+          "confirmationLevel": "CONFIRMED"
+        },
+        {
+          "componentName": {
+            "text": "Suite 100",
+            "languageCode": "en"
+          },
+          "componentType": "subpremise",
+          "confirmationLevel": "UNCONFIRMED_BUT_PLAUSIBLE"
+        },
+        {
+          "componentName": {
+            "text": "Boulder",
+            "languageCode": "en"
+          },
+          "componentType": "locality",
+          "confirmationLevel": "CONFIRMED"
+        },
+        {
+          "componentName": {
+            "text": "CO",
+            "languageCode": "en"
+          },
+          "componentType": "administrative_area_level_1",
+          "confirmationLevel": "CONFIRMED"
+        },
+        {
+          "componentName": {
+            "text": "USA",
+            "languageCode": "en"
+          },
+          "componentType": "country",
+          "confirmationLevel": "CONFIRMED"
+        },
+        {
+          "componentName": {
+            "text": "80301"
+          },
+          "componentType": "postal_code",
+          "confirmationLevel": "CONFIRMED",
+          "inferred": true
+        },
+        {
+          "componentName": {
+            "text": "1124"
+          },
+          "componentType": "postal_code_suffix",
+          "confirmationLevel": "CONFIRMED",
+          "inferred": true
+        }
+      ],
+      "unconfirmedComponentTypes": [
+        "subpremise"
+      ]
+    },
+    "geocode": {
+      "location": {
+        "latitude": 40.0216013,
+        "longitude": -105.2545612
+      },
+      "plusCode": {
+        "globalCode": "85GP2PCW+J5"
+      },
+      "bounds": {
+        "low": {
+          "latitude": 40.0214235,
+          "longitude": -105.2552367
+        },
+        "high": {
+          "latitude": 40.022141,
+          "longitude": -105.2539148
+        }
+      },
+      "featureSizeMeters": 83.12698,
+      "placeId": "EjgyOTMwIFBlYXJsIFN0cmVldCBTdWl0ZSAxMDAsIEJvdWxkZXIsIENPIDgwMzAxLTExMjQsIFVTQSIfGh0KFgoUChIJAYG51dnta4cRKUh8ScmdvqgSAzEwMA",
+      "placeTypes": [
+        "subpremise"
+      ]
+    },
+    "metadata": {
+      "business": true,
+      "poBox": false
+    },
+    "uspsData": {
+      "standardizedAddress": {
+        "firstAddressLine": "2930 PEARL ST STE 100",
+        "cityStateZipAddressLine": "BOULDER CO 80301-1124",
+        "city": "BOULDER",
+        "state": "CO",
+        "zipCode": "80301",
+        "zipCodeExtension": "1124"
+      },
+      "deliveryPointCode": "30",
+      "deliveryPointCheckDigit": "7",
+      "dpvConfirmation": "S",
+      "dpvFootnote": "AACC",
+      "dpvCmra": "N",
+      "dpvVacant": "N",
+      "dpvNoStat": "N",
+      "carrierRoute": "C009",
+      "carrierRouteIndicator": "D",
+      "postOfficeCity": "BOULDER",
+      "postOfficeState": "CO",
+      "fipsCountyCode": "013",
+      "county": "BOULDER",
+      "elotNumber": "0002",
+      "elotFlag": "A",
+      "addressRecordType": "S"
+    }
+  },
+  "responseId": "3ac551e3-e317-4a78-b90b-1740339b4117"
+}
+ * */
+#endregion
