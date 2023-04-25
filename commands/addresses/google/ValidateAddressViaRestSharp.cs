@@ -1,11 +1,13 @@
 ﻿using CoarUtils.commands.logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using System.Net;
 using System.Text;
 
 namespace CoarUtils.commands.addresses.google {
 
-  public static class ValidateAddressViaMer {
+  public static class ValidateAddressViaRestSharp {
     public class Request {
       public string address { get; set; }
       public string apiKey { get; set; }
@@ -47,71 +49,52 @@ namespace CoarUtils.commands.addresses.google {
           return;
         }
 
-        var httpClient = new HttpClient();
-        var data = new {
+        var resource = $"./v1:validateAddress?alt=json&key={request.apiKey}";
+        //var resource = $"v1:validateAddress?alt=json&key={request.apiKey}";
+        //var resource = $"/v1%3AvalidateAddress?alt=json&key={request.apiKey}";
+        
+        var client = new RestClient("https://addressvalidation.googleapis.com/");
+        //var client = new RestClient("https://content-addressvalidation.googleapis.com/");
+        
+        var restRequest = new RestRequest {
+          Resource = resource,
+          Method = Method.Post,
+          RequestFormat = DataFormat.Json,
+        };
+        restRequest.AddJsonBody(new {
           address = new {
             addressLines = new string[] {
-                request.address
-              },
+              request.address
+            },
+            //languageCode = "en"
           },
           previousResponseId = "",
           enableUspsCass = false
-        };
-        var json = JsonConvert.SerializeObject(data);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var baseUrl = "https://addressvalidation.googleapis.com/";
-        var resource = $"v1:validateAddress?alt=json&key={request.apiKey}";
-        //var resource = $"v1%3AvalidateAddress?alt=json&key={request.apiKey}";
-        //var resource = HttpUtility.UrlEncode($"v1:validateAddress?alt=json&key={request.apiKey}");
-        var restResponse = httpClient.PostAsync($"{baseUrl}{resource}", content).Result;
-
-        var responseString = restResponse.Content.ReadAsStringAsync().Result;
-        LogIt.I(responseString);
-
-        ////https://content-addressvalidation.googleapis.com/v1:validateAddress?alt=json&key=KEY_HERE
-        ////var resource = $"./v1:validateAddress?alt=json&key={request.apiKey}";
-        //var resource = $"/v1%3AvalidateAddress?alt=json&key={request.apiKey}";
-        //var client = new RestClient("https://addressvalidation.googleapis.com/");
-        ////var client = new RestClient("https://content-addressvalidation.googleapis.com/");
-        //var restRequest = new RestRequest {
-        //  Resource =  resource,
-        //  Method = Method.Post,
-        //  RequestFormat = DataFormat.Json,
-        //};
-        //restRequest.AddJsonBody(new {
-        //  address = new {
-        //    addressLines = new string[] { 
-        //      request.address 
-        //    },
-        //    //languageCode = "en"
-        //  },
-        //  previousResponseId = "",
-        //  enableUspsCass = false
-        //});
-        //var restResponse = client.ExecuteAsync(restRequest).Result;
-        //if (restResponse.ErrorException != null) {
-        //  hsc = HttpStatusCode.BadRequest;
-        //  status = restResponse.ErrorException.Message;
-        //  return;
-        //}
-        //if (restResponse.StatusCode != HttpStatusCode.OK) {
-        //  hsc = HttpStatusCode.BadRequest;
-        //  status = $"status was {restResponse.StatusCode.ToString()}";
-        //  return;
-        //}
-        //var content = restResponse.Content;
-        //dynamic json = JObject.Parse(content);
-        //var apiStatus = json.status.Value;
-        //if (apiStatus != "OK") {
-        //  hsc = HttpStatusCode.BadRequest;
-        //  status = $"api status result was {apiStatus}";
-        //  return;
-        //}
-        //if (json.results.Count == 0) {
-        //  hsc = HttpStatusCode.BadRequest;
-        //  status = $"results count was ZERO";
-        //  return;
-        //}
+        });
+        var restResponse = client.ExecuteAsync(restRequest).Result;
+        if (restResponse.ErrorException != null) {
+          hsc = HttpStatusCode.BadRequest;
+          status = restResponse.ErrorException.Message;
+          return;
+        }
+        if (restResponse.StatusCode != HttpStatusCode.OK) {
+          hsc = HttpStatusCode.BadRequest;
+          status = $"status was {restResponse.StatusCode.ToString()}";
+          return;
+        }
+        var content = restResponse.Content;
+        dynamic json = JObject.Parse(content);
+        var apiStatus = json.status.Value;
+        if (apiStatus != "OK") {
+          hsc = HttpStatusCode.BadRequest;
+          status = $"api status result was {apiStatus}";
+          return;
+        }
+        if (json.results.Count == 0) {
+          hsc = HttpStatusCode.BadRequest;
+          status = $"results count was ZERO";
+          return;
+        }
 
         //response.address = json.results[0].formatted_address.Value;
 
