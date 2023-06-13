@@ -2,7 +2,6 @@
 using Amazon.S3;
 using CoarUtils.commands.logging;
 using Newtonsoft.Json;
-using System;
 using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
@@ -15,7 +14,7 @@ namespace CoarUtils.commands.aws.s3 {
 
 
     public static void Execute(
-      Request m,
+      Request request,
       out HttpStatusCode hsc,
       out string status,
       string awsAccessKey,
@@ -24,12 +23,12 @@ namespace CoarUtils.commands.aws.s3 {
       hsc = HttpStatusCode.BadRequest;
       status = "";
       try {
-        using (var s3c = new AmazonS3Client(awsAccessKey, awsSecretKey, m.re)) {
-          var request = new Amazon.S3.Model.DeleteObjectRequest {
-            BucketName = m.bucketName,
-            Key = m.key,
+        using (var s3c = new AmazonS3Client(awsAccessKey, awsSecretKey, request.re)) {
+          var deleteObjectRequest = new Amazon.S3.Model.DeleteObjectRequest {
+            BucketName = request.bucketName,
+            Key = request.key,
           };
-          var dor = s3c.DeleteObjectAsync(request).Result;
+          var dor = s3c.DeleteObjectAsync(deleteObjectRequest).Result;
           hsc = dor.HttpStatusCode == System.Net.HttpStatusCode.NoContent
             ? HttpStatusCode.OK
             : HttpStatusCode.BadRequest
@@ -46,7 +45,7 @@ namespace CoarUtils.commands.aws.s3 {
           new {
             hsc,
             status,
-            m,
+            request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));

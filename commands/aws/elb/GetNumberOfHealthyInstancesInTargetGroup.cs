@@ -25,28 +25,28 @@ namespace CoarUtils.commands.aws.elb {
     #endregion
 
     public static void Execute(
-      Request m,
+      Request request,
       out HttpStatusCode hsc,
-      out Response r,
+      out Response response,
       out string status,
       HttpContext hc = null,
       CancellationToken? ct = null
     ) {
-      r = new Response { };
+      response = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
       try {
         using (var aelbc = new AmazonElasticLoadBalancingClient(
-          awsAccessKeyId: m.awsAccessKey,
-          awsSecretAccessKey: m.awsSecretKey,
-          region: m.re
+          awsAccessKeyId: request.awsAccessKey,
+          awsSecretAccessKey: request.awsSecretKey,
+          region: request.re
         )) {
           var dlbr = aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
              LoadBalancerNames = new List<string> { 
-               m.loadBalancerName
+               request.loadBalancerName
              },
           }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
-          r.total = dlbr.LoadBalancerDescriptions[0].Instances.Count;
+          response.total = dlbr.LoadBalancerDescriptions[0].Instances.Count;
           //TODO: get health and unhelathy
 
           hsc = dlbr.HttpStatusCode;
@@ -68,15 +68,15 @@ namespace CoarUtils.commands.aws.elb {
         return;
       } finally {
         //DO NOT LOG KEYS
-        m.awsAccessKey = "DO_NOT_LOG";
-        m.awsSecretKey = "DO_NOT_LOG";
+        request.awsAccessKey = "DO_NOT_LOG";
+        request.awsSecretKey = "DO_NOT_LOG";
 
         LogIt.I(JsonConvert.SerializeObject(
           new {
             hsc,
             status,
-            m,
-            r,
+            request,
+            response,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));

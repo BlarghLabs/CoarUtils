@@ -31,24 +31,24 @@ namespace CoarUtils.commands.gis {
     //http://www.lacosmo.com/ortho/ortho.html
 
     public static List<Coordinate> Execute(
-      Request m
+      Request request
     ) {
       //only limit results if passed
-      if (!m.limitResultsToClosestX.HasValue) {
-        m.limitResultsToClosestX = m.loc.Count;
+      if (!request.limitResultsToClosestX.HasValue) {
+        request.limitResultsToClosestX = request.loc.Count;
       }
 
       var results = new List<Coordinate> { };
-      for (int i = 0; i < m.loc.Count; i++) {
-        var c1 = m.loc[i];
-        c1.distanceToPoint = CalculateDistance.Execute(m: new CalculateDistance.Request {
-          latA = m.c.lat,
-          lngA = m.c.lng,
+      for (int i = 0; i < request.loc.Count; i++) {
+        var c1 = request.loc[i];
+        c1.distanceToPoint = CalculateDistance.Execute(request: new CalculateDistance.Request {
+          latA = request.c.lat,
+          lngA = request.c.lng,
           latB = c1.lat,
           lngB = c1.lng,
           measurement = CalculateDistance.Measurement.miles,
         });
-        if (c1.distanceToPoint <= m.allowableDistanceInMiles) {
+        if (c1.distanceToPoint <= request.allowableDistanceInMiles) {
           results.Add(c1);
         }
       }

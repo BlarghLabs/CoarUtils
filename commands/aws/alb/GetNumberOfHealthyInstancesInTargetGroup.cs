@@ -27,42 +27,42 @@ namespace CoarUtils.commands.aws.alb {
     #endregion
 
     public static void Execute(
-      Request m,
+      Request request,
       out HttpStatusCode hsc,
-      out Response r,
+      out Response response,
       out string status,
       HttpContext hc = null,
       CancellationToken? ct = null
     ) {
-      r = new Response { };
+      response = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
       try {
         using (var aelbc = new AmazonElasticLoadBalancingV2Client(
-          awsAccessKeyId: m.awsAccessKey,
-          awsSecretAccessKey: m.awsSecretKey,
-          region: m.re
+          awsAccessKeyId: request.awsAccessKey,
+          awsSecretAccessKey: request.awsSecretKey,
+          region: request.re
         )) {
           var describeLoadBalancersResponse = aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
-             LoadBalancerArns = new List<string> { m.loadBalancerArn },
+             LoadBalancerArns = new List<string> { request.loadBalancerArn },
           }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
-          r.isActive = describeLoadBalancersResponse.LoadBalancers.First().State.Code == LoadBalancerStateEnum.Active;
+          response.isActive = describeLoadBalancersResponse.LoadBalancers.First().State.Code == LoadBalancerStateEnum.Active;
 
           //var describeTargetGroupsResponse = aelbc.DescribeTargetGroupsAsync(new DescribeTargetGroupsRequest{
-          //   TargetGroupArns =  new List<string> { m.targetGroupArn },
+          //   TargetGroupArns =  new List<string> { request.targetGroupArn },
           //}, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
 
           var describeTargetHealthResponse = aelbc.DescribeTargetHealthAsync(new DescribeTargetHealthRequest{
-             TargetGroupArn = m.targetGroupArn,
+             TargetGroupArn = request.targetGroupArn,
           }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
 
-          r.healthy = describeTargetHealthResponse.TargetHealthDescriptions
+          response.healthy = describeTargetHealthResponse.TargetHealthDescriptions
             .Count(x => x.TargetHealth.State == TargetHealthStateEnum.Healthy)
           ;
-          r.unhealthy = describeTargetHealthResponse.TargetHealthDescriptions
+          response.unhealthy = describeTargetHealthResponse.TargetHealthDescriptions
             .Count(x => x.TargetHealth.State != TargetHealthStateEnum.Healthy)
           ;
-          r.total = describeTargetHealthResponse.TargetHealthDescriptions
+          response.total = describeTargetHealthResponse.TargetHealthDescriptions
             .Count()
           ;
           hsc = describeTargetHealthResponse.HttpStatusCode
@@ -87,15 +87,15 @@ namespace CoarUtils.commands.aws.alb {
         return;
       } finally {
         //DO NOT LOG KEYS
-        m.awsAccessKey = "DO_NOT_LOG";
-        m.awsSecretKey = "DO_NOT_LOG";
+        request.awsAccessKey = "DO_NOT_LOG";
+        request.awsSecretKey = "DO_NOT_LOG";
 
         LogIt.I(JsonConvert.SerializeObject(
           new {
             hsc,
             status,
-            m,
-            r,
+            request,
+            response,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
           }, Formatting.Indented));

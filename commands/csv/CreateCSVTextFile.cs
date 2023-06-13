@@ -1,7 +1,4 @@
 ﻿using CoarUtils.commands.logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace CoarUtils.commands.csv {
@@ -13,18 +10,18 @@ namespace CoarUtils.commands.csv {
 
         if (addHeaderRow) {
           var methods = properties
-                      .Select(p => p.GetMethod)
-                      .Select(v => StringToCSVCell(
-                        ((v == null) ? "" : v.ToString())
+                      .Select(x => x.GetMethod)
+                      .Select(x => StringToCSVCell(
+                        ((x == null) ? "" : x.ToString())
                       ))
-                      .Select(m => m.Substring(m.IndexOf("get_") + 4).Replace("()", ""));
+                      .Select(x => x.Substring(x.IndexOf("get_") + 4).Replace("()", ""));
           result.AppendLine(string.Join(",", methods));
         }
 
         foreach (var row in data) {
-          var values = properties.Select(p => p.GetValue(row, null))
-                                 .Select(v => StringToCSVCell(
-                                  ((v == null) ? "" : v.ToString())
+          var values = properties.Select(x => x.GetValue(row, null))
+                                 .Select(x => StringToCSVCell(
+                                  ((x == null) ? "" : x.ToString())
                                   ));
           var line = string.Join(",", values);
           result.AppendLine(line);

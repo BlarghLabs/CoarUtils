@@ -1,8 +1,6 @@
 ﻿using CoarUtils.commands.logging;
 using RestSharp;
-using System;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace CoarUtils.commands.slack {
 
@@ -41,25 +39,25 @@ namespace CoarUtils.commands.slack {
         var h = "----------" + (string.IsNullOrEmpty(header) ? DEFAULT_HEADER : header.ToUpper()) + "----------" + "\n";
         var client = new RestClient(BASE);
         resource = resource.Replace(BASE, "");
-        var request = new RestRequest {
+        var restRequest = new RestRequest {
           Resource = resource,
           Method = Method.Post,
           RequestFormat = DataFormat.Json,
         };
         content = h + content.Replace("\"", "'");
-        request.AddJsonBody(new {
+        restRequest.AddJsonBody(new {
           text = content
         });
 
-        var response = client.ExecuteAsync(request).Result;
+        var restResponse = client.ExecuteAsync(restRequest).Result;
         //var content = response.Content;
-        if (response.ErrorException != null) {
-          throw response.ErrorException;
+        if (restResponse.ErrorException != null) {
+          throw restResponse.ErrorException;
         }
-        if (response.StatusCode != HttpStatusCode.OK) {
-          LogIt.W(response.StatusCode);
+        if (restResponse.StatusCode != HttpStatusCode.OK) {
+          LogIt.W(restResponse.StatusCode);
         }
-        return (response.StatusCode == HttpStatusCode.OK);
+        return (restResponse.StatusCode == HttpStatusCode.OK);
       } catch (Exception ex) {
         LogIt.E(ex);
       }

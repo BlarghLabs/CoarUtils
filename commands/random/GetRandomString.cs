@@ -14,14 +14,14 @@ namespace CoarUtils.commands.random {
     }
 
     public static string Execute(
-      Request m
+      Request request
     ) {
       var result = "";
       try {
         var random = new Random();
         //const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         const string chars = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
-        result = new string(Enumerable.Repeat(chars, m.length)
+        result = new string(Enumerable.Repeat(chars, request.length)
           .Select(s => s[random.Next(s.Length)])
           .ToArray())
         ;
@@ -32,7 +32,7 @@ namespace CoarUtils.commands.random {
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
           result,
-          m,
+          request,
         }, Formatting.Indented));
       }
     }

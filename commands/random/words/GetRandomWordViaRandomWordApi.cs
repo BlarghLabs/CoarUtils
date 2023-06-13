@@ -1,10 +1,7 @@
 ﻿using CoarUtils.commands.logging;
 using Newtonsoft.Json;
 using RestSharp;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Threading;
 
 namespace CoarUtils.commands.random.words {
   public static class GetRandomWordViaRandomWordApi {
@@ -20,12 +17,12 @@ namespace CoarUtils.commands.random.words {
     public static void Execute(
       out HttpStatusCode hsc,
       out string status,
-      out Response r,
-      Request m,
+      out Response response,
+      Request request,
       CancellationToken? ct = null,
       WebProxy wp = null
     ) {
-      r = new Response { };
+      response = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
 
@@ -36,35 +33,35 @@ namespace CoarUtils.commands.random.words {
           return;
         }
 
-        var resource = $"/word?number={@m.total}";
+        var resource = $"/word?number={request.total}";
 
         var client = new RestClient("https://random-word-api.herokuapp.com/");
-        var request = new RestRequest(
+        var restRequest = new RestRequest(
           resource: resource,
           method: Method.Get
         );
         //if (wp != null) {
         //  client.Proxy = wp;
         //}
-        var response = client.ExecuteAsync(request).Result;
+        var restResponse = client.ExecuteAsync(restRequest).Result;
 
-        if (response.ErrorException != null) {
-          status = $"response had error exception: {response.ErrorException.Message}";
+        if (restResponse.ErrorException != null) {
+          status = $"response had error exception: {restResponse.ErrorException.Message}";
           hsc = HttpStatusCode.BadRequest;
           return;
         }
-        if (response.StatusCode != HttpStatusCode.OK) {
-          status = $"StatusCode was {response.StatusCode}";
+        if (restResponse.StatusCode != HttpStatusCode.OK) {
+          status = $"StatusCode was {restResponse.StatusCode}";
           hsc = HttpStatusCode.BadRequest;
           return;
         }
-        if (string.IsNullOrWhiteSpace(response.Content)) {
+        if (string.IsNullOrWhiteSpace(restResponse.Content)) {
           status = $"content was empty";
           hsc = HttpStatusCode.BadRequest;
           return;
         }
         //["dorks","rosebud"]
-        var content = response.Content;
+        var content = restResponse.Content;
         dynamic json = JsonConvert.DeserializeObject(content);
 
         if ((json == null) || json.Count == 0) {
@@ -73,7 +70,7 @@ namespace CoarUtils.commands.random.words {
           return;
         }
         foreach (var w in json) {
-          r.words.Add(w.Value);
+          response.words.Add(w.Value);
         }
 
         hsc = HttpStatusCode.OK;
@@ -92,8 +89,7 @@ namespace CoarUtils.commands.random.words {
         LogIt.I(JsonConvert.SerializeObject(new {
           hsc,
           status,
-          r,
-
+          response,
         }, Formatting.Indented));
       }
     }

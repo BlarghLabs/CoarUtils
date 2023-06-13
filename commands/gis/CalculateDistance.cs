@@ -29,15 +29,15 @@ namespace CoarUtils.commands.gis {
     /// Calculate the distance between two geocodes. Defaults to using Miles.
     /// </summary> 
     public static double Execute(
-      Request m
+      Request request
     ) {
       var radius = EarthRadiusInMiles;
-      if (m.measurement == Measurement.kilometers) {
+      if (request.measurement == Measurement.kilometers) {
         radius = EarthRadiusInKilometers;
       }
       var dist = radius 
         * 2 
-        * Math.Asin(Math.Min(1, Math.Sqrt((Math.Pow(Math.Sin((DiffRadian(m.latA, m.latB)) / 2.0), 2.0) + Math.Cos(ToRadian(m.latA)) * Math.Cos(ToRadian(m.latB)) * Math.Pow(Math.Sin((DiffRadian(m.lngA, m.lngB)) / 2.0), 2.0)))))
+        * Math.Asin(Math.Min(1, Math.Sqrt((Math.Pow(Math.Sin((DiffRadian(request.latA, request.latB)) / 2.0), 2.0) + Math.Cos(ToRadian(request.latA)) * Math.Cos(ToRadian(request.latB)) * Math.Pow(Math.Sin((DiffRadian(request.lngA, request.lngB)) / 2.0), 2.0)))))
       ;
       return dist;
     }
