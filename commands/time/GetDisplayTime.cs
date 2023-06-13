@@ -9,7 +9,7 @@ namespace CoarUtils.commands.time {
       var s =
         ((TimeSpan.FromSeconds((int)seconds.Value).Days == 0) ? "" : (TimeSpan.FromSeconds((int)seconds.Value).Days + "d "))
         + ((TimeSpan.FromSeconds((int)seconds.Value).Hours == 0) ? "" : (TimeSpan.FromSeconds((int)seconds.Value).Hours + "h "))
-        + TimeSpan.FromSeconds((int)seconds.Value).Minutes + "request "
+        + TimeSpan.FromSeconds((int)seconds.Value).Minutes + "m "
         + TimeSpan.FromSeconds((int)seconds.Value).Seconds + "s";
       return s;
     }
