@@ -50,6 +50,7 @@ namespace CoarUtils.commands.slack {
         });
 
         var restResponse = client.ExecuteAsync(restRequest).Result;
+
         //var content = response.Content;
         if (restResponse.ErrorException != null) {
           throw restResponse.ErrorException;

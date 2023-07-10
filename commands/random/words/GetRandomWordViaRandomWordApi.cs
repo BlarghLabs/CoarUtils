@@ -44,7 +44,16 @@ namespace CoarUtils.commands.random.words {
         //  client.Proxy = wp;
         //}
         var restResponse = client.ExecuteAsync(restRequest).Result;
-
+        if (restResponse.ErrorException != null && !string.IsNullOrWhiteSpace(restResponse.ErrorException.Message)) {
+          status = $"rest call had error exception: {restResponse.ErrorException.Message}";
+          hsc = HttpStatusCode.BadRequest;
+          return;
+        }
+        if (restResponse.StatusCode != HttpStatusCode.OK) {
+          status = $"status code not OK {restResponse.StatusCode}";
+          hsc = HttpStatusCode.BadRequest;
+          return;
+        }
         if (restResponse.ErrorException != null) {
           status = $"response had error exception: {restResponse.ErrorException.Message}";
           hsc = HttpStatusCode.BadRequest;

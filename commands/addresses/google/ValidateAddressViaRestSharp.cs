@@ -84,6 +84,17 @@ namespace CoarUtils.commands.addresses.google {
           status = $"status was {restResponse.StatusCode.ToString()}";
           return;
         }
+        if (restResponse.ErrorException != null && !string.IsNullOrWhiteSpace(restResponse.ErrorException.Message)) {
+          status = $"rest call had error exception: {restResponse.ErrorException.Message}";
+          hsc = HttpStatusCode.BadRequest;
+          return;
+        }
+        if (restResponse.StatusCode != HttpStatusCode.OK) {
+          status = $"status code not OK {restResponse.StatusCode}";
+          hsc = HttpStatusCode.BadRequest;
+          return;
+        }
+
         var content = restResponse.Content;
         dynamic json = JObject.Parse(content);
         var apiStatus = json.status.Value;
