@@ -8,6 +8,7 @@ namespace CoarUtils.commands.gis {
 
   //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
   public static class ReverseGeocodeViaGoogle {
+    #region models
     public class Request {
       public decimal lat { get; set; }
       public decimal lng { get; set; }
@@ -21,6 +22,7 @@ namespace CoarUtils.commands.gis {
       public string postalCode { get; set; }
       public string country { get; set; }
     }
+    #endregion
 
     public static void Execute(
       out HttpStatusCode hsc,
@@ -82,6 +84,11 @@ namespace CoarUtils.commands.gis {
           return;
         }
         response.address = json.results[0].formatted_address.Value;
+        if (string.IsNullOrWhiteSpace(response.address)) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "unable to reverse geocode address (address was empty)";
+          return;
+        }
 
         foreach (var results in json.results) {
           if (results.address_components != null) {
