@@ -4,6 +4,8 @@ using System.Globalization;
 
 namespace CoarUtils.commands.gis {
   //https://stackoverflow.com/questions/4884692/converting-country-codes-in-net
+  //ulture ID 4096 (0x1000) is a neutral culture; a region cannot be created from it. (Parameter 'culture')
+  //var twoLetterCountryCode = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(ci => new RegionInfo(ci.LCID)).FirstOrDefault(r => r.ThreeLetterISORegionName.Equals(threeLetterCountryCode, StringComparison.InvariantCultureIgnoreCase))                                     ?.TwoLetterISORegionName;
   public static class Iso3CountryCodeToIso2CountryCode {
     public static string Execute(string iso3CountryCode) {
       string iso2CountryCode = null;
@@ -17,9 +19,10 @@ namespace CoarUtils.commands.gis {
 
         iso3CountryCode = iso3CountryCode.ToUpper();
 
-        CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-        foreach (CultureInfo culture in cultures) {
-          RegionInfo region = new RegionInfo(culture.LCID);
+        //thorws error on server w/ neutral
+        var cultureInfos = CultureInfo.GetCultures(CultureTypes.AllCultures).Where(x=>!x.IsNeutralCulture).ToList();
+        foreach (var cultureInfo in cultureInfos) {
+          RegionInfo region = new RegionInfo(cultureInfo.LCID);
           if (region.ThreeLetterISORegionName.ToUpper() == iso3CountryCode) {
             iso2CountryCode = region.TwoLetterISORegionName;
             return iso2CountryCode;
