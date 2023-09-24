@@ -243,7 +243,11 @@ namespace CoarUtils.commands.logging {
             &&
             !string.IsNullOrEmpty(ex.InnerException.Message)
             &&
-            ex.Message.Contains("See the inner exception for details.")
+            (
+              ex.Message.Contains("See the inner exception for details.")
+              ||
+              ex.Message.Contains("See Status or InnerException for more information.")
+            )
           ) {
             if (!ex.InnerException.Message.Contains("See the inner exception for details.")) {
               error.innerExceptionMessage = ex.InnerException.Message;
