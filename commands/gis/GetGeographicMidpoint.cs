@@ -10,10 +10,10 @@ namespace CoarUtils.commands.gis {
       public decimal lng { get; set; }
     }
     public class Request {
-      public List<Coordinate> loc { get; set; } = new List<Coordinate> { };
+      public List<Coordinate> coordinates { get; set; } = new List<Coordinate> { };
     }
     public class Response {
-      public Coordinate? c { get; set; }
+      public Coordinate? coordinate { get; set; } = new Coordinate { };
     }
     #endregion
 
@@ -24,9 +24,7 @@ namespace CoarUtils.commands.gis {
       out HttpStatusCode hsc,
       out string status
     ) {
-      response = new Response {
-        c = new Coordinate { },
-      };
+      response = new Response {};
       hsc = HttpStatusCode.BadRequest;
       status = "";
 
@@ -39,35 +37,35 @@ namespace CoarUtils.commands.gis {
         //request.loc.Add(new Coordinate { lat = 28.6100M, lng = 77.2300M }); //Delhi
         //request.loc.Add(new Coordinate { lat = 22.3000M, lng = 70.7833M }); //Rajkot
 
-        if (request.loc == null || request.loc.Count == 0) {
+        if (request.coordinates == null || request.coordinates.Count == 0) {
           status = "no coordinates provided";
           hsc = HttpStatusCode.BadRequest;
           return;
         }
-        if (request.loc.Count == 1) {
-          response.c = request.loc.Single();
+        if (request.coordinates.Count == 1) {
+          response.coordinate = request.coordinates.Single();
           hsc = HttpStatusCode.OK;
           status = "only one provided";
           return;
         }
 
         double x = 0, y = 0, z = 0;
-        foreach (var _c in request.loc) {
-          var latitude = Convert.ToDouble(_c.lat) * Math.PI / 180;
-          var longitude = Convert.ToDouble(_c.lng) * Math.PI / 180;
+        foreach (var coordinate in request.coordinates) {
+          var latitude = Convert.ToDouble(coordinate.lat) * Math.PI / 180;
+          var longitude = Convert.ToDouble(coordinate.lng) * Math.PI / 180;
 
           x += Math.Cos(latitude) * Math.Cos(longitude);
           y += Math.Cos(latitude) * Math.Sin(longitude);
           z += Math.Sin(latitude);
         }
-        var total = request.loc.Count;
+        var total = request.coordinates.Count;
         x = x / total;
         y = y / total;
         z = z / total;
         var centralLongitude = Math.Atan2(y, x);
         var centralSquareRoot = Math.Sqrt(x * x + y * y);
         var centralLatitude = Math.Atan2(z, centralSquareRoot);
-        response.c = new Coordinate {
+        response.coordinate = new Coordinate {
           lat = ((decimal)centralLatitude * 180 / (decimal)Math.PI),
           lng = ((decimal)centralLongitude * 180 / (decimal)Math.PI)
         };
