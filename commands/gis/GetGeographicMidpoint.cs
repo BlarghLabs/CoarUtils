@@ -82,7 +82,7 @@ namespace CoarUtils.commands.gis {
           hsc,
           status,
           request,
-          response.c
+          response.coordinate
         }));
       }
     }
