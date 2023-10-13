@@ -238,6 +238,7 @@ namespace CoarUtils.commands.logging {
           dynamic error = new JObject();
           error.message = ex.Message;
           error.stackTrace = ex.StackTrace;
+
           if (
             (ex.InnerException != null)
             &&
@@ -256,13 +257,16 @@ namespace CoarUtils.commands.logging {
               &&
               !string.IsNullOrEmpty(ex.InnerException.InnerException.Message)
               &&
-              !ex.InnerException.InnerException.Message.Contains("See the inner exception for details")
+              (
+                !ex.InnerException.InnerException.Message.Contains("See the inner exception for details")
+                &&
+                !ex.InnerException.InnerException.Message.Contains("See Status or InnerException for more information")
+              )
             ) {
               error.innerExceptionMessage = ex.InnerException.InnerException.Message;
             }
           }
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
-
 
           Execute(o: json, s: severity.error, instanceId: instanceId);
           return; //?
