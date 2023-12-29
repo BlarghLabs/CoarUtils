@@ -21,29 +21,26 @@ namespace CoarUtils.commands.gis {
       public string state { get; set; }
       public string postalCode { get; set; }
       public string country { get; set; }
+      public HttpStatusCode httpStatusCode { get; set; } = HttpStatusCode.BadRequest;
+      public string status { get; set; }
     }
     #endregion
 
-    public static void Execute(
-      out HttpStatusCode hsc,
-      out string status,
-      out Response response,
+    public static async Task<Response> Execute(
       Request request,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken
     ) {
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
-      response = new Response { };
+      var response = new Response { };
       try {
         if (request == null) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "params were null";
-          return;
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status ="params were null";
+          return response;
         }
         if ((request.lat == 0) && (request.lng == 0)) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "lat and long ZERO";
-          return;
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status ="lat and long ZERO";
+          return response;
         }
         var resource = "maps/api/geocode/json?latlng=" + request.lat.ToString() + "," + request.lng.ToString() + "&key=" + request.apiKey;
         var client = new RestClient("https://maps.googleapis.com/");
@@ -51,43 +48,43 @@ namespace CoarUtils.commands.gis {
         restRequest.RequestFormat = DataFormat.Json;
         var restResponse = client.ExecuteAsync(restRequest).Result;
         if (restResponse.ErrorException != null) {
-          hsc = HttpStatusCode.BadRequest;
-          status = restResponse.ErrorException.Message;
-          return;
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status =restResponse.ErrorException.Message;
+          return response;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          hsc = HttpStatusCode.BadRequest;
-          status = $"status was {restResponse.StatusCode.ToString()}";
-          return;
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status =$"status was {restResponse.StatusCode.ToString()}";
+          return response;
         }
         if (restResponse.ErrorException != null && !string.IsNullOrWhiteSpace(restResponse.ErrorException.Message)) {
-          status = $"rest call had error exception: {restResponse.ErrorException.Message}";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status =$"rest call had error exception: {restResponse.ErrorException.Message}";
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          return response;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          status = $"status code not OK {restResponse.StatusCode}";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status =$"status code not OK {restResponse.StatusCode}";
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          return response;
         }
         var content = restResponse.Content;
         dynamic json = JObject.Parse(content);
         var apiStatus = json.status.Value;
         if (apiStatus != "OK") {
-          hsc = HttpStatusCode.BadRequest;
-          status = $"api status result was {apiStatus}";
-          return;
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status =$"api status result was {apiStatus}";
+          return response;
         }
         if (json.results.Count == 0) {
-          hsc = HttpStatusCode.BadRequest;
-          status = $"results count was ZERO";
-          return;
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status =$"results count was ZERO";
+          return response;
         }
         response.address = json.results[0].formatted_address.Value;
         if (string.IsNullOrWhiteSpace(response.address)) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "unable to reverse geocode address (address was empty)";
-          return;
+          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status ="unable to reverse geocode address (address was empty)";
+          return response;
         }
 
         foreach (var results in json.results) {
@@ -133,19 +130,25 @@ namespace CoarUtils.commands.gis {
           }
         }
 
-        hsc = HttpStatusCode.OK;
-        return;
+        response.httpStatusCode =HttpStatusCode.OK;
+        return response;
       } catch (Exception ex) {
+        if (cancellationToken.IsCancellationRequested) {
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = "task cancelled";
+          return response;
+        }
+
         LogIt.E(ex);
-        hsc = HttpStatusCode.InternalServerError;
-        status = "unexecpected error";
-        return;
+        response.httpStatusCode =HttpStatusCode.InternalServerError;
+        response.status ="unexecpected error";
+        return response;
       } finally {
         request.apiKey = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(
           new {
-            hsc,
-            status,
+            response.httpStatusCode,
+            response.status,
             request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
