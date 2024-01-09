@@ -22,7 +22,8 @@ namespace CoarUtils.commands.aws.ses {
       string host,
       int port,
       int max_retries = 3,
-      bool sendAsync = false
+      bool sendAsync = false,
+      CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -51,6 +52,12 @@ namespace CoarUtils.commands.aws.ses {
           }
         }
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexpected error";

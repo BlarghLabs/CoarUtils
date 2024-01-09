@@ -75,15 +75,15 @@ namespace CoarUtils.commands.ipgeolocation {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        status = $"unexpected error";
-        hsc = HttpStatusCode.InternalServerError;
-        LogIt.E(ex);
-
         if (ct.HasValue && ct.Value.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = "task cancelled";
           return;
         }
+
+        status = $"unexpected error";
+        hsc = HttpStatusCode.InternalServerError;
+        LogIt.E(ex);
       } finally {
         request.maxmindAccountKey = "DO_LOG_LOG";
         request.maxmindAccountId = -1; //"DO_LOG_LOG";

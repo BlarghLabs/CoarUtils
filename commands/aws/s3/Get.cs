@@ -19,7 +19,8 @@ namespace CoarUtils.commands.aws.s3 {
       out HttpStatusCode hsc,
       out string status,
       string awsAccessKey,
-      string awsSecretKey
+      string awsSecretKey,
+      CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -39,6 +40,12 @@ namespace CoarUtils.commands.aws.s3 {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexecpected error";
@@ -62,7 +69,8 @@ namespace CoarUtils.commands.aws.s3 {
       out string status,
       string awsAccessKey,
       string awsSecretKey,
-      out byte[] ba
+      out byte[] ba,
+      CancellationToken? ct = null
     ) {
       ba = null;
       hsc = HttpStatusCode.BadRequest;
@@ -84,6 +92,12 @@ namespace CoarUtils.commands.aws.s3 {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexecpected error";

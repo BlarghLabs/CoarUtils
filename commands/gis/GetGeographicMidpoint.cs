@@ -22,7 +22,8 @@ namespace CoarUtils.commands.gis {
       Request request,
       out Response response,
       out HttpStatusCode hsc,
-      out string status
+      out string status,
+      CancellationToken? ct = null
     ) {
       response = new Response {};
       hsc = HttpStatusCode.BadRequest;
@@ -73,6 +74,11 @@ namespace CoarUtils.commands.gis {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexpected error";

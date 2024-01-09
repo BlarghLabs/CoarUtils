@@ -20,7 +20,8 @@ namespace CoarUtils.commands.aws.s3 {
       string key,
       S3CannedACL acl,
       out string url,
-      string contentType = null
+      string contentType = null,
+      CancellationToken? ct = null
     ) {
       url = "";
       hsc = HttpStatusCode.BadRequest;
@@ -43,6 +44,12 @@ namespace CoarUtils.commands.aws.s3 {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexecpected error";
@@ -70,7 +77,8 @@ namespace CoarUtils.commands.aws.s3 {
       byte[] ba,
       string key,
       S3CannedACL acl,
-      string contentType = null
+      string contentType = null,
+      CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -96,6 +104,12 @@ namespace CoarUtils.commands.aws.s3 {
           return;
         }
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexecpected error";
@@ -124,7 +138,8 @@ namespace CoarUtils.commands.aws.s3 {
       string key,
       S3CannedACL acl,
       out string url,
-      string contentType = null
+      string contentType = null,
+      CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -148,6 +163,12 @@ namespace CoarUtils.commands.aws.s3 {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexecpected error";

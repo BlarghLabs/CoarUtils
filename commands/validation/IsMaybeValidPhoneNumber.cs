@@ -9,7 +9,8 @@ namespace CoarUtils.commands.validation {
     public static void Execute(
       string numberE164,
       out HttpStatusCode hsc,
-      out string status
+      out string status,
+      CancellationToken? ct = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -38,6 +39,12 @@ namespace CoarUtils.commands.validation {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         hsc = HttpStatusCode.InternalServerError;
         //status = "unexpected error"; //maybe pass the ex.message here
         status = ex.Message;

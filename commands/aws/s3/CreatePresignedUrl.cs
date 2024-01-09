@@ -21,7 +21,8 @@ namespace CoarUtils.commands.aws.s3 {
       string key,
       Amazon.RegionEndpoint re,
       HttpContext hc = null,
-      int numberOfMinutes = 30
+      int numberOfMinutes = 30,
+      CancellationToken? ct = null
     ) {
       url = "";
       hsc = HttpStatusCode.BadRequest;
@@ -39,6 +40,12 @@ namespace CoarUtils.commands.aws.s3 {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexecpected error";

@@ -83,6 +83,12 @@ namespace CoarUtils.commands.aws.s3 {
           //fileLengthBytes = cor.
         }
       } catch (Exception ex) {
+        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+          hsc = HttpStatusCode.BadRequest;
+          status = "task cancelled";
+          return;
+        }
+
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
         status = "unexecpected error";
