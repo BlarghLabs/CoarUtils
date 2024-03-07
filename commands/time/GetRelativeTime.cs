@@ -21,25 +21,25 @@ namespace CoarUtils.commands.time {
         return "just now";
 
       if (delta < 1 * MINUTE)
-        return ts.Seconds == 1 ? "one second ago" : ts.Seconds + " seconds ago";
+        return ts.Seconds == 1 ? "one second ago" : ts.Seconds + " second(s) ago";
 
       if (delta < 2 * MINUTE)
         return "a minute ago";
 
       if (delta < 45 * MINUTE)
-        return ts.Minutes + " minutes ago";
+        return ts.Minutes + " minute(s) ago";
 
       if (delta < 90 * MINUTE)
         return "an hour ago";
 
       if (delta < 24 * HOUR)
-        return ts.Hours + " hours ago";
+        return ts.Hours + " hour(s) ago";
 
       if (delta < 48 * HOUR)
         return "yesterday";
 
       if (delta < 30 * DAY)
-        return ts.Days + " days ago";
+        return ts.Days + " day(s) ago";
 
       if (delta < 12 * MONTH) {
         var months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
@@ -48,8 +48,8 @@ namespace CoarUtils.commands.time {
           ? "one month ago"
           : (
             monthsDouble.ToString("n1").EndsWith(".0")
-              ? months + " months ago"
-              : monthsDouble.ToString("n1") + " months ago"
+              ? months + " month(s) ago"
+              : monthsDouble.ToString("n1") + " month(s) ago"
           )
         ;
       } else {
@@ -59,8 +59,8 @@ namespace CoarUtils.commands.time {
           ? "one year ago"
           : (
             yearsDouble.ToString("n1").EndsWith(".0")
-              ? years + " years ago"
-              : yearsDouble.ToString("n1") + " years ago"
+              ? years + " year(s) ago"
+              : yearsDouble.ToString("n1") + " year(s) ago"
           )
         ;
       }
