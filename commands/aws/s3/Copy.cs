@@ -8,6 +8,7 @@ using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Copy {
+    #region models
     public class Request {
       public S3CannedACL destAcl { get; set; }
       public string contentType { get; set; }
@@ -15,56 +16,59 @@ namespace CoarUtils.commands.aws.s3 {
       public string destKey { get; set; }
 
       public string sourceBucketName { get; set; }
+      public string awsAccessKey { get; set; }
+      public string awsSecretKey { get; set; }
       public string sourceKey { get; set; }
-      public RegionEndpoint re { get; set; }
+      public RegionEndpoint regionEndpoint { get; set; }
     }
+    public class Response {
+      public HttpStatusCode httpStatusCode { get; set; } = HttpStatusCode.BadRequest;
+      public string status { get; set; }
+    }
+    #endregion
 
-
-    public static void Execute(
+    public async static Task<Response> Execute(
       Request request,
-      out HttpStatusCode hsc,
-      out string status,
-      string awsAccessKey,
-      string awsSecretKey,
-      HttpContext hc = null, 
-      CancellationToken? ct = null
+      CancellationToken cancellationToken,
+      HttpContext hc = null
     ) {
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
+      var response = new Response { };
       try {
-        if (!Exists.Execute(
+        if (!await Exists.Execute(
           key: request.sourceKey,
           bucketName: request.sourceBucketName,
-          url: out string sourceUrl,
-          re: request.re,
-          awsAccessKey: awsAccessKey,
-          awsSecretKey: awsSecretKey
+          //url: out string sourceUrl,
+          regionEndpoint: request.regionEndpoint,
+          awsAccessKey: request.awsAccessKey,
+          awsSecretKey: request.awsSecretKey,
+          cancellationToken: cancellationToken
         )) {
-          status = "source did not exist";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = "source did not exist";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
 
         //validate dest doesn't already exist, fail if it does bc we aren't validating that it is different? maybe shar eeach in future?
 
-        if (Exists.Execute(
+        if (await Exists.Execute(
           key: request.destKey,
           bucketName: request.destBucketName,
-          url: out string destUrl,
-          re: request.re,
-          awsAccessKey: awsAccessKey,
-          awsSecretKey: awsSecretKey
+          //url: out string destUrl,
+          regionEndpoint: request.regionEndpoint,
+          awsAccessKey: request.awsAccessKey,
+          awsSecretKey: request.awsSecretKey,
+          cancellationToken: cancellationToken
         )) {
-          status = "dest existed already";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = "dest existed already";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
 
         //copy 
-        using (var s3c = new AmazonS3Client(
-          awsAccessKeyId: awsAccessKey,
-          awsSecretAccessKey: awsSecretKey,
-          region: request.re
+        using (var amazonS3Client = new AmazonS3Client(
+          awsAccessKeyId: request.awsAccessKey,
+          awsSecretAccessKey: request.awsSecretKey,
+          region: request.regionEndpoint
         )) {
           var copyObjectRequest = new CopyObjectRequest {
             SourceBucket = request.sourceBucketName,
@@ -77,27 +81,29 @@ namespace CoarUtils.commands.aws.s3 {
             copyObjectRequest.MetadataDirective = S3MetadataDirective.REPLACE;
             copyObjectRequest.ContentType = request.contentType;
           }
-          var response = s3c.CopyObjectAsync(copyObjectRequest, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
-          hsc = response.HttpStatusCode;
-          return;
+          var copyObjectResponse = await amazonS3Client.CopyObjectAsync(copyObjectRequest, cancellationToken: cancellationToken);
+          response.httpStatusCode = copyObjectResponse.HttpStatusCode;
+          return response;
           //fileLengthBytes = cor.
         }
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "task cancelled";
-          return;
+        if (cancellationToken.IsCancellationRequested) {
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = "task cancelled";
+          return response;
         }
 
         LogIt.E(ex);
-        hsc = HttpStatusCode.InternalServerError;
-        status = "unexecpected error";
-        return;
+        response.httpStatusCode = HttpStatusCode.InternalServerError;
+        response.status = "unexecpected error";
+        return response;
       } finally {
+        request.awsAccessKey = "DO_NOT_LOG";
+        request.awsSecretKey = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(
           new {
-            hsc,
-            status,
+            response.httpStatusCode,
+            response.status,
             request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()

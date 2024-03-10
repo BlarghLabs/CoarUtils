@@ -1,7 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
-using System.IO;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Exists {
@@ -30,7 +29,17 @@ namespace CoarUtils.commands.aws.s3 {
       }
     }
 
-    public static bool Execute(
+    /// <summary>
+    /// dont love that throws an exception
+    /// </summary>
+    /// <param name="awsAccessKey"></param>
+    /// <param name="awsSecretKey"></param>
+    /// <param name="re"></param>
+    /// <param name="key"></param>
+    /// <param name="bucketName"></param>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    private static bool Execute(
       string awsAccessKey,
       string awsSecretKey,
       Amazon.RegionEndpoint re,
@@ -66,7 +75,17 @@ namespace CoarUtils.commands.aws.s3 {
       }
     }
 
-    public static bool Execute(
+    /// <summary>
+    /// dont love that throws an exception
+    /// </summary>
+    /// <param name="awsAccessKey"></param>
+    /// <param name="awsSecretKey"></param>
+    /// <param name="re"></param>
+    /// <param name="key"></param>
+    /// <param name="bucketName"></param>
+    /// <param name="contentLength"></param>
+    /// <returns></returns>
+    private static bool Execute(
       string awsAccessKey,
       string awsSecretKey,
       Amazon.RegionEndpoint re,
