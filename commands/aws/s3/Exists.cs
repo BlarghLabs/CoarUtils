@@ -1,19 +1,21 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
+using System.IO;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Exists {
     public static async Task<bool> Execute(
       string awsAccessKey,
       string awsSecretKey,
-      Amazon.RegionEndpoint re,
+      Amazon.RegionEndpoint regionEndpoint,
       string key,
       string bucketName,
       CancellationToken cancellationToken
     ) {
       try {
-        using (var amazonS3Client = new AmazonS3Client(awsAccessKey, awsSecretKey, re)) {
+        using (var amazonS3Client = new AmazonS3Client(awsAccessKey, awsSecretKey, regionEndpoint)) {
+          //is this a more expensive request bc it is list?
           var listObjectsRequest = new ListObjectsRequest {
             BucketName = bucketName,
             Prefix = key,
