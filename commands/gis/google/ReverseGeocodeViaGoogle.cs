@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net;
 
-namespace CoarUtils.commands.gis {
+namespace CoarUtils.commands.gis.google {
 
   //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
   public static class ReverseGeocodeViaGoogle {
@@ -33,57 +33,57 @@ namespace CoarUtils.commands.gis {
       var response = new Response { };
       try {
         if (request == null) {
-          response.httpStatusCode =HttpStatusCode.BadRequest;
-          response.status ="params were null";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = "params were null";
           return response;
         }
-        if ((request.lat == 0) && (request.lng == 0)) {
-          response.httpStatusCode =HttpStatusCode.BadRequest;
-          response.status ="lat and long ZERO";
+        if (request.lat == 0 && request.lng == 0) {
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = "lat and long ZERO";
           return response;
         }
         var resource = "maps/api/geocode/json?latlng=" + request.lat.ToString() + "," + request.lng.ToString() + "&key=" + request.apiKey;
         var client = new RestClient("https://maps.googleapis.com/");
         var restRequest = new RestRequest(resource, Method.Get);
         restRequest.RequestFormat = DataFormat.Json;
-        var restResponse = client.ExecuteAsync(restRequest).Result;
+        var restResponse = await client.ExecuteAsync(restRequest);
         if (restResponse.ErrorException != null) {
-          response.httpStatusCode =HttpStatusCode.BadRequest;
-          response.status =restResponse.ErrorException.Message;
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = restResponse.ErrorException.Message;
           return response;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          response.httpStatusCode =HttpStatusCode.BadRequest;
-          response.status =$"status was {restResponse.StatusCode.ToString()}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = $"status was {restResponse.StatusCode.ToString()}";
           return response;
         }
         if (restResponse.ErrorException != null && !string.IsNullOrWhiteSpace(restResponse.ErrorException.Message)) {
-          response.status =$"rest call had error exception: {restResponse.ErrorException.Message}";
-          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status = $"rest call had error exception: {restResponse.ErrorException.Message}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
           return response;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          response.status =$"status code not OK {restResponse.StatusCode}";
-          response.httpStatusCode =HttpStatusCode.BadRequest;
+          response.status = $"status code not OK {restResponse.StatusCode}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
           return response;
         }
         var content = restResponse.Content;
         dynamic json = JObject.Parse(content);
         var apiStatus = json.status.Value;
         if (apiStatus != "OK") {
-          response.httpStatusCode =HttpStatusCode.BadRequest;
-          response.status =$"api status result was {apiStatus}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = $"api status result was {apiStatus}";
           return response;
         }
         if (json.results.Count == 0) {
-          response.httpStatusCode =HttpStatusCode.BadRequest;
-          response.status =$"results count was ZERO";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = $"results count was ZERO";
           return response;
         }
         response.address = json.results[0].formatted_address.Value;
         if (string.IsNullOrWhiteSpace(response.address)) {
-          response.httpStatusCode =HttpStatusCode.BadRequest;
-          response.status ="unable to reverse geocode address (address was empty)";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = "unable to reverse geocode address (address was empty)";
           return response;
         }
 
@@ -109,7 +109,7 @@ namespace CoarUtils.commands.gis {
               .ToList()
             ;
             if (anonymizedAddressComponenets.Any()) {
-              response.anonymizedAddress = String.Join(", ", anonymizedAddressComponenets);
+              response.anonymizedAddress = string.Join(", ", anonymizedAddressComponenets);
               break;
             }
           }
@@ -130,7 +130,7 @@ namespace CoarUtils.commands.gis {
           }
         }
 
-        response.httpStatusCode =HttpStatusCode.OK;
+        response.httpStatusCode = HttpStatusCode.OK;
         return response;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
@@ -140,8 +140,8 @@ namespace CoarUtils.commands.gis {
         }
 
         LogIt.E(ex);
-        response.httpStatusCode =HttpStatusCode.InternalServerError;
-        response.status ="unexecpected error";
+        response.httpStatusCode = HttpStatusCode.InternalServerError;
+        response.status = "unexecpected error";
         return response;
       } finally {
         request.apiKey = "DO_NOT_LOG";
