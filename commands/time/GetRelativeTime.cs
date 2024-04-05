@@ -3,15 +3,19 @@
 namespace CoarUtils.commands.time {
   public static class GetRelativeTime {
     public static string Execute(
-      DateTime dt
+      DateTime? dt
     ) {
+      if (!dt.HasValue) {
+        return "na";
+      }
+
       const int SECOND = 1;
       const int MINUTE = 60 * SECOND;
       const int HOUR = 60 * MINUTE;
       const int DAY = 24 * HOUR;
       const int MONTH = 30 * DAY;
 
-      var ts = new TimeSpan(DateTime.UtcNow.Ticks - dt.Ticks);
+      var ts = new TimeSpan(DateTime.UtcNow.Ticks - dt.Value.Ticks);
       var delta = Math.Abs(ts.TotalSeconds);
 
       if (ts.TotalSeconds < -3)
@@ -74,15 +78,19 @@ namespace CoarUtils.commands.time {
     }
 
     public static string ExecuteCondensed(
-      DateTime dt
+      DateTime? dt
     ) {
+      if (!dt.HasValue) {
+        return "na";
+      }
+
       const int SECOND = 1;
       const int MINUTE = 60 * SECOND;
       const int HOUR = 60 * MINUTE;
       const int DAY = 24 * HOUR;
       const int MONTH = 30 * DAY;
 
-      var ts = new TimeSpan(DateTime.UtcNow.Ticks - dt.Ticks);
+      var ts = new TimeSpan(DateTime.UtcNow.Ticks - dt.Value.Ticks);
       var delta = Math.Abs(ts.TotalSeconds);
 
       if (ts.TotalSeconds < -3)
