@@ -81,7 +81,7 @@ namespace CoarUtils.commands.gis {
         }
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
-        status = "unexpected error";
+        status = Constants.UNEXPECTED_ERROR_STATUS;
         return;
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {

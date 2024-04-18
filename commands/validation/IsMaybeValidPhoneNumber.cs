@@ -46,7 +46,7 @@ namespace CoarUtils.commands.validation {
         }
 
         hsc = HttpStatusCode.InternalServerError;
-        //status = "unexpected error"; //maybe pass the ex.message here
+        //status = Constants.UNEXPECTED_ERROR_STATUS; //maybe pass the ex.message here
         status = ex.Message;
         LogIt.E(ex);
       } finally {
