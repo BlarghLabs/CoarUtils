@@ -4,7 +4,7 @@
     
     #region error statuses
     public const string UNEXPECTED_ERROR_STATUS = "unexpected error";
-    public const string TASK_CANCELLED_STATUS = "task cancelled";
+    public const string CANCELLATION_REQUESTED_STATUS = "cancellation requested";
     #endregion
 
   }

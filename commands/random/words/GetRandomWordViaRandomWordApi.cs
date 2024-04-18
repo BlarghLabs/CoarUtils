@@ -29,7 +29,7 @@ namespace CoarUtils.commands.random.words {
       try {
         if (ct.HasValue && ct.Value.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = "cancellation requested";
+          status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;
         }
 
@@ -87,7 +87,7 @@ namespace CoarUtils.commands.random.words {
       } catch (Exception ex) {
         if (ct.HasValue && ct.Value.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = "task cancelled";
+          status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;
         }
 
