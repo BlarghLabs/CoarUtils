@@ -1,4 +1,5 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -17,9 +18,7 @@ namespace CoarUtils.commands.gis.esri {
       public bool forStorage { get; set; }
       public string token { get; set; }
     }
-    public class Response {
-      public HttpStatusCode httpStatusCode { get; set; } = HttpStatusCode.BadRequest;
-      public string status { get; set; }
+    public class Response : ResponseStatusModel {
 
       public string address { get; set; }
       public string anonymizedAddress { get; set; }

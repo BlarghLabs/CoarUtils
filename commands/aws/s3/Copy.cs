@@ -2,6 +2,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
@@ -21,9 +22,7 @@ namespace CoarUtils.commands.aws.s3 {
       public string sourceKey { get; set; }
       public RegionEndpoint regionEndpoint { get; set; }
     }
-    public class Response {
-      public HttpStatusCode httpStatusCode { get; set; } = HttpStatusCode.BadRequest;
-      public string status { get; set; }
+    public class Response : ResponseStatusModel {
     }
     #endregion
 

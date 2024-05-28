@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.7160</Version>
+    <Version>1.0.1.7574</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
@@ -16,6 +16,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="commands\random\words\RandomWords.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="models\ResponseStatusModel.cs" />
   </ItemGroup>
 
   <ItemGroup>

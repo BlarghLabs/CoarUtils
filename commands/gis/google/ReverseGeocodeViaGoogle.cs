@@ -1,4 +1,5 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -14,15 +15,13 @@ namespace CoarUtils.commands.gis.google {
       public decimal lng { get; set; }
       public string apiKey { get; set; }
     }
-    public class Response {
+    public class Response : ResponseStatusModel {
       public string address { get; set; }
       public string anonymizedAddress { get; set; }
       public string city { get; set; }
       public string state { get; set; }
       public string postalCode { get; set; }
       public string country { get; set; }
-      public HttpStatusCode httpStatusCode { get; set; } = HttpStatusCode.BadRequest;
-      public string status { get; set; }
     }
     #endregion
 
