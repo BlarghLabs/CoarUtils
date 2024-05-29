@@ -14,7 +14,7 @@ namespace CoarUtils.commands.ipgeolocation {
       public string maxmindAccountKey { get; set; }
     }
 
-    public class Response {
+    public class Response : CoarUtils.models.ResponseStatusModel {
       public CityResponse cr { get; set; }
     }
     #endregion

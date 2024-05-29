@@ -1,4 +1,5 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
@@ -10,7 +11,7 @@ namespace CoarUtils.commands.random.words {
       public int total => 1; //{ get; set; }
     }
 
-    public class Response {
+    public class Response : CoarUtils.models.ResponseStatusModel {
       public List<string> words { get; set; } = new List<string> { };
     }
 

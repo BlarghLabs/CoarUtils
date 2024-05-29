@@ -16,7 +16,7 @@ namespace CoarUtils.commands.aws.elb {
       public string loadBalancerName { get; set; }
     }
 
-    public class Response {
+    public class Response : CoarUtils.models.ResponseStatusModel {
       public int healthy { get; set; }
       public int unhealthy { get; set; }
       public int total { get; set; }

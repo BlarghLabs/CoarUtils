@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using CoarUtils.commands.logging;
+﻿using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Newtonsoft.Json;
 
 namespace CoarUtils.commands.random {
@@ -9,7 +8,7 @@ namespace CoarUtils.commands.random {
       public int length { get; set; } = 8;
     }
 
-    public class Response {
+    public class Response : CoarUtils.models.ResponseStatusModel {
       public string result { get; set; }
     }
 

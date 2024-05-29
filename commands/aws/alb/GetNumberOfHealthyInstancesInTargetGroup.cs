@@ -17,7 +17,7 @@ namespace CoarUtils.commands.aws.alb {
       public string loadBalancerArn { get; set; }
     }
 
-    public class Response {
+    public class Response : CoarUtils.models.ResponseStatusModel {
       public bool isActive { get; set; }
       public int healthy { get; set; }
       public int unhealthy { get; set; }
