@@ -268,7 +268,7 @@ namespace CoarUtils.commands.logging {
           }
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
 
-         Execute(o: json, s: severity.error, instanceId: instanceId);
+          Execute(o: json, s: severity.error, instanceId: instanceId);
           return; //?
         }
       } catch {
