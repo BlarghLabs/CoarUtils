@@ -2,6 +2,7 @@
 using Amazon.ElasticLoadBalancing;
 using Amazon.ElasticLoadBalancing.Model;
 using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
@@ -16,7 +17,7 @@ namespace CoarUtils.commands.aws.elb {
       public string loadBalancerName { get; set; }
     }
 
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
       public int healthy { get; set; }
       public int unhealthy { get; set; }
       public int total { get; set; }

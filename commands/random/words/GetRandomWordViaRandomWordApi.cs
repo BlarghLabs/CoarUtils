@@ -11,7 +11,7 @@ namespace CoarUtils.commands.random.words {
       public int total => 1; //{ get; set; }
     }
 
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
       public List<string> words { get; set; } = new List<string> { };
     }
 

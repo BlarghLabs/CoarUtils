@@ -15,7 +15,7 @@ namespace CoarUtils.commands.gis.google {
       public decimal lng { get; set; }
       public string apiKey { get; set; }
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
       public string address { get; set; }
       public string anonymizedAddress { get; set; }
       public string city { get; set; }

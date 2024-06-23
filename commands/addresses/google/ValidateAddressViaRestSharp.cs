@@ -1,4 +1,5 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -12,7 +13,7 @@ namespace CoarUtils.commands.addresses.google {
       public string address { get; set; }
       public string apiKey { get; set; }
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
       public string formattedAddress { get; set; }
       public string addressLines { get; set; }
       public string locality { get; set; }

@@ -8,7 +8,7 @@ namespace CoarUtils.commands.random {
       public int length { get; set; } = 8;
     }
 
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
       public string result { get; set; }
     }
 

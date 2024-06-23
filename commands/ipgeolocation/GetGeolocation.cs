@@ -1,4 +1,5 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.models;
 using MaxMind.GeoIP2;
 using MaxMind.GeoIP2.Responses;
 using Newtonsoft.Json;
@@ -14,7 +15,7 @@ namespace CoarUtils.commands.ipgeolocation {
       public string maxmindAccountKey { get; set; }
     }
 
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
       public CityResponse cr { get; set; }
     }
     #endregion

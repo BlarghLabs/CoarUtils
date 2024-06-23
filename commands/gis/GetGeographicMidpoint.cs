@@ -1,4 +1,5 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -12,7 +13,7 @@ namespace CoarUtils.commands.gis {
     public class Request {
       public List<Coordinate> coordinates { get; set; } = new List<Coordinate> { };
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
       public Coordinate? coordinate { get; set; } = new Coordinate { };
     }
     #endregion

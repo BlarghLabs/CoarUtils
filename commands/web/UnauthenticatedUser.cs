@@ -1,46 +1,50 @@
-﻿using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Principal;
 
 namespace CoarUtils.commands.web {
   public class UnauthenticatedUser {
     public static bool Execute(
-      IPrincipal ip
+      IPrincipal iPrincipal
     ) {
       if (
-        (ip == null)
+        (iPrincipal?.Identity == null)
         ||
-        (ip.Identity == null)
-        ||
-        !ip.Identity.IsAuthenticated
+        !iPrincipal.Identity.IsAuthenticated
       ) {
         return true;
       }
 
-      var cp = (ClaimsPrincipal)ip;
+      var claimsPrincipal = (ClaimsPrincipal)iPrincipal;
       //note: i have seen mult name id and no name
-      var nameId = cp.Claims
+      var userId = claimsPrincipal.Claims
         .Where(x => x.Type.Equals(ClaimTypes.NameIdentifier))
         .Select(x=>x.Value)
+        //should not be required
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .Where(x => Guid.TryParse(input: x, out Guid g))
         .FirstOrDefault()
       ;
-      var name = cp.Claims
-        .Where(x => x.Type.Equals(ClaimTypes.Name))
-        .Select(x => x.Value)
-        .FirstOrDefault()
-      ;
-      //////{http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier: foo@bar.baz}
+      //we are no longer going to rely on this
+      //var name = claimsPrincipal.Claims
+      //  .Where(x => x.Type.Equals(ClaimTypes.Name))
+      //  .Select(x => x.Value)
+      //  .FirstOrDefault()
+      //;
+      //was sometimes: {http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier: foo@bar.baz}
+      //now: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier: userId}
       if (
-        string.IsNullOrEmpty(ip.Identity.Name)
-        &&
-        string.IsNullOrEmpty(name)
-        &&
-        string.IsNullOrEmpty(nameId)
+        string.IsNullOrEmpty(userId)
+        //&&
+        //string.IsNullOrEmpty(iPrincipal.Identity.Name)
+        //&&
+        //string.IsNullOrEmpty(name)
       ) { 
         return true;
       }
       return false;
     }
+
+
 
   }
 }
