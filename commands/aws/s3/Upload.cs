@@ -1,14 +1,75 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Transfer;
 using CoarUtils.commands.logging;
+using CoarUtils.models;
 using Newtonsoft.Json;
-using System;
-using System.IO;
 using System.Net;
 using System.Web;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Upload {
+    #region models
+    public class Response : ResponseStatusModel {
+      public string url { get; set; }
+    }
+    #endregion
+
+    public static async Task<Response> Execute(
+      string awsAccessKey,
+      string awsSecretKey,
+      Amazon.RegionEndpoint re,
+      string bucketName,
+      byte[] ba,
+      string key,
+      S3CannedACL acl,
+      CancellationToken cancellationToken,
+      string contentType = null
+    ) {
+      var response = new Response { };
+
+      try {
+        using (var ms = new MemoryStream(ba)) {
+          var uploadMultipartRequest = new TransferUtilityUploadRequest {
+            BucketName = bucketName,
+            Key = key,
+            CannedACL = acl,
+            InputStream = ms,
+            //PartSize = 123?
+          };
+          if (!string.IsNullOrWhiteSpace(contentType)) {
+            uploadMultipartRequest.ContentType = contentType;
+          }
+          using (var tu = new TransferUtility(awsAccessKey, awsSecretKey, re)) {
+            await tu.UploadAsync(uploadMultipartRequest, cancellationToken);
+          }
+          //why encoding?
+          response.url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
+          response.httpStatusCode = HttpStatusCode.OK;
+          return response;
+        }
+      } catch (Exception ex) {
+        if (cancellationToken.IsCancellationRequested) {
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = Constants.CANCELLATION_REQUESTED_STATUS;
+          return response;
+        }
+
+        LogIt.E(ex);
+        response.httpStatusCode = HttpStatusCode.InternalServerError;
+        response.status = "unexecpected error";
+        return response;
+      } finally {
+        LogIt.I(JsonConvert.SerializeObject(
+          new {
+            response.httpStatusCode,
+            response.status,
+            response.url,
+            //ipAddress = GetPublicIpAddress.Execute(hc),
+            //executedBy = GetExecutingUsername.Execute()
+          }, Formatting.Indented));
+      }
+    }
+
     public static void Execute(
       out HttpStatusCode hsc,
       out string status,
