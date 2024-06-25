@@ -9,7 +9,7 @@ using System.Web;
 namespace CoarUtils.commands.aws.s3 {
   public class Upload {
     #region models
-    public class Response : ResponseStatusModel {
+    public class Response : CoarUtils.models.ResponseStatusModel {
       public string url { get; set; }
     }
     #endregion

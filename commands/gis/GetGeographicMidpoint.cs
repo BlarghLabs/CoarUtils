@@ -13,7 +13,7 @@ namespace CoarUtils.commands.gis {
     public class Request {
       public List<Coordinate> coordinates { get; set; } = new List<Coordinate> { };
     }
-    public class Response : ResponseStatusModel {
+    public class Response : CoarUtils.models.ResponseStatusModel {
       public Coordinate? coordinate { get; set; } = new Coordinate { };
     }
     #endregion

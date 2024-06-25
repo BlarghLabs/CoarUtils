@@ -18,7 +18,7 @@ namespace CoarUtils.commands.gis.esri {
       public bool forStorage { get; set; }
       public string token { get; set; }
     }
-    public class Response : ResponseStatusModel {
+    public class Response : CoarUtils.models.ResponseStatusModel {
 
       public string address { get; set; }
       public string anonymizedAddress { get; set; }
