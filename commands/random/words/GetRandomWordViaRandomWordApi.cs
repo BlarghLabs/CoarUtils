@@ -1,39 +1,36 @@
 ﻿using CoarUtils.commands.logging;
+using CoarUtils.models.commands;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
 
-namespace CoarUtils.commands.random.words
-{
-    public static class GetRandomWordViaRandomWordApi {
+namespace CoarUtils.commands.random.words {
+  public static class GetRandomWordViaRandomWordApi {
 
     public class Request {
       public int total => 1; //{ get; set; }
     }
 
-    public class Response : models.commands.ResponseStatusModel {
+    public class Response : ResponseStatusModel {
+
       public List<string> words { get; set; } = new List<string> { };
     }
 
-    public static void Execute(
-      out HttpStatusCode hsc,
-      out string status,
-      out Response response,
+    public static async Task<Response> Execute(
       Request request,
-      CancellationToken? ct = null,
+      CancellationToken cancellationToken,
       WebProxy wp = null
     ) {
-      response = new Response { };
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
+      var response = new Response { };
 
       try {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
-          return;
+        #region validation 
+        if (cancellationToken.IsCancellationRequested) {
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = Constants.CANCELLATION_REQUESTED_STATUS;
+          return response;
         }
-
+        #endregion
         var resource = $"/word?number={request.total}";
 
         var client = new RestClient("https://random-word-api.herokuapp.com/");
@@ -44,61 +41,61 @@ namespace CoarUtils.commands.random.words
         //if (wp != null) {
         //  client.Proxy = wp;
         //}
-        var restResponse = client.ExecuteAsync(restRequest).Result;
+        var restResponse = await client.ExecuteAsync(restRequest);
         if (restResponse.ErrorException != null && !string.IsNullOrWhiteSpace(restResponse.ErrorException.Message)) {
-          status = $"rest call had error exception: {restResponse.ErrorException.Message}";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = $"rest call had error exception: {restResponse.ErrorException.Message}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          status = $"status code not OK {restResponse.StatusCode}";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = $"status code not OK {restResponse.StatusCode}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
         if (restResponse.ErrorException != null) {
-          status = $"response had error exception: {restResponse.ErrorException.Message}";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = $"response had error exception: {restResponse.ErrorException.Message}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          status = $"StatusCode was {restResponse.StatusCode}";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = $"StatusCode was {restResponse.StatusCode}";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
         if (string.IsNullOrWhiteSpace(restResponse.Content)) {
-          status = $"content was empty";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = $"content was empty";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
         //["dorks","rosebud"]
         var content = restResponse.Content;
         dynamic json = JsonConvert.DeserializeObject(content);
 
         if ((json == null) || json.Count == 0) {
-          status = $"there are no words";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          response.status = $"there are no words";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
         }
         foreach (var w in json) {
           response.words.Add(w.Value);
         }
 
-        hsc = HttpStatusCode.OK;
-        return;
+        response.httpStatusCode = HttpStatusCode.OK;
+        return response;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
-          return;
+        if (cancellationToken.IsCancellationRequested) {
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          response.status = Constants.CANCELLATION_REQUESTED_STATUS;
+          return response;
         }
-
-        status = $"unexpected error";
-        hsc = HttpStatusCode.InternalServerError;
         LogIt.E(ex);
+        response.status = $"unexpected error";
+        response.httpStatusCode = HttpStatusCode.InternalServerError;
+        return response;
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
-          hsc,
-          status,
+          response.httpStatusCode,
+          response.status,
           response,
         }, Formatting.Indented));
       }
