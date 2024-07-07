@@ -2,13 +2,13 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace CoarUtils.commands.aws.s3 {
-  public class Copy {
+namespace CoarUtils.commands.aws.s3
+{
+    public class Copy {
     #region models
     public class Request {
       public S3CannedACL destAcl { get; set; }
@@ -22,7 +22,7 @@ namespace CoarUtils.commands.aws.s3 {
       public string sourceKey { get; set; }
       public RegionEndpoint regionEndpoint { get; set; }
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
     }
     #endregion
 

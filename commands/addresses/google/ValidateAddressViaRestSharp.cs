@@ -1,19 +1,19 @@
 ﻿using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net;
 using System.Text;
 
-namespace CoarUtils.commands.addresses.google {
-  //again, taking 85s
-  public static class ValidateAddressViaRestSharp {
+namespace CoarUtils.commands.addresses.google
+{
+    //again, taking 85s
+    public static class ValidateAddressViaRestSharp {
     public class Request {
       public string address { get; set; }
       public string apiKey { get; set; }
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
       public string formattedAddress { get; set; }
       public string addressLines { get; set; }
       public string locality { get; set; }

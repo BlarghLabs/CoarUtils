@@ -4,7 +4,6 @@ using CoarUtils.commands.logging;
 using CoarUtils.commands.web;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
 using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {

@@ -1,21 +1,21 @@
 ﻿using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net;
 
-namespace CoarUtils.commands.gis.google {
+namespace CoarUtils.commands.gis.google
+{
 
-  //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
-  public static class ReverseGeocodeViaGoogle {
+    //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
+    public static class ReverseGeocodeViaGoogle {
     #region models
     public class Request {
       public decimal lat { get; set; }
       public decimal lng { get; set; }
       public string apiKey { get; set; }
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
       public string address { get; set; }
       public string anonymizedAddress { get; set; }
       public string city { get; set; }

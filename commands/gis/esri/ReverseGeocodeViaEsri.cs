@@ -1,16 +1,16 @@
 ﻿using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net;
 
-namespace CoarUtils.commands.gis.esri {
+namespace CoarUtils.commands.gis.esri
+{
 
-  //https://developers.arcgis.com/rest/geocode/api-reference/geocoding-reverse-geocode.htm
-  //https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=-117.205525,34.038232
+    //https://developers.arcgis.com/rest/geocode/api-reference/geocoding-reverse-geocode.htm
+    //https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=-117.205525,34.038232
 
-  public static class ReverseGeocodeViaEsri {
+    public static class ReverseGeocodeViaEsri {
     #region models
     public class Request {
       public decimal lat { get; set; }
@@ -18,7 +18,7 @@ namespace CoarUtils.commands.gis.esri {
       public bool forStorage { get; set; }
       public string token { get; set; }
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
 
       public string address { get; set; }
       public string anonymizedAddress { get; set; }

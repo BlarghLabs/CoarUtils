@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.8075</Version>
+    <Version>1.0.1.8213</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
@@ -19,7 +19,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="models\ExternalResultBaseModel.cs" />
-    <Compile Include="models\ResponseStatusModel.cs" />
+    <Compile Include="models\SqsMessageModel.cs" />
+    <Compile Include="models\commands\ResponseStatusModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +55,7 @@
 
   <ItemGroup>
     <Folder Include="commands\cultures\" />
+    <Folder Include="models\sqs\" />
   </ItemGroup>
 </Project>
 

@@ -1,18 +1,18 @@
 ﻿using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
 
-namespace CoarUtils.commands.addresses.google {
+namespace CoarUtils.commands.addresses.google
+{
 
-  //85s, issue w/ colon in resource
-  public static class ValidateAddressViaWebRequest {
+    //85s, issue w/ colon in resource
+    public static class ValidateAddressViaWebRequest {
     public class Request {
       public string address { get; set; }
       public string apiKey { get; set; }
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
       public string formattedAddress { get; set; }
       public string addressLines { get; set; }
       public string locality { get; set; }

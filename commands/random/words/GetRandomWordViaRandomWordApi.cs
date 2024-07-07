@@ -1,17 +1,17 @@
 ﻿using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
 
-namespace CoarUtils.commands.random.words {
-  public static class GetRandomWordViaRandomWordApi {
+namespace CoarUtils.commands.random.words
+{
+    public static class GetRandomWordViaRandomWordApi {
 
     public class Request {
       public int total => 1; //{ get; set; }
     }
 
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
       public List<string> words { get; set; } = new List<string> { };
     }
 

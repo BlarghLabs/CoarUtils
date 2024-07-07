@@ -1,15 +1,15 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Transfer;
 using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 using System.Net;
 using System.Web;
 
-namespace CoarUtils.commands.aws.s3 {
-  public class Upload {
+namespace CoarUtils.commands.aws.s3
+{
+    public class Upload {
     #region models
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
       public string url { get; set; }
     }
     #endregion

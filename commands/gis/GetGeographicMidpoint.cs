@@ -1,10 +1,10 @@
 ﻿using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace CoarUtils.commands.gis {
-  public static class GetGeographicMidpoint {
+namespace CoarUtils.commands.gis
+{
+    public static class GetGeographicMidpoint {
     #region models
     public class Coordinate {
       public decimal lat { get; set; }
@@ -13,7 +13,7 @@ namespace CoarUtils.commands.gis {
     public class Request {
       public List<Coordinate> coordinates { get; set; } = new List<Coordinate> { };
     }
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
       public Coordinate? coordinate { get; set; } = new Coordinate { };
     }
     #endregion

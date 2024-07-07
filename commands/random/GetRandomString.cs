@@ -1,14 +1,14 @@
 ﻿using CoarUtils.commands.logging;
-using CoarUtils.models;
 using Newtonsoft.Json;
 
-namespace CoarUtils.commands.random {
-  public static class GetRandomString {
+namespace CoarUtils.commands.random
+{
+    public static class GetRandomString {
     public class Request {
       public int length { get; set; } = 8;
     }
 
-    public class Response : CoarUtils.models.ResponseStatusModel {
+    public class Response : models.commands.ResponseStatusModel {
       public string result { get; set; }
     }
 
