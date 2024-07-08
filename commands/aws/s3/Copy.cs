@@ -2,13 +2,11 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace CoarUtils.commands.aws.s3
-{
-    public class Copy {
+namespace CoarUtils.commands.aws.s3 {
+  public class Copy {
     #region models
     public class Request {
       public S3CannedACL destAcl { get; set; }
@@ -28,8 +26,8 @@ namespace CoarUtils.commands.aws.s3
 
     public async static Task<Response> Execute(
       Request request,
-      CancellationToken cancellationToken,
-      HttpContext hc = null
+      CancellationToken cancellationToken
+      //HttpContext hc = null
     ) {
       var response = new Response { };
       try {
