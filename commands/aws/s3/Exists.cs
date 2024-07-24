@@ -46,7 +46,7 @@ namespace CoarUtils.commands.aws.s3 {
       string key,
       string bucketName,
       out string url
-    //CancellationToken ct
+    //CancellationToken cancellationToken
     ) {
       url = "";
       try {
@@ -92,7 +92,7 @@ namespace CoarUtils.commands.aws.s3 {
       string key,
       string bucketName,
       out long contentLength
-    //CancellationToken ct
+    //CancellationToken cancellationToken
     ) {
       contentLength = 0;
       try {

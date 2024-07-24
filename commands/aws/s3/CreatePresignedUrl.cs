@@ -25,9 +25,9 @@ namespace CoarUtils.commands.aws.s3 {
       string bucketName,
       string key,
       Amazon.RegionEndpoint re,
+      CancellationToken cancellationToken,
       HttpContext hc = null,
-      int numberOfMinutes = 30,
-      CancellationToken? ct = null
+      int numberOfMinutes = 30
     ) {
       url = "";
       hsc = HttpStatusCode.BadRequest;
@@ -45,7 +45,7 @@ namespace CoarUtils.commands.aws.s3 {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

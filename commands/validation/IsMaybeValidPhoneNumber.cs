@@ -10,7 +10,7 @@ namespace CoarUtils.commands.validation {
       string numberE164,
       out HttpStatusCode hsc,
       out string status,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -39,7 +39,7 @@ namespace CoarUtils.commands.validation {
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

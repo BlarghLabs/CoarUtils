@@ -26,7 +26,7 @@ namespace CoarUtils.commands.addresses.google
       out string status,
       out Response response,
       Request request,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -162,7 +162,7 @@ namespace CoarUtils.commands.addresses.google
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

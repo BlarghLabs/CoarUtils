@@ -1,9 +1,7 @@
 ﻿using CoarUtils.commands.debugging;
 using CoarUtils.commands.logging;
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 
@@ -21,9 +19,9 @@ namespace CoarUtils.commands.aws.ses {
       string password,
       string host,
       int port,
+      CancellationToken cancellationToken,
       int max_retries = 3,
-      bool sendAsync = false,
-      CancellationToken? ct = null
+      bool sendAsync = false
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -52,7 +50,7 @@ namespace CoarUtils.commands.aws.ses {
           }
         }
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

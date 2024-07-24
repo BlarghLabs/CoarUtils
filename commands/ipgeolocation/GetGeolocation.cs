@@ -25,7 +25,7 @@ namespace CoarUtils.commands.ipgeolocation
       out string status,
       out Response response,
       Request request,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken
     ) {
       response = new Response { };
       hsc = HttpStatusCode.BadRequest;
@@ -76,7 +76,7 @@ namespace CoarUtils.commands.ipgeolocation
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

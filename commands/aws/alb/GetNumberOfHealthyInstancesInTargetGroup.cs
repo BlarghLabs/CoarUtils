@@ -32,8 +32,8 @@ namespace CoarUtils.commands.aws.alb
       out HttpStatusCode hsc,
       out Response response,
       out string status,
-      HttpContext hc = null,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken,
+      HttpContext hc = null
     ) {
       response = new Response { };
       hsc = HttpStatusCode.BadRequest;
@@ -46,16 +46,16 @@ namespace CoarUtils.commands.aws.alb
         )) {
           var describeLoadBalancersResponse = aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
              LoadBalancerArns = new List<string> { request.loadBalancerArn },
-          }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
+          }, cancellationToken: cancellationToken).Result;
           response.isActive = describeLoadBalancersResponse.LoadBalancers.First().State.Code == LoadBalancerStateEnum.Active;
 
           //var describeTargetGroupsResponse = aelbc.DescribeTargetGroupsAsync(new DescribeTargetGroupsRequest{
           //   TargetGroupArns =  new List<string> { request.targetGroupArn },
-          //}, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
+          //}, cancellationToken: cancellationToken).Result;
 
           var describeTargetHealthResponse = aelbc.DescribeTargetHealthAsync(new DescribeTargetHealthRequest{
              TargetGroupArn = request.targetGroupArn,
-          }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
+          }, cancellationToken: cancellationToken).Result;
 
           response.healthy = describeTargetHealthResponse.TargetHealthDescriptions
             .Count(x => x.TargetHealth.State == TargetHealthStateEnum.Healthy)
@@ -76,7 +76,7 @@ namespace CoarUtils.commands.aws.alb
         //status = "";
         //return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

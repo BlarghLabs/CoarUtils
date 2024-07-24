@@ -30,8 +30,8 @@ namespace CoarUtils.commands.aws.elb
       out HttpStatusCode hsc,
       out Response response,
       out string status,
-      HttpContext hc = null,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken,
+      HttpContext hc = null
     ) {
       response = new Response { };
       hsc = HttpStatusCode.BadRequest;
@@ -46,7 +46,7 @@ namespace CoarUtils.commands.aws.elb
              LoadBalancerNames = new List<string> { 
                request.loadBalancerName
              },
-          }, cancellationToken: ct.HasValue ? ct.Value : CancellationToken.None).Result;
+          }, cancellationToken: cancellationToken).Result;
           response.total = dlbr.LoadBalancerDescriptions[0].Instances.Count;
           //TODO: get health and unhelathy
 
@@ -57,7 +57,7 @@ namespace CoarUtils.commands.aws.elb
         //status = "";
         //return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

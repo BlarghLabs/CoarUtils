@@ -81,8 +81,8 @@ namespace CoarUtils.commands.aws.s3
       string key,
       S3CannedACL acl,
       out string url,
-      string contentType = null,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken,
+      string contentType = null
     ) {
       url = "";
       hsc = HttpStatusCode.BadRequest;
@@ -105,7 +105,7 @@ namespace CoarUtils.commands.aws.s3
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;
@@ -138,8 +138,8 @@ namespace CoarUtils.commands.aws.s3
       byte[] ba,
       string key,
       S3CannedACL acl,
-      string contentType = null,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken,
+      string contentType = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -165,7 +165,7 @@ namespace CoarUtils.commands.aws.s3
           return;
         }
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;
@@ -199,8 +199,8 @@ namespace CoarUtils.commands.aws.s3
       string key,
       S3CannedACL acl,
       out string url,
-      string contentType = null,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken,
+      string contentType = null
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -224,7 +224,7 @@ namespace CoarUtils.commands.aws.s3
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

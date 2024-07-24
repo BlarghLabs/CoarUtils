@@ -19,7 +19,7 @@ namespace CoarUtils.commands.aws.s3 {
       out string status,
       string awsAccessKey,
       string awsSecretKey,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -37,7 +37,7 @@ namespace CoarUtils.commands.aws.s3 {
         }
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;

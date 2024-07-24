@@ -3,12 +3,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net;
-using System.Text;
 
-namespace CoarUtils.commands.addresses.google
-{
-    //again, taking 85s
-    public static class ValidateAddressViaRestSharp {
+namespace CoarUtils.commands.addresses.google {
+  //again, taking 85s
+  public static class ValidateAddressViaRestSharp {
     public class Request {
       public string address { get; set; }
       public string apiKey { get; set; }
@@ -28,7 +26,7 @@ namespace CoarUtils.commands.addresses.google
       out string status,
       out Response response,
       Request request,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken
     ) {
       hsc = HttpStatusCode.BadRequest;
       status = "";
@@ -158,7 +156,7 @@ namespace CoarUtils.commands.addresses.google
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
+        if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
           status = Constants.CANCELLATION_REQUESTED_STATUS;
           return;
