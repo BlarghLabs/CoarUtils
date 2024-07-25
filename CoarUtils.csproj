@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.8302</Version>
+    <Version>1.0.1.8313</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
@@ -47,6 +47,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="RestSharp" Version="107.1.2" />
+    <PackageReference Include="SendGrid" Version="9.29.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.6.3" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.4.21" />
     <PackageReference Include="AWSSDK.EC2" Version="3.7.95.3" />
