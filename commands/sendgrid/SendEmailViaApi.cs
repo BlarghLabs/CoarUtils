@@ -1,6 +1,8 @@
 ﻿using CoarUtils.commands.logging;
 using CoarUtils.models.commands;
 using Newtonsoft.Json;
+using SendGrid.Helpers.Mail;
+using SendGrid;
 using System.Net;
 
 namespace CoarUtils.commands.sendgrid {
@@ -8,12 +10,14 @@ namespace CoarUtils.commands.sendgrid {
     #region models
     public class Request {
       public string apiKey { get; set; }
-
+      public EmailAddress to { get; set; }
+      public EmailAddress from { get; set; }
+      public string subject { get; set; }
+      public string bodyText { get; set; }
+      public string bodyHtml { get; set; }
     }
 
-    public class Response : ResponseStatusModel {
-
-    }
+    public class Response : ResponseStatusModel { }
     #endregion
 
 
@@ -25,22 +29,32 @@ namespace CoarUtils.commands.sendgrid {
 
       try {
         #region validation
-
+        if (request == null) {
+          return new Response { status = "request is null" };
+        }
+        if (string.IsNullOrWhiteSpace(request.apiKey)) {
+          return new Response { status = "apiKey not found" };
+        }
+        if (request.from == null) {
+          return new Response { status = "from not found" };
+        }
+        if (request.to == null) {
+          return new Response { status = "to not found" };
+        }
+        if (string.IsNullOrWhiteSpace(request.bodyText) && string.IsNullOrWhiteSpace(request.bodyHtml)) {
+          return new Response { status = "body not found" };
+        }
         #endregion
 
-        //if (request.coordinates == null || request.coordinates.Count == 0) {
-        //  response.status = "no coordinates provided";
-        //  response.hsc = HttpStatusCode.BadRequest;
-        //  return response;
-        //}
-        //if (request.coordinates.Count == 1) {
-        //  response.coordinate = request.coordinates.Single();
-        //  response.hsc = HttpStatusCode.OK;
-        //  response.status = "only one provided";
-        //  return response.;
-        //}
+        var client = new SendGridClient(request.apiKey);
+        var msg = MailHelper.CreateSingleEmail(request.from, request.to, request.subject, request.bodyText, request.bodyHtml);
+        var sendGridResponse = await client.SendEmailAsync(msg);
 
-
+        if (!sendGridResponse.IsSuccessStatusCode) {
+          response.status = "unable to send";
+          response.httpStatusCode = HttpStatusCode.BadRequest;
+          return response;
+        }
 
         response.httpStatusCode = HttpStatusCode.OK;
         return response;
