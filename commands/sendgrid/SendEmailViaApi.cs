@@ -30,19 +30,19 @@ namespace CoarUtils.commands.sendgrid {
       try {
         #region validation
         if (request == null) {
-          return new Response { status = "request is null" };
+          return response = new Response { status = "request is null" };
         }
         if (string.IsNullOrWhiteSpace(request.apiKey)) {
-          return new Response { status = "apiKey not found" };
+          return response = new Response { status = "apiKey not found" };
         }
         if (request.from == null) {
-          return new Response { status = "from not found" };
+          return response = new Response { status = "from not found" };
         }
         if (request.to == null) {
-          return new Response { status = "to not found" };
+          return response = new Response { status = "to not found" };
         }
         if (string.IsNullOrWhiteSpace(request.bodyText) && string.IsNullOrWhiteSpace(request.bodyHtml)) {
-          return new Response { status = "body not found" };
+          return response = new Response { status = "body not found" };
         }
         #endregion
 
