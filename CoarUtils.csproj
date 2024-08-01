@@ -6,11 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-<<<<<<< HEAD
-    <Version>1.0.1.8359</Version>
-=======
-    <Version>1.0.1.8470</Version>
->>>>>>> 7a26ca22d67144a0698dddbedf3fae3cd2cd8d98
+    <Version>1.0.1.8472</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
