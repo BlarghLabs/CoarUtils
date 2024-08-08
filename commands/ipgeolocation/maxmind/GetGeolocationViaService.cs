@@ -4,10 +4,9 @@ using MaxMind.GeoIP2.Responses;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace CoarUtils.commands.ipgeolocation
-{
+namespace CoarUtils.commands.ipgeolocation.maxmind {
 
-    public static class GetGeolocation {
+  public static class GetGeolocationViaService {
     #region models
     public class Request {
       public string ip { get; set; }
@@ -59,7 +58,7 @@ namespace CoarUtils.commands.ipgeolocation
             //most common
             countryIsoCode = response.cr.Country.IsoCode, // 'US'
             countryName = response.cr.Country.Name,  // 'United States'
-                                              //response.cr.Country.Names["zh-CN"]); // '美国'
+                                                     //response.cr.Country.Names["zh-CN"]); // '美国'
 
             mostSpecificSubdivisionName = response.cr.MostSpecificSubdivision.Name, // 'Minnesota'
             MostSpecificSubdivisionIsoCode = response.cr.MostSpecificSubdivision.IsoCode, // 'MN'
