@@ -30,7 +30,7 @@ namespace CoarUtils.commands.sendgrid {
       try {
         #region validation
         if (request == null) {
-          return response = new Response { status = "request is null" };
+          return response = new Response { status = "request is null" }; 
         }
         if (string.IsNullOrWhiteSpace(request.apiKey)) {
           return response = new Response { status = "apiKey not found" };
