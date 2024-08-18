@@ -26,9 +26,7 @@ namespace CoarUtils.commands.random.words {
       try {
         #region validation 
         if (cancellationToken.IsCancellationRequested) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = Constants.CANCELLATION_REQUESTED_STATUS;
-          return response;
+          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
         }
         #endregion
         var resource = $"/word?number={request.total}";
@@ -84,9 +82,7 @@ namespace CoarUtils.commands.random.words {
         return response;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = Constants.CANCELLATION_REQUESTED_STATUS;
-          return response;
+          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
         }
         LogIt.E(ex);
         response.status = $"unexpected error";

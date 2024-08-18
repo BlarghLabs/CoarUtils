@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.8490</Version>
+    <Version>1.0.1.8602</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
@@ -39,10 +39,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />-->
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-    <PackageReference Include="MSBump" Version="2.3.2" PrivateAssets="All">
+    <!--<PackageReference Include="MSBump" Version="2.3.2" PrivateAssets="All">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    </PackageReference>-->
     <!--<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.5" />

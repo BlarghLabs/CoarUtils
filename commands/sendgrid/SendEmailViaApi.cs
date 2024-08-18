@@ -30,7 +30,7 @@ namespace CoarUtils.commands.sendgrid {
       try {
         #region validation
         if (request == null) {
-          return response = new Response { status = "request is null" }; 
+          return response = new Response { status = "request is null" };
         }
         if (string.IsNullOrWhiteSpace(request.apiKey)) {
           return response = new Response { status = "apiKey not found" };
@@ -60,14 +60,10 @@ namespace CoarUtils.commands.sendgrid {
         return response;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = Constants.CANCELLATION_REQUESTED_STATUS;
-          return response;
+          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.E(ex);
-        response.httpStatusCode = HttpStatusCode.InternalServerError;
-        response.status = Constants.UNEXPECTED_ERROR_STATUS;
-        return response;
+        LogIt.E(ex); 
+        return response = new Response { status = Constants.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         request.apiKey = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(new {

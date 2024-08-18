@@ -85,9 +85,7 @@ namespace CoarUtils.commands.aws.s3 {
         }
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = Constants.CANCELLATION_REQUESTED_STATUS;
-          return response;
+          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
         }
 
         LogIt.E(ex);
