@@ -62,7 +62,7 @@ namespace CoarUtils.commands.sendgrid {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.E(ex); 
+        LogIt.E(ex);
         return response = new Response { status = Constants.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         request.apiKey = "DO_NOT_LOG";
