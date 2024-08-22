@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Configurations>Debug;Release;Staging;CI</Configurations>
     <Company>Blargh</Company>
-    <Version>1.0.1.8521</Version>
+    <Version>1.0.1.8602</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
@@ -39,16 +39,17 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />-->
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-    <PackageReference Include="MSBump" Version="2.3.2" PrivateAssets="All">
+    <!--<PackageReference Include="MSBump" Version="2.3.2" PrivateAssets="All">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    </PackageReference>-->
     <!--<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="5.0.1" />
     <PackageReference Include="RestSharp" Version="107.1.2" />
     <PackageReference Include="SendGrid" Version="9.29.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.7.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.4.21" />
     <PackageReference Include="AWSSDK.EC2" Version="3.7.95.3" />
     <PackageReference Include="Tiny.RestClient" Version="1.7.1" />
@@ -57,6 +58,7 @@
   <ItemGroup>
     <Folder Include="commands\cultures\" />
     <Folder Include="models\sqs\" />
+    <Folder Include="extensions\" />
   </ItemGroup>
 </Project>
 
