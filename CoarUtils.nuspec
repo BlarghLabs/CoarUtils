@@ -28,9 +28,9 @@
       <dependency id="AWSSDK.S3" Version="3.3.101.16" />
       <dependency id="Microsoft.AspNetCore.Http.Features" Version="2.1.0" />
       <dependency id="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
-      <dependency id="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
-      <dependency id="Microsoft.EntityFrameworkCore.Relational" Version="2.2.4" />
-      <dependency id="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4"/>      
+      <dependency id="Microsoft.EntityFrameworkCore.Design" Version="8.0.8" />
+      <dependency id="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
+      <dependency id="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8"/>      
     </dependencies>
   </metadata>
   <files>
