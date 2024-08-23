@@ -41,12 +41,12 @@ namespace CoarUtils.commands.validation {
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
+          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
           return;
         }
 
         hsc = HttpStatusCode.InternalServerError;
-        //status = Constants.UNEXPECTED_ERROR_STATUS; //maybe pass the ex.message here
+        //status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS; //maybe pass the ex.message here
         status = ex.Message;
         LogIt.E(ex);
       } finally {

@@ -39,7 +39,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
           return response = new Response { status = $"ip is localhost" };
         }
         if (cancellationToken.IsCancellationRequested) {
-          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
+          return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
         #endregion
 
@@ -70,10 +70,10 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
         return response;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
+          return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
         LogIt.E(ex);
-        return response = new Response { status = Constants.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
+        return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
           response.httpStatusCode,

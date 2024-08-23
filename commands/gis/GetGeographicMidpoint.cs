@@ -77,12 +77,12 @@ namespace CoarUtils.commands.gis
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
+          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
           return;
         }
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
-        status = Constants.UNEXPECTED_ERROR_STATUS;
+        status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {

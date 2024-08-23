@@ -55,7 +55,7 @@ namespace CoarUtils.commands.aws.s3 {
             BucketName = bucketName,
             Key = key
           }).Result;
-          url = Constants.S3_BASE + bucketName + "/" + key;
+          url = Constants.Aws.S3_BASE + bucketName + "/" + key;
           return getObjectMetadataResponse.ContentLength != 0;
           //return true;
         }

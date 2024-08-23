@@ -164,7 +164,7 @@ namespace CoarUtils.commands.addresses.google
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
+          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
           return;
         }
 

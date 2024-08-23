@@ -133,7 +133,7 @@ namespace CoarUtils.commands.gis.google
         return response;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
+          return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
 
         LogIt.E(ex);

@@ -43,13 +43,13 @@ namespace CoarUtils.commands.aws.s3
             await tu.UploadAsync(uploadMultipartRequest, cancellationToken);
           }
           //why encoding?
-          response.url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
+          response.url = HttpUtility.UrlDecode(Constants.Aws.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
           response.httpStatusCode = HttpStatusCode.OK;
           return response;
         }
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          return response = new Response { status = Constants.CANCELLATION_REQUESTED_STATUS };
+          return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
 
         LogIt.E(ex);
@@ -98,14 +98,14 @@ namespace CoarUtils.commands.aws.s3
           }
           tu.Upload(tuur);
           //why encoding?
-          url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
+          url = HttpUtility.UrlDecode(Constants.Aws.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
         }
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
+          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
           return;
         }
 
@@ -158,14 +158,14 @@ namespace CoarUtils.commands.aws.s3
             tu.Upload(uploadMultipartRequest);
           }
           //why encoding?
-          url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
+          url = HttpUtility.UrlDecode(Constants.Aws.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
           hsc = HttpStatusCode.OK;
           return;
         }
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
+          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
           return;
         }
 
@@ -218,13 +218,13 @@ namespace CoarUtils.commands.aws.s3
           tu.Upload(uploadMultipartRequest);
         }
         //why encoding?
-        url = HttpUtility.UrlDecode(Constants.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
+        url = HttpUtility.UrlDecode(Constants.Aws.S3_BASE + bucketName + "/" + HttpUtility.UrlEncode(key));
         hsc = HttpStatusCode.OK;
         return;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
           hsc = HttpStatusCode.BadRequest;
-          status = Constants.CANCELLATION_REQUESTED_STATUS;
+          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
           return;
         }
 
