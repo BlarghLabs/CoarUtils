@@ -2,7 +2,6 @@
 using CoarUtils.commands.reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NLog;
 using System.Diagnostics;
 using System.Net;
 namespace CoarUtils.commands.logging {
@@ -22,21 +21,21 @@ namespace CoarUtils.commands.logging {
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
     public const bool DEFAULT_BEEP_BEHAVIOR = false;
 
-    public static LogLevel GetNLoggerLogLevel(severity s) {
+    public static NLog.LogLevel GetNLoggerLogLevel(severity s) {
       switch (s) {
         case severity.debug:
-          return LogLevel.Debug;
+          return NLog.LogLevel.Debug;
         case severity.info:
-          return LogLevel.Info;
+          return NLog.LogLevel.Info;
         case severity.error:
-          return LogLevel.Error;
+          return NLog.LogLevel.Error;
         case severity.warning:
-          return LogLevel.Warn;
+          return NLog.LogLevel.Warn;
         case severity.success:
-          return LogLevel.Info;
+          return NLog.LogLevel.Info;
         default:
           //why required?
-          return LogLevel.Info;
+          return NLog.LogLevel.Info;
       }
     }
     public static void Execute(
