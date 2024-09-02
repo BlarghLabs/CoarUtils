@@ -7,7 +7,7 @@ using System.Net;
 namespace CoarUtils.commands.logging {
   public class LogIt {
     #region enums
-    public enum severity {
+    public enum Severity {
       info,
       error,
       warning,
@@ -21,17 +21,17 @@ namespace CoarUtils.commands.logging {
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
     public const bool DEFAULT_BEEP_BEHAVIOR = false;
 
-    public static NLog.LogLevel GetNLoggerLogLevel(severity s) {
+    public static NLog.LogLevel GetNLoggerLogLevel(Severity s) {
       switch (s) {
-        case severity.debug:
+        case Severity.debug:
           return NLog.LogLevel.Debug;
-        case severity.info:
+        case Severity.info:
           return NLog.LogLevel.Info;
-        case severity.error:
+        case Severity.error:
           return NLog.LogLevel.Error;
-        case severity.warning:
+        case Severity.warning:
           return NLog.LogLevel.Warn;
-        case severity.success:
+        case Severity.success:
           return NLog.LogLevel.Info;
         default:
           //why required?
@@ -39,7 +39,7 @@ namespace CoarUtils.commands.logging {
       }
     }
     public static void Execute(
-      severity s,
+      Severity s,
       object o,
       string instanceId = null,
       bool removeNewlinesFromMessage = true,
@@ -104,14 +104,14 @@ namespace CoarUtils.commands.logging {
         var space = " ";
         var instance = string.IsNullOrWhiteSpace(instanceId) ? "" : $"|{instanceId}";
         var log = $"{dts}{space}|{ss}|{nameSpace}|{className}|{method}{instance}|{msg}";
-        if (s == severity.error) {
+        if (s == Severity.error) {
           Console.ForegroundColor = ConsoleColor.Red;
           if (beepOnError) {
             Console.Beep();// 38, 1000);
           }
-        } else if (s == severity.success) {
+        } else if (s == Severity.success) {
           Console.ForegroundColor = ConsoleColor.Green;
-        } else if (s == severity.warning) {
+        } else if (s == Severity.warning) {
           Console.ForegroundColor = ConsoleColor.Yellow;
           if (beepOnWarning) {
             Console.Beep(); // 3800, 500);          
@@ -180,13 +180,13 @@ namespace CoarUtils.commands.logging {
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/bb926074-d593-4e0b-8754-7026acc607ec/datetime-tostring-colon-replaced-with-period?forum=csharpgeneral
         var dt = DateTime.UtcNow;
         var dts = dt.ToString("yyyy-MM-dd HH") + ":" + dt.ToString("mm") + ":" + dt.ToString("ss") + "." + dt.ToString("fff");
-        var s = severity.info;
+        var s = Severity.info;
         switch (hsc) {
           case HttpStatusCode.OK:
-            s = severity.info;
+            s = Severity.info;
             break;
           default:
-            s = severity.error;
+            s = Severity.error;
             break;
         }
         var ss = "[" + s.ToString().ToUpper() + "]";
@@ -211,7 +211,7 @@ namespace CoarUtils.commands.logging {
       }
     }
     public static void Execute(
-      severity s,
+      Severity s,
       string message
     ) {
       try {
@@ -231,7 +231,7 @@ namespace CoarUtils.commands.logging {
         o = o ?? "";
         var t = o.GetType();
         if (!t.Equals(typeof(Exception)) & !typeof(Exception).IsAssignableFrom(t)) {
-          Execute(o: o, s: severity.error);
+          Execute(o: o, s: Severity.error);
         } else {
           var ex = (Exception)o;
           dynamic error = new JObject();
@@ -267,26 +267,26 @@ namespace CoarUtils.commands.logging {
           }
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
 
-          Execute(o: json, s: severity.error, instanceId: instanceId);
+          Execute(o: json, s: Severity.error, instanceId: instanceId);
           return; //?
         }
       } catch {
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
       }
       //is this supposed to be here twice?
-      Execute(s: severity.error, o: o);
+      Execute(s: Severity.error, o: o);
     }
     public static void D(object o = null, string instanceId = null) {
-      Execute(s: severity.debug, o: o, instanceId: instanceId);
+      Execute(s: Severity.debug, o: o, instanceId: instanceId);
     }
     public static void I(object o = null, string instanceId = null) {
-      Execute(s: severity.info, o: o, instanceId: instanceId);
+      Execute(s: Severity.info, o: o, instanceId: instanceId);
     }
     public static void W(object o = null, string instanceId = null, bool beep = DEFAULT_BEEP_BEHAVIOR) {
-      Execute(s: severity.warning, o: o, instanceId: instanceId, beepOnWarning: beep);
+      Execute(s: Severity.warning, o: o, instanceId: instanceId, beepOnWarning: beep);
     }
     public static void S(object o = null, string instanceId = null) {
-      Execute(s: severity.success, o: o, instanceId: instanceId);
+      Execute(s: Severity.success, o: o, instanceId: instanceId);
     }
   }
 }
