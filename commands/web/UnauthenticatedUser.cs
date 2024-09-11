@@ -2,7 +2,14 @@
 using System.Security.Principal;
 
 namespace CoarUtils.commands.web {
-  public class UnauthenticatedUser {
+  public static class UnauthenticatedUser {
+
+    public static bool IsUnauthenticated(
+      this IPrincipal iPrincipal
+    ) {
+      return Execute(iPrincipal);
+    }
+
     public static bool Execute(
       IPrincipal iPrincipal
     ) {
@@ -18,7 +25,7 @@ namespace CoarUtils.commands.web {
       //note: i have seen mult name id and no name
       var userId = claimsPrincipal.Claims
         .Where(x => x.Type.Equals(ClaimTypes.NameIdentifier))
-        .Select(x=>x.Value)
+        .Select(x => x.Value)
         //should not be required
         .Where(x => !string.IsNullOrWhiteSpace(x))
         .Where(x => Guid.TryParse(input: x, out Guid g))
@@ -34,11 +41,11 @@ namespace CoarUtils.commands.web {
       //now: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier: userId}
       if (
         string.IsNullOrEmpty(userId)
-        //&&
-        //string.IsNullOrEmpty(iPrincipal.Identity.Name)
-        //&&
-        //string.IsNullOrEmpty(name)
-      ) { 
+      //&&
+      //string.IsNullOrEmpty(iPrincipal.Identity.Name)
+      //&&
+      //string.IsNullOrEmpty(name)
+      ) {
         return true;
       }
       return false;
