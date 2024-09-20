@@ -138,7 +138,7 @@ namespace CoarUtils.commands.gis.google
 
         LogIt.E(ex);
         response.httpStatusCode = HttpStatusCode.InternalServerError;
-        response.status = "unexecpected error";
+        response.status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return response;
       } finally {
         request.apiKey = "DO_NOT_LOG";

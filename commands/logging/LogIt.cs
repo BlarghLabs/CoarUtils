@@ -44,7 +44,8 @@ namespace CoarUtils.commands.logging {
       string instanceId = null,
       bool removeNewlinesFromMessage = true,
       bool beepOnWarning = DEFAULT_BEEP_BEHAVIOR,
-      bool beepOnError = DEFAULT_BEEP_BEHAVIOR
+      bool beepOnError = DEFAULT_BEEP_BEHAVIOR, 
+      CancellationToken? cancellationToken = null
     ) {
       try {
         //dont check forever
@@ -128,13 +129,17 @@ namespace CoarUtils.commands.logging {
         //}
         nlogger.Log(level: GetNLoggerLogLevel(s), message: log);
       } catch (Exception ex) {
+        if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) {
+          return;
+        }
         E("error in LogIt|" + ex.Message);
       }
     }
     public static void Execute(
       HttpStatusCode hsc,
       object o,
-      bool removeNewlinesFromMessage = true
+      bool removeNewlinesFromMessage = true,
+      CancellationToken? cancellationToken = null
     ) {
       try {
         var methodInfo = new StackFrame(1).GetMethod();
@@ -207,12 +212,16 @@ namespace CoarUtils.commands.logging {
         //}
         nlogger.Log(level: GetNLoggerLogLevel(s), message: log);
       } catch (Exception ex) {
+        if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) {
+          return;
+        }
         E("error in LogIt|" + ex.Message);
       }
     }
     public static void Execute(
       Severity s,
-      string message
+      string message,
+      CancellationToken? cancellationToken = null
     ) {
       try {
         var log = $"{s.ToString().ToUpper()}|{WhereAmI.Execute(stepUp: 3)}|{message}";
@@ -226,12 +235,12 @@ namespace CoarUtils.commands.logging {
         LogIt.E("error in LogIt|" + ex.Message);
       }
     }
-    public static void E(object o, string instanceId = null) {
+    public static void E(object o, string instanceId = null, CancellationToken? cancellationToken = null) {
       try {
         o = o ?? "";
         var t = o.GetType();
         if (!t.Equals(typeof(Exception)) & !typeof(Exception).IsAssignableFrom(t)) {
-          Execute(o: o, s: Severity.error);
+          Execute(o: o, s: Severity.error, cancellationToken: cancellationToken);
         } else {
           var ex = (Exception)o;
           dynamic error = new JObject();
@@ -267,26 +276,29 @@ namespace CoarUtils.commands.logging {
           }
           string json = JsonConvert.SerializeObject(error, Formatting.Indented);
 
-          Execute(o: json, s: Severity.error, instanceId: instanceId);
+          Execute(o: json, s: Severity.error, instanceId: instanceId, cancellationToken: cancellationToken);
           return; //?
         }
-      } catch {
+      } catch (Exception ex) {
+        if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) {
+          return;
+        }
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
       }
       //is this supposed to be here twice?
-      Execute(s: Severity.error, o: o);
+      Execute(s: Severity.error, o: o, cancellationToken: cancellationToken);
     }
-    public static void D(object o = null, string instanceId = null) {
-      Execute(s: Severity.debug, o: o, instanceId: instanceId);
+    public static void D(object o = null, string instanceId = null, CancellationToken? cancellationToken = null) {
+      Execute(s: Severity.debug, o: o, instanceId: instanceId, cancellationToken: cancellationToken);
     }
-    public static void I(object o = null, string instanceId = null) {
-      Execute(s: Severity.info, o: o, instanceId: instanceId);
+    public static void I(object o = null, string instanceId = null, CancellationToken? cancellationToken = null) {
+      Execute(s: Severity.info, o: o, instanceId: instanceId, cancellationToken: cancellationToken);
     }
-    public static void W(object o = null, string instanceId = null, bool beep = DEFAULT_BEEP_BEHAVIOR) {
-      Execute(s: Severity.warning, o: o, instanceId: instanceId, beepOnWarning: beep);
+    public static void W(object o = null, string instanceId = null, bool beep = DEFAULT_BEEP_BEHAVIOR, CancellationToken? cancellationToken = null) {
+      Execute(s: Severity.warning, o: o, instanceId: instanceId, beepOnWarning: beep, cancellationToken: cancellationToken);
     }
-    public static void S(object o = null, string instanceId = null) {
-      Execute(s: Severity.success, o: o, instanceId: instanceId);
+    public static void S(object o = null, string instanceId = null, CancellationToken? cancellationToken = null) {
+      Execute(s: Severity.success, o: o, instanceId: instanceId, cancellationToken: cancellationToken);
     }
   }
 }

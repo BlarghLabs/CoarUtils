@@ -45,7 +45,7 @@ namespace CoarUtils.commands.aws.s3 {
 
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
-        status = "unexecpected error";
+        status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
       } finally {
         LogIt.I(JsonConvert.SerializeObject(

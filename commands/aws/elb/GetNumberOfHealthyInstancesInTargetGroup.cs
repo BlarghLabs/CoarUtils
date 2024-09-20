@@ -65,7 +65,7 @@ namespace CoarUtils.commands.aws.elb
 
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
-        status = "unexecpected error";
+        status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
       } finally {
         //DO NOT LOG KEYS

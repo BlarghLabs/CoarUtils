@@ -78,7 +78,7 @@ namespace CoarUtils.commands.addresses.google
 
         LogIt.E(ex);
         hsc = HttpStatusCode.InternalServerError;
-        status = "unexecpected error";
+        status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
       } finally {
         request.apiKey = "DO_NOT_LOG";
