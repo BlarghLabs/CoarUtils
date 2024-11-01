@@ -70,25 +70,25 @@ namespace CoarUtils.commands.aws.s3 {
       }
     }
 
-    public static Response Execute(
+    public static async Task<Response> Execute(
       string awsAccessKey,
       string awsSecretKey,
       string bucketName,
       string key,
-      Amazon.RegionEndpoint re,
+      Amazon.RegionEndpoint regionEndpoint,
       CancellationToken cancellationToken,
       HttpContext hc = null,
       int numberOfMinutes = 30
     ) {
       var response = new Response { };
       try {
-        using (var s3Client = new AmazonS3Client(awsAccessKey, awsSecretKey, re)) {
+        using (var s3Client = new AmazonS3Client(awsAccessKey, awsSecretKey, regionEndpoint)) {
           var gpsur = new GetPreSignedUrlRequest {
             BucketName = bucketName,
             Key = key,
             Expires = DateTime.UtcNow.AddMinutes(numberOfMinutes)
           };
-          response.url = s3Client.GetPreSignedURL(gpsur);
+          response.url = await s3Client.GetPreSignedURLAsync(gpsur);
         }
         response.httpStatusCode = HttpStatusCode.OK;
         return response;
@@ -96,11 +96,8 @@ namespace CoarUtils.commands.aws.s3 {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-
         LogIt.E(ex);
-        response.httpStatusCode = HttpStatusCode.InternalServerError;
-        response.status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
-        return response;
+        return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(
           new {

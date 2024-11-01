@@ -85,9 +85,7 @@ namespace CoarUtils.commands.random.words {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
         LogIt.E(ex);
-        response.status = $"unexpected error";
-        response.httpStatusCode = HttpStatusCode.InternalServerError;
-        return response;
+        return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
           response.httpStatusCode,
