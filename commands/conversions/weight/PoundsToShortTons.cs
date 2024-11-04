@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.conversions.weight {
+﻿namespace CoarUtils.commands.conversions.weight {
   public class PoundsToShortTons {
 
     public static decimal? Execute(
@@ -11,9 +9,9 @@ namespace CoarUtils.commands.conversions.weight {
       }
 
       //https://www.checkyourmath.com/convert/weight_mass/lb_short_ton.php
-      var result = pounds.Value / 2000M;
+      var response = pounds.Value / 2000M;
 
-      return result;
+      return response;
     }
   }
 }

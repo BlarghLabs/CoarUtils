@@ -46,7 +46,7 @@ namespace CoarUtils.commands.gis {
     }
 
     public static bool Execute(List<Coordinate> loc, Coordinate c) {
-      var result = false;
+      var response = false;
 
       //Minus 1 bc 1 pt is listed twice (could otherwsie accomplish w/ give me distnct)
       int iNumberOfVerticies = (loc.Count == 0) ? /* no poly creted yet */ 0 : loc.Count - 1;
@@ -56,11 +56,11 @@ namespace CoarUtils.commands.gis {
       for (i = 0, j = iNumberOfVerticies - 1; i < iNumberOfVerticies; j = i++) {
         if (((loc[i].lat > c.lat) != (loc[j].lat > c.lat))
           && (c.lng < (loc[j].lng - loc[i].lng) * (c.lat - loc[i].lat) / (loc[j].lat - loc[i].lat) + loc[i].lng)) {
-          result = !result;
+          response = !response;
         }
       }
 
-      return result;
+      return response;
     }
   }
 

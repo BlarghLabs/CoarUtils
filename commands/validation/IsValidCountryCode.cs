@@ -256,8 +256,8 @@ namespace CoarUtils.commands.validation {
         return false;
       }
       countryCode = countryCode.Trim().ToUpper();
-      var result = locc.Contains(countryCode);
-      return result;
+      var response = locc.Contains(countryCode);
+      return response;
     }
   }
 }

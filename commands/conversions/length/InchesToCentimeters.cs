@@ -7,8 +7,8 @@
       if (!inches.HasValue) {
         return null;
       }
-      var result = inches.Value * 2.54M;
-      return result;
+      var response = inches.Value * 2.54M;
+      return response;
     }
 
   }

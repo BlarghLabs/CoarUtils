@@ -7,9 +7,9 @@ namespace CoarUtils.commands.strings {
       if (string.IsNullOrWhiteSpace(orig)) {
         return "";
       }
-      string result = Regex.Replace(HttpUtility.HtmlDecode(orig), @"\t|\n|\r", " ");
-      result = Regex.Replace(result, @"\s+", " ").Trim();
-      return result;
+      string response = Regex.Replace(HttpUtility.HtmlDecode(orig), @"\t|\n|\r", " ");
+      response = Regex.Replace(response, @"\s+", " ").Trim();
+      return response;
     }
   }
 }

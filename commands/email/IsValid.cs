@@ -24,7 +24,7 @@ namespace CoarUtils.commands.email {
       string patternFromOnline = @"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
       //result = (new RegexUtilities()).IsValidEmail(value);
       result = (new Regex(patternFromOnline)).IsMatch(email);
-      return result;
+      return response;
     }
      * */
 
