@@ -1,5 +1,5 @@
 ﻿using Amazon.SimpleNotificationService.Util;
-using CoarUtils.commands.logging;
+using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using RestSharp;
 using System;
 using System.Net;

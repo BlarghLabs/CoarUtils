@@ -1,4 +1,4 @@
-﻿using CoarUtils.commands.logging;
+﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

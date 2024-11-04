@@ -1,6 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
-using CoarUtils.commands.logging;
+using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Exists {

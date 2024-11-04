@@ -1,4 +1,4 @@
-﻿using CoarUtils.commands.logging;
+﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using System.Text;
 
 namespace CoarUtils.commands.csv {

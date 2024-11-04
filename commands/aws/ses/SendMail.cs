@@ -1,5 +1,5 @@
 ﻿using CoarUtils.commands.debugging;
-using CoarUtils.commands.logging;
+using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Net;

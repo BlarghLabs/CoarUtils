@@ -1,7 +1,7 @@
 ﻿using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using CoarUtils.commands.logging;
+using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using Newtonsoft.Json;
 using System.Net;
 

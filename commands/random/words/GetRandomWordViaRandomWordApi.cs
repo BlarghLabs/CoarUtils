@@ -1,4 +1,4 @@
-﻿using CoarUtils.commands.logging;
+﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using CoarUtils.models.commands;
 using Newtonsoft.Json;
 using RestSharp;

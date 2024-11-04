@@ -1,7 +1,7 @@
 ﻿using Amazon;
 using Amazon.ElasticLoadBalancingV2;
 using Amazon.ElasticLoadBalancingV2.Model;
-using CoarUtils.commands.logging;
+using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;

@@ -1,4 +1,4 @@
-﻿using CoarUtils.commands.logging;
+﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
 using MaxMind.GeoIP2;
 using MaxMind.GeoIP2.Responses;
 using Newtonsoft.Json;
