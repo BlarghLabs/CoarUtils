@@ -89,9 +89,7 @@ namespace CoarUtils.commands.aws.s3 {
         }
 
         LogIt.E(ex);
-        response.httpStatusCode = HttpStatusCode.InternalServerError;
-        response.status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
-        return response;
+return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
       } finally {
         request.awsAccessKey = "DO_NOT_LOG";
         request.awsSecretKey = "DO_NOT_LOG";

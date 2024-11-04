@@ -4,13 +4,12 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net;
 
-namespace CoarUtils.commands.gis.esri
-{
+namespace CoarUtils.commands.gis.esri {
 
-    //https://developers.arcgis.com/rest/geocode/api-reference/geocoding-reverse-geocode.htm
-    //https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=-117.205525,34.038232
+  //https://developers.arcgis.com/rest/geocode/api-reference/geocoding-reverse-geocode.htm
+  //https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location=-117.205525,34.038232
 
-    public static class ReverseGeocodeViaEsri {
+  public static class ReverseGeocodeViaEsri {
     #region models
     public class Request {
       public decimal lat { get; set; }
@@ -37,14 +36,10 @@ namespace CoarUtils.commands.gis.esri
       try {
         #region validation
         if (request == null) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = "params were null";
-          return response;
+          return response = new Response { status = "params were null" };
         }
         if ((request.lat == 0) && (request.lng == 0)) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = "lat and long ZERO";
-          return response;
+          return response = new Response { status = "lat and long ZERO" };
         }
         #endregion
 
@@ -59,38 +54,26 @@ namespace CoarUtils.commands.gis.esri
           return response;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = $"status was {restResponse.StatusCode.ToString()}";
-          return response;
+          return response = new Response { status = $"status was {restResponse.StatusCode.ToString()}" };
         }
         if (restResponse.ErrorException != null && !string.IsNullOrWhiteSpace(restResponse.ErrorException.Message)) {
-          response.status = $"rest call had error exception: {restResponse.ErrorException.Message}";
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          return response;
+          return response = new Response { status = $"rest call had error exception: {restResponse.ErrorException.Message}" };
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          response.status = $"status code not OK {restResponse.StatusCode}";
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          return response;
+          return response = new Response { status = $"status code not OK {restResponse.StatusCode}" };
         }
         var content = restResponse.Content;
         dynamic json = JObject.Parse(content);
         //var apiStatus = json.status.Value;
         //if (apiStatus != "OK") {
-        //  response.httpStatusCode = HttpStatusCode.BadRequest;
-        //  response.status = $"api status result was {apiStatus}";
-        //  return response;
+        //return response = new Response { status = $"api status result was {apiStatus}" };
         //}
         if (json.address == null) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = $"address not found";
-          return response;
+          return response = new Response { status = $"address not found" };
         }
         response.address = json.address.LongLabel.Value;
         if (string.IsNullOrWhiteSpace(response.address)) {
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          response.status = "unable to reverse geocode address (LongLabel was empty)";
-          return response;
+          return response = new Response { status = "unable to reverse geocode address (LongLabel was empty)" };
         }
 
         response.city = json.address.City.Value;
@@ -126,9 +109,7 @@ namespace CoarUtils.commands.gis.esri
         }
 
         LogIt.E(ex);
-        response.httpStatusCode = HttpStatusCode.InternalServerError;
-        response.status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
-        return response;
+return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
       } finally {
         request.token = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(
