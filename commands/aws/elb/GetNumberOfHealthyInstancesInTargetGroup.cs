@@ -1,14 +1,13 @@
-﻿using Amazon;
+﻿using System.Net;
+using Amazon;
 using Amazon.ElasticLoadBalancing;
 using Amazon.ElasticLoadBalancing.Model;
-using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+using CoarUtils.commands.logging;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System.Net;
 
-namespace CoarUtils.commands.aws.elb
-{
-    public class GetNumberOfHealthyInstancesInTargetGroup {
+namespace CoarUtils.commands.aws.elb {
+  public class GetNumberOfHealthyInstancesInTargetGroup {
     #region models
     public class Request {
       public string awsAccessKey { get; set; }
@@ -43,7 +42,7 @@ namespace CoarUtils.commands.aws.elb
           region: request.re
         )) {
           var dlbr = aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
-             LoadBalancerNames = new List<string> { 
+            LoadBalancerNames = new List<string> {
                request.loadBalancerName
              },
           }, cancellationToken: cancellationToken).Result;

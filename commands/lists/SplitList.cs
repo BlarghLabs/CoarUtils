@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CoarUtils.commands.lists {
+﻿namespace CoarUtils.commands.lists {
   public class SplitList {
     public static IEnumerable<List<T>> Execute<T>(List<T> locations, int nSize = 30) {
       for (int i = 0; i < locations.Count; i += nSize) {

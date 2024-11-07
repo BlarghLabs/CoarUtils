@@ -1,9 +1,9 @@
-﻿using Amazon;
+﻿using System.Net;
+using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+using CoarUtils.commands.logging;
 using Newtonsoft.Json;
-using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Copy {
@@ -27,7 +27,7 @@ namespace CoarUtils.commands.aws.s3 {
     public async static Task<Response> Execute(
       Request request,
       CancellationToken cancellationToken
-      //HttpContext hc = null
+    //HttpContext hc = null
     ) {
       var response = new Response { };
       try {
@@ -89,7 +89,7 @@ namespace CoarUtils.commands.aws.s3 {
         }
 
         LogIt.E(ex);
-return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
+        return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
       } finally {
         request.awsAccessKey = "DO_NOT_LOG";
         request.awsSecretKey = "DO_NOT_LOG";

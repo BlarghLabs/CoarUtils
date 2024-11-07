@@ -1,9 +1,8 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using CoarUtils.commands.logging;
 using Newtonsoft.Json;
 
-namespace CoarUtils.commands.random
-{
-    public static class GetRandomString {
+namespace CoarUtils.commands.random {
+  public static class GetRandomString {
     public class Request {
       public int length { get; set; } = 8;
     }

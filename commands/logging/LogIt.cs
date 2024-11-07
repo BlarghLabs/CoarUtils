@@ -1,9 +1,9 @@
-﻿using Amazon.Lambda.Core;
+﻿using System.Diagnostics;
+using System.Net;
+using Amazon.Lambda.Core;
 using CoarUtils.commands.reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Net;
 namespace CoarUtils.commands.logging {
   public class LogIt {
     #region enums
@@ -44,7 +44,7 @@ namespace CoarUtils.commands.logging {
       string instanceId = null,
       bool removeNewlinesFromMessage = true,
       bool beepOnWarning = DEFAULT_BEEP_BEHAVIOR,
-      bool beepOnError = DEFAULT_BEEP_BEHAVIOR, 
+      bool beepOnError = DEFAULT_BEEP_BEHAVIOR,
       CancellationToken? cancellationToken = null
     ) {
       try {

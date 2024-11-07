@@ -1,12 +1,11 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
-using Newtonsoft.Json;
-using System.Net;
+﻿using System.Net;
 using System.Text;
+using CoarUtils.commands.logging;
+using Newtonsoft.Json;
 
-namespace CoarUtils.commands.addresses.google
-{
+namespace CoarUtils.commands.addresses.google {
 
-    public static class ValidateAddressViaMer {
+  public static class ValidateAddressViaMer {
     public class Request {
       public string address { get; set; }
       public string apiKey { get; set; }

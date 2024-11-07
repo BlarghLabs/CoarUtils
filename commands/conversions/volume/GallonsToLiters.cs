@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.conversions.volume {
+﻿namespace CoarUtils.commands.conversions.volume {
   public class GallonsToLiters {
 
     public static decimal? Execute(

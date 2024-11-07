@@ -1,8 +1,7 @@
-﻿using Amazon.SimpleNotificationService.Util;
-using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using Amazon.SimpleNotificationService.Util;
+using CoarUtils.commands.logging;
 using RestSharp;
-using System;
-using System.Net;
 
 namespace CoarUtils.commands.aws.sns {
   public class AutoConfirmSubscription {

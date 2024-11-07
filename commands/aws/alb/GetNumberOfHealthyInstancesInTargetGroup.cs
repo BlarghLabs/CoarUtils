@@ -1,10 +1,10 @@
-﻿using Amazon;
+﻿using System.Net;
+using Amazon;
 using Amazon.ElasticLoadBalancingV2;
 using Amazon.ElasticLoadBalancingV2.Model;
-using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+using CoarUtils.commands.logging;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System.Net;
 
 namespace CoarUtils.commands.aws.alb {
   public class GetNumberOfHealthyInstancesInTargetGroup {
@@ -39,7 +39,7 @@ namespace CoarUtils.commands.aws.alb {
           region: request.re
         )) {
           var describeLoadBalancersResponse = await aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
-             LoadBalancerArns = new List<string> { request.loadBalancerArn },
+            LoadBalancerArns = new List<string> { request.loadBalancerArn },
           }, cancellationToken: cancellationToken);
           response.isActive = describeLoadBalancersResponse.LoadBalancers.First().State.Code == LoadBalancerStateEnum.Active;
 
@@ -47,8 +47,8 @@ namespace CoarUtils.commands.aws.alb {
           //   TargetGroupArns =  new List<string> { request.targetGroupArn },
           //}, cancellationToken: cancellationToken).Result;
 
-          var describeTargetHealthResponse = aelbc.DescribeTargetHealthAsync(new DescribeTargetHealthRequest{
-             TargetGroupArn = request.targetGroupArn,
+          var describeTargetHealthResponse = aelbc.DescribeTargetHealthAsync(new DescribeTargetHealthRequest {
+            TargetGroupArn = request.targetGroupArn,
           }, cancellationToken: cancellationToken).Result;
 
           response.healthy = describeTargetHealthResponse.TargetHealthDescriptions
@@ -61,8 +61,8 @@ namespace CoarUtils.commands.aws.alb {
             .Count()
           ;
           response.httpStatusCode = describeTargetHealthResponse.HttpStatusCode
-            //&& 
-            //describeLoadBalancersResponse.HttpStatusCode
+          //&& 
+          //describeLoadBalancersResponse.HttpStatusCode
           ;
           return response;
         }
@@ -73,8 +73,8 @@ namespace CoarUtils.commands.aws.alb {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.E(ex); 
-return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
+        LogIt.E(ex);
+        return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         //DO NOT LOG KEYS
         request.awsAccessKey = "DO_NOT_LOG";

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.time {
+﻿namespace CoarUtils.commands.time {
   public static class GetRelativeTime {
     public static string Execute(
       DateTime? dt

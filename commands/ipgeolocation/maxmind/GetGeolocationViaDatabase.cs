@@ -1,9 +1,9 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using CoarUtils.commands.logging;
 using CoarUtils.models.commands;
 using MaxMind.GeoIP2;
 using MaxMind.GeoIP2.Responses;
 using Newtonsoft.Json;
-using System.Net;
 
 namespace CoarUtils.commands.ipgeolocation.maxmind {
 
@@ -72,8 +72,8 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.E(ex); 
-return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
+        LogIt.E(ex);
+        return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
           response.httpStatusCode,

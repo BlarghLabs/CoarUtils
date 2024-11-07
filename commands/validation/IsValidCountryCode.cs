@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace CoarUtils.commands.validation {
+﻿namespace CoarUtils.commands.validation {
   public static class IsValidCountryCode {
     public static readonly List<string> locc = new List<string>{
       "AD",

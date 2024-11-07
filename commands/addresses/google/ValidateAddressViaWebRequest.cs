@@ -1,13 +1,12 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
-using Newtonsoft.Json;
-using System.Net;
+﻿using System.Net;
 using System.Text;
+using CoarUtils.commands.logging;
+using Newtonsoft.Json;
 
-namespace CoarUtils.commands.addresses.google
-{
+namespace CoarUtils.commands.addresses.google {
 
-    //85s, issue w/ colon in resource
-    public static class ValidateAddressViaWebRequest {
+  //85s, issue w/ colon in resource
+  public static class ValidateAddressViaWebRequest {
     public class Request {
       public string address { get; set; }
       public string apiKey { get; set; }
@@ -66,7 +65,7 @@ namespace CoarUtils.commands.addresses.google
         http.Method = "POST";
 
         string parsedContent = JsonConvert.SerializeObject(payload);
-        var  encoding = new UTF8Encoding();
+        var encoding = new UTF8Encoding();
         var bytes = encoding.GetBytes(parsedContent);
 
         var newStream = http.GetRequestStream();

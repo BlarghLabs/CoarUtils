@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.web {
+﻿namespace CoarUtils.commands.web {
   public class ExtractDomain {
     public static string Execute(string url) {
       var domain = "";

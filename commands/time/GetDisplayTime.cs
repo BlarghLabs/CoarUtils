@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.time {
+﻿namespace CoarUtils.commands.time {
   public static class GetDisplayTime {
     public static string Execute(int? seconds) {
       if (!seconds.HasValue) {

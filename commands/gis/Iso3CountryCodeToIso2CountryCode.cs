@@ -1,6 +1,6 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Globalization;
+using CoarUtils.commands.logging;
 using Newtonsoft.Json;
-using System.Globalization;
 
 namespace CoarUtils.commands.gis {
   //https://stackoverflow.com/questions/4884692/converting-country-codes-in-net
@@ -20,7 +20,7 @@ namespace CoarUtils.commands.gis {
         iso3CountryCode = iso3CountryCode.ToUpper();
 
         //thorws error on server w/ neutral
-        var cultureInfos = CultureInfo.GetCultures(CultureTypes.AllCultures).Where(x=>!x.IsNeutralCulture).ToList();
+        var cultureInfos = CultureInfo.GetCultures(CultureTypes.AllCultures).Where(x => !x.IsNeutralCulture).ToList();
         foreach (var cultureInfo in cultureInfos) {
           RegionInfo region = new RegionInfo(cultureInfo.LCID);
           if (region.ThreeLetterISORegionName.ToUpper() == iso3CountryCode) {

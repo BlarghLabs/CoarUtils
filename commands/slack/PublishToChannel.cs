@@ -1,6 +1,6 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using CoarUtils.commands.logging;
 using RestSharp;
-using System.Net;
 
 namespace CoarUtils.commands.slack {
 

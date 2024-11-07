@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace CoarUtils.commands.gis {
+﻿namespace CoarUtils.commands.gis {
   //credit: https://github.com/BlarghLabs/MoarUtils/blob/master/commands/gis/DistCalc.cs
 
   public static class GetItemsWithinDistance {

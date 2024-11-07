@@ -8,7 +8,7 @@ namespace CoarUtils.commands.hashing.sha1 {
       string hexStringHash;
       using (var sha1 = new SHA1CryptoServiceProvider()) {
         hexStringHash = Convert.ToHexString(sha1.ComputeHash(ba));
-      }    
+      }
       return hexStringHash;
     }
 

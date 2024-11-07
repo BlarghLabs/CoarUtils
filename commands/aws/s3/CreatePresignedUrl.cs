@@ -1,11 +1,11 @@
-﻿using Amazon.S3;
+﻿using System.Net;
+using Amazon.S3;
 using Amazon.S3.Model;
 using CoarUtils.commands.logging;
 using CoarUtils.commands.web;
 using CoarUtils.models.commands;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
   #region models

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace CoarUtils.commands.time {
+﻿namespace CoarUtils.commands.time {
 
   /// <summary>
   /// use http://mj1856.github.io/TimeZoneNames/

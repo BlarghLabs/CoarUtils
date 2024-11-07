@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.conversions.length {
+﻿namespace CoarUtils.commands.conversions.length {
   public class CentimetersToInches {
     public static decimal? Execute(
       decimal? cm,

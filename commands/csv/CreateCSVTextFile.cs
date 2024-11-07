@@ -1,5 +1,5 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
-using System.Text;
+﻿using System.Text;
+using CoarUtils.commands.logging;
 
 namespace CoarUtils.commands.csv {
   public class CreateCSVTextFile {

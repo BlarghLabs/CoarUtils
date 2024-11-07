@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace CoarUtils.models.sqs {
+﻿namespace CoarUtils.models.sqs {
   public class SqsMessageModel {
     //public string MessageGroupId { get; set; }
     public string receiptHandle { get; set; }

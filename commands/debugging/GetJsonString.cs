@@ -1,7 +1,5 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using CoarUtils.commands.logging;
 using Newtonsoft.Json;
-using System;
-using System.Diagnostics;
 
 namespace CoarUtils.commands.debugging {
   public class GetJsonString {

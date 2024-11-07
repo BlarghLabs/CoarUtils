@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace CoarUtils.commands.strings {
+﻿namespace CoarUtils.commands.strings {
   public class StripNonNumericCharacters {
     public static string Execute(string number) {
       string numbersOnly = "";

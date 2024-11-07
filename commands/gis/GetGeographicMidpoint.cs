@@ -1,11 +1,10 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using CoarUtils.commands.logging;
 using CoarUtils.models.commands;
 using Newtonsoft.Json;
-using System.Net;
 
-namespace CoarUtils.commands.gis
-{
-    public static class GetGeographicMidpoint {
+namespace CoarUtils.commands.gis {
+  public static class GetGeographicMidpoint {
     #region models
     public class Coordinate {
       public decimal lat { get; set; }
@@ -27,7 +26,7 @@ namespace CoarUtils.commands.gis
       out string status,
       CancellationToken cancellationToken
     ) {
-      response = new Response {};
+      response = new Response { };
       hsc = HttpStatusCode.BadRequest;
       status = "";
 

@@ -1,7 +1,5 @@
-﻿using HtmlAgilityPack;
-using System;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace CoarUtils.commands.web {
   //shout https://github.com/zzzprojects/html-agility-pack/blob/master/src/Samples/Html2Txt/HtmlConvert.cs

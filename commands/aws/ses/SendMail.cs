@@ -1,9 +1,9 @@
-﻿using CoarUtils.commands.debugging;
-using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
-using Newtonsoft.Json;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Net;
 using System.Net.Mail;
+using CoarUtils.commands.debugging;
+using CoarUtils.commands.logging;
+using Newtonsoft.Json;
 
 namespace CoarUtils.commands.aws.ses {
 
@@ -65,7 +65,7 @@ namespace CoarUtils.commands.aws.ses {
           LogIt.I(JsonConvert.SerializeObject(new {
             hsc,
             status,
-            from = mm == null? null : new { mm.From.Address, mm.From.DisplayName },
+            from = mm == null ? null : new { mm.From.Address, mm.From.DisplayName },
             to = mm == null ? null : mm.To.Select(x => new { x.Address, x.DisplayName }).ToList(),
             replyTo = mm == null ? null : mm.ReplyToList.Select(x => new { x.Address, x.DisplayName }).ToList(),
             subject = mm == null ? null : mm.Subject,

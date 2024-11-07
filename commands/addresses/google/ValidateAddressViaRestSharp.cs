@@ -1,8 +1,8 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using CoarUtils.commands.logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using System.Net;
 
 namespace CoarUtils.commands.addresses.google {
   //again, taking 85s
@@ -53,10 +53,10 @@ namespace CoarUtils.commands.addresses.google {
         //var resource = $"/v1:validateAddress?alt=json&key={request.apiKey}";
         //var resource = $"v1:validateAddress?alt=json&key={request.apiKey}";
         //var resource = $"/v1%3AvalidateAddress?alt=json&key={request.apiKey}";
-        
+
         var client = new RestClient("https://addressvalidation.googleapis.com/");
         //var client = new RestClient("https://content-addressvalidation.googleapis.com/");
-        
+
         var restRequest = new RestRequest {
           Resource = resource,
           Method = Method.Post,

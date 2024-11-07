@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace CoarUtils.commands.gis {
+﻿namespace CoarUtils.commands.gis {
   //credit: https://github.com/BlarghLabs/MoarUtils/blob/master/commands/gis/DistCalc.cs
   public static class IsPointInPolygon {
     public class Polygon {

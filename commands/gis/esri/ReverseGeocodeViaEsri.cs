@@ -1,8 +1,8 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using CoarUtils.commands.logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using System.Net;
 
 namespace CoarUtils.commands.gis.esri {
 
@@ -109,7 +109,7 @@ namespace CoarUtils.commands.gis.esri {
         }
 
         LogIt.E(ex);
-return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
+        return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
       } finally {
         request.token = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(

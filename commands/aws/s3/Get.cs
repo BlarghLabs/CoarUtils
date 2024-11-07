@@ -1,9 +1,9 @@
-﻿using Amazon;
+﻿using System.Net;
+using Amazon;
 using Amazon.S3;
-using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+using CoarUtils.commands.logging;
 using CoarUtils.models.commands;
 using Newtonsoft.Json;
-using System.Net;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Get {

@@ -1,8 +1,8 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using CoarUtils.commands.logging;
 using CoarUtils.models.commands;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Net;
 
 namespace CoarUtils.commands.random.words {
   public static class GetRandomWordViaRandomWordApi {

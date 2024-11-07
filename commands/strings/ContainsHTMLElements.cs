@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 
 namespace CoarUtils.commands.strings {
   public class ContainsHTMLElements {

@@ -1,13 +1,12 @@
-﻿using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+﻿using System.Net;
+using CoarUtils.commands.logging;
 using Newtonsoft.Json;
-using System.Net;
 using Tiny.RestClient;
 
-namespace CoarUtils.commands.addresses.google
-{
+namespace CoarUtils.commands.addresses.google {
 
-    //85s, issue w/ colon in resource
-    public static class ValidateAddressViaTiny {
+  //85s, issue w/ colon in resource
+  public static class ValidateAddressViaTiny {
     public class Request {
       public string address { get; set; }
       public string apiKey { get; set; }

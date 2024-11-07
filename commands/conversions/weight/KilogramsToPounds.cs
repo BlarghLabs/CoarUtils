@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.conversions.weight {
+﻿namespace CoarUtils.commands.conversions.weight {
   public class KilogramsToPounds {
 
     public static decimal? Execute(

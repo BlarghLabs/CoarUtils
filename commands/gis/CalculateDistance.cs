@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CoarUtils.commands.gis {
+﻿namespace CoarUtils.commands.gis {
   //credit: https://github.com/BlarghLabs/MoarUtils/blob/master/commands/gis/DistCalc.cs
   public static class CalculateDistance {
     #region models
@@ -35,8 +33,8 @@ namespace CoarUtils.commands.gis {
       if (request.measurement == Measurement.kilometers) {
         radius = EarthRadiusInKilometers;
       }
-      var dist = radius 
-        * 2 
+      var dist = radius
+        * 2
         * Math.Asin(Math.Min(1, Math.Sqrt((Math.Pow(Math.Sin((DiffRadian(request.latA, request.latB)) / 2.0), 2.0) + Math.Cos(ToRadian(request.latA)) * Math.Cos(ToRadian(request.latB)) * Math.Pow(Math.Sin((DiffRadian(request.lngA, request.lngB)) / 2.0), 2.0)))))
       ;
       return dist;

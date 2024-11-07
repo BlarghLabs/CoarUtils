@@ -1,9 +1,9 @@
-﻿using Amazon.S3;
+﻿using System.Net;
+using System.Web;
+using Amazon.S3;
 using Amazon.S3.Transfer;
 using CoarUtils.commands.logging;
 using Newtonsoft.Json;
-using System.Net;
-using System.Web;
 
 namespace CoarUtils.commands.aws.s3 {
   public class Upload {
