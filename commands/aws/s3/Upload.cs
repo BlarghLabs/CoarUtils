@@ -1,13 +1,12 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Transfer;
-using CoarUtils.commands.logging; using CoarUtils.models.commands; using CoarUtils.models;
+using CoarUtils.commands.logging;
 using Newtonsoft.Json;
 using System.Net;
 using System.Web;
 
-namespace CoarUtils.commands.aws.s3
-{
-    public class Upload {
+namespace CoarUtils.commands.aws.s3 {
+  public class Upload {
     #region models
     public class Response : models.commands.ResponseStatusModel {
       public string url { get; set; }
@@ -53,7 +52,7 @@ namespace CoarUtils.commands.aws.s3
         }
 
         LogIt.E(ex);
-return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
+        return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(
           new {
