@@ -50,10 +50,10 @@ namespace CoarUtils.commands.logging {
       try {
         //dont check forever
         var methodInfo = new StackFrame(1).GetMethod();
-        if (methodInfo.DeclaringType.Name == typeof(LogIt).Name) {
+        if (methodInfo?.DeclaringType?.Name == typeof(LogIt).Name) {
           methodInfo = new StackFrame(2).GetMethod();
         }
-        if (methodInfo.DeclaringType.Name == typeof(LogIt).Name) {
+        if (methodInfo?.DeclaringType?.Name == typeof(LogIt).Name) {
           methodInfo = new StackFrame(3).GetMethod();
         }
         var className = "";

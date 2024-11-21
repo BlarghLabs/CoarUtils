@@ -2,6 +2,9 @@
 using System.Security.Principal;
 
 namespace CoarUtils.commands.web {
+  /// <summary>
+  /// Does a yet to be authenticated user ID claim exist?
+  /// </summary>
   public static class UnauthenticatedUser {
 
     public static bool IsUnauthenticated(
