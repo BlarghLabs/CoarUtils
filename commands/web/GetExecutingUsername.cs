@@ -1,6 +1,5 @@
 ﻿using System.Security.Principal;
 using CoarUtils.commands.logging;
-
 namespace CoarUtils.commands.web {
   public class GetExecutingUsername {
     public static string Execute(

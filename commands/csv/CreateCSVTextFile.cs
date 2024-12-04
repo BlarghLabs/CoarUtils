@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using CoarUtils.commands.logging;
-
 namespace CoarUtils.commands.csv {
   public class CreateCSVTextFile {
     public static string Execute<T>(List<T> data, bool addHeaderRow = false) {

@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using CoarUtils.commands.logging;
-
 namespace CoarUtils.commands.currency {
   //https://stackoverflow.com/questions/12373800/3-digit-currency-code-to-currency-symbol
   public static class GetCurrencySymbol {
