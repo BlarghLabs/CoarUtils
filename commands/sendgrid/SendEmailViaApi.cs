@@ -51,9 +51,7 @@ namespace CoarUtils.commands.sendgrid {
         var sendGridResponse = await client.SendEmailAsync(msg);
 
         if (!sendGridResponse.IsSuccessStatusCode) {
-          response.status = "unable to send";
-          response.httpStatusCode = HttpStatusCode.BadRequest;
-          return response;
+          return response = new Response { status = "unable to send" };
         }
 
         response.httpStatusCode = HttpStatusCode.OK;
@@ -69,6 +67,15 @@ namespace CoarUtils.commands.sendgrid {
         LogIt.I(JsonConvert.SerializeObject(new {
           response.httpStatusCode,
           response.status,
+          from = new { 
+            email = request?.from?.Email, 
+            name = request?.from?.Name
+          },
+          //to = request?.to..Select(x => new { x.Address, x.DisplayName }).ToList(),
+          //cc = mm.CC.Select(x => new { x.Address, x.DisplayName }).ToList(),
+          //bcc = mm.Bcc.Select(x => new { x.Address, x.DisplayName }).ToList(),
+          //replyTo = mm.ReplyToList.Select(x => new { x.Address, x.DisplayName }).ToList(),
+          //subject = mm.Subject,
           request,
         }));
       }
