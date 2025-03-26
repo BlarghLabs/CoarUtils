@@ -132,7 +132,7 @@ namespace CoarUtils.commands.aws.s3 {
             BucketName = request.bucketName,
             Key = request.key,
           };
-          var getObjectAsyncResponse = s3c.GetObjectAsync(getObjectRequest).Result;
+          var getObjectAsyncResponse = await s3c.GetObjectAsync(getObjectRequest);
           using (var rs = getObjectAsyncResponse.ResponseStream) {
             using (var ms = new MemoryStream()) {
               rs.CopyTo(ms);

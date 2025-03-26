@@ -8,6 +8,10 @@
     <Company>Blargh</Company>
     <Version>1.0.1.8602</Version>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
+    <MvcRazorCompileOnBuild>true</MvcRazorCompileOnBuild>
+    <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="models\**" />
@@ -33,10 +37,13 @@
     <PackageReference Include="AWSSDK.S3" Version="3.7.415.24" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.0" />
     <PackageReference Include="libphonenumber-csharp" Version="9.0.1" />
+    
     <PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
 
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+    <!--<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.8" />-->
+    <!--<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.8" />-->
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
     <!--<PackageReference Include="MSBump" Version="2.3.2" PrivateAssets="All">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -48,8 +55,8 @@
     <PackageReference Include="SendGrid" Version="9.29.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
-    
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.0.0" />
+
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />
 
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.400.119" />
     <PackageReference Include="AWSSDK.EC2" Version="3.7.436.7" />

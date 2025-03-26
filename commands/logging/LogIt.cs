@@ -284,6 +284,7 @@ namespace CoarUtils.commands.logging {
           return;
         }
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
+        Console.Error.WriteLine(ex.Message);
       }
       //is this supposed to be here twice?
       Execute(s: Severity.error, o: o, cancellationToken: cancellationToken);
