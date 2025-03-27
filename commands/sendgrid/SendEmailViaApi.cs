@@ -67,8 +67,8 @@ namespace CoarUtils.commands.sendgrid {
         LogIt.I(JsonConvert.SerializeObject(new {
           response.httpStatusCode,
           response.status,
-          from = new { 
-            email = request?.from?.Email, 
+          from = new {
+            email = request?.from?.Email,
             name = request?.from?.Name
           },
           //to = request?.to..Select(x => new { x.Address, x.DisplayName }).ToList(),
