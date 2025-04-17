@@ -11,17 +11,39 @@ namespace CoarUtils.commands.strings {
     /// <returns></returns>
 
     public static string Execute(this string input) {
+      input = input?.Trim();
       if (string.IsNullOrWhiteSpace(input))
         return input;
 
-      // Use the standard ToTitleCase method first
-      var textInfo = CultureInfo.CurrentCulture.TextInfo;
-      var titleCased = textInfo.ToTitleCase(input.ToLower());
+      // Use the standard ToTitleCase method
+      TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+      string titleCased = textInfo.ToTitleCase(input.ToLower());
 
-      // Fix apostrophe + s issues by finding patterns like "'S" and converting to "'s"
+      // Fix possessives
       titleCased = Regex.Replace(titleCased, "('S\\b)", "'s");
 
-      return titleCased;
+      // Find and preserve acronyms including possessives
+      string[] words = input.Split(' ');
+      string[] titleCasedWords = titleCased.Split(' ');
+
+      for (int i = 0; i < words.Length && i < titleCasedWords.Length; i++) {
+        string originalWord = words[i];
+        // Check if word is an acronym (2+ uppercase letters)
+        if (Regex.IsMatch(originalWord, @"\b[A-Z]{2,}")) {
+          // Handle possessive case
+          if (originalWord.EndsWith("'s", StringComparison.Ordinal) ||
+              originalWord.EndsWith("'S", StringComparison.Ordinal)) {
+            // Keep the acronym uppercase but ensure possessive 's is lowercase
+            string acronymBase = originalWord.Substring(0, originalWord.Length - 2);
+            titleCasedWords[i] = acronymBase + "'s";
+          } else {
+            // Just a regular acronym, preserve it as-is
+            titleCasedWords[i] = originalWord;
+          }
+        }
+      }
+
+      return string.Join(" ", titleCasedWords);
     }
   }
 }
