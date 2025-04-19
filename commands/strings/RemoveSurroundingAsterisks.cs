@@ -1,7 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using System.Web;
-
-namespace CoarUtils.commands.strings {
+﻿namespace CoarUtils.commands.strings {
   public static class RemoveSurroundingAsterisks {
     public static string Execute(this string input) {
       input = input?.Trim();

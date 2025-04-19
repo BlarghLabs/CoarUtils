@@ -7,7 +7,7 @@ namespace CoarUtils.commands.debugging {
       try {
         return JsonConvert.SerializeObject(o);
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
       }
       return "";
     }

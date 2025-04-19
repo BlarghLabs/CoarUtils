@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 
 namespace CoarUtils.commands.strings {
-  
+
   public static class ImprovedTitleCase {
     /// <summary>
     /// this mitigates apostrophe s being 'S

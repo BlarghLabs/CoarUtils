@@ -78,7 +78,7 @@ namespace CoarUtils.commands.addresses.google {
         var sr = new StreamReader(stream);
         var content = sr.ReadToEnd();
 
-        LogIt.I(content);
+        LogIt.I(content, cancellationToken);
 
         hsc = HttpStatusCode.OK;
         return;
@@ -89,7 +89,7 @@ namespace CoarUtils.commands.addresses.google {
           return;
         }
 
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -102,7 +102,7 @@ namespace CoarUtils.commands.addresses.google {
             request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
-          }, Formatting.Indented));
+          }, Formatting.Indented), cancellationToken);
       }
     }
   }

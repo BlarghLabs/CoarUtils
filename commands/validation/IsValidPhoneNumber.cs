@@ -19,8 +19,8 @@ namespace CoarUtils.commands.validation {
           var ri = new RegionInfo(phoneNumberCountryCode.ToLower());
         } catch (ArgumentException ae) {
           if (!IsValidCountryCode.Execute(phoneNumberCountryCode.ToLower())) {
-            LogIt.W(ae);
-            LogIt.W("unrecognized country code (ISO 3166 expected)");
+            LogIt.W(ae, CancellationToken.None);
+            LogIt.W("unrecognized country code (ISO 3166 expected)", CancellationToken.None);
             return false;
           }
         }
@@ -36,7 +36,7 @@ namespace CoarUtils.commands.validation {
           phoneNumber = StripNonNumericCharacters.Execute(phoneNumber);
           pn = pnu.Parse(phoneNumber, phoneNumberCountryCode.ToUpper());
           if (!pnu.IsValidNumber(pn)) {
-            LogIt.W("unrecognized phone number format");
+            LogIt.W("unrecognized phone number format", CancellationToken.None);
             return false;
           }
           phoneNumber = pnu.Format(pn, PhoneNumberFormat.E164);
@@ -46,7 +46,7 @@ namespace CoarUtils.commands.validation {
         phoneNumberCountryCode = phoneNumberCountryCode.ToLower();
         return true;
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
         return false;
       }
     }

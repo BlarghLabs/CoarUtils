@@ -66,7 +66,7 @@ namespace CoarUtils.commands.addresses.google {
         var restResponse = httpClient.PostAsync($"{baseUrl}{resource}", content).Result;
 
         var responseString = restResponse.Content.ReadAsStringAsync().Result;
-        LogIt.I(responseString);
+        LogIt.I(responseString, cancellationToken);
 
         ////https://content-addressvalidation.googleapis.com/v1:validateAddress?alt=json&key=KEY_HERE
         ////var resource = $"./v1:validateAddress?alt=json&key={request.apiKey}";
@@ -167,7 +167,7 @@ namespace CoarUtils.commands.addresses.google {
           return;
         }
 
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -180,7 +180,7 @@ namespace CoarUtils.commands.addresses.google {
             request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
-          }, Formatting.Indented));
+          }, Formatting.Indented), cancellationToken);
       }
     }
   }

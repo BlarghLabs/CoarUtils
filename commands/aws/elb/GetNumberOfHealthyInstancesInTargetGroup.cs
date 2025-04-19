@@ -62,7 +62,7 @@ namespace CoarUtils.commands.aws.elb {
           return;
         }
 
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -79,7 +79,7 @@ namespace CoarUtils.commands.aws.elb {
             response,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
-          }, Formatting.Indented));
+          }, Formatting.Indented), cancellationToken);
       }
     }
   }

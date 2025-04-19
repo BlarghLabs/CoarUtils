@@ -44,8 +44,8 @@ namespace CoarUtils.commands.aws.ses {
               hsc = HttpStatusCode.OK;
               return;
             } catch (Exception ex1) {
-              LogIt.W("attempt:" + i.ToString() + "|" + GetJsonString.Execute(mm));
-              LogIt.E(ex1);
+              LogIt.W("attempt:" + i.ToString() + "|" + GetJsonString.Execute(mm), cancellationToken);
+              LogIt.E(ex1, cancellationToken);
             }
           }
         }
@@ -56,7 +56,7 @@ namespace CoarUtils.commands.aws.ses {
           return;
         }
 
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -69,9 +69,9 @@ namespace CoarUtils.commands.aws.ses {
             to = mm == null ? null : mm.To.Select(x => new { x.Address, x.DisplayName }).ToList(),
             replyTo = mm == null ? null : mm.ReplyToList.Select(x => new { x.Address, x.DisplayName }).ToList(),
             subject = mm == null ? null : mm.Subject,
-          }, Formatting.Indented));
-        } catch (Exception ex1) {
-          LogIt.E(ex1);
+          }, Formatting.Indented), cancellationToken);
+        } catch (Exception ex) {
+          LogIt.E(ex, cancellationToken);
         }
       }
     }
@@ -89,7 +89,7 @@ namespace CoarUtils.commands.aws.ses {
         //success
         //}
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
       }
     }
   }

@@ -118,7 +118,7 @@ namespace CoarUtils.commands.gis.google {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         request.apiKey = "DO_NOT_LOG";
@@ -129,7 +129,7 @@ namespace CoarUtils.commands.gis.google {
             request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
-          }, Formatting.Indented));
+          }, Formatting.Indented), cancellationToken);
       }
     }
   }

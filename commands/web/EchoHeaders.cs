@@ -26,7 +26,7 @@
 //        hsc = HttpStatusCode.OK;
 //        return;
 //      } catch (Exception ex) {
-//        LogIt.E(ex);
+//        LogIt.I(ex,cancellationToken);
 //        hsc = HttpStatusCode.InternalServerError;
 //        return;
 //      } finally {
@@ -34,7 +34,7 @@
 //          new {
 //            hsc,
 //            jo
-//          }, Formatting.Indented));
+//          }, Formatting.Indented), cancellationToken);
 //      }
 
 //    }

@@ -64,7 +64,7 @@ namespace CoarUtils.commands.addresses.google {
         //85s
         var restResponse = client.PostRequest($"{resource}", payload).ExecuteAsStringAsync().Result;
 
-        LogIt.I(restResponse);
+        LogIt.I(restResponse, cancellationToken);
 
         hsc = HttpStatusCode.OK;
         return;
@@ -75,7 +75,7 @@ namespace CoarUtils.commands.addresses.google {
           return;
         }
 
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -88,7 +88,7 @@ namespace CoarUtils.commands.addresses.google {
             request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()
-          }, Formatting.Indented));
+          }, Formatting.Indented), cancellationToken);
       }
     }
   }

@@ -11,20 +11,21 @@ namespace CoarUtils.commands.slack {
     public static void ExecuteAsync(
       string content,
       string resource,
+      CancellationToken cancellationToken,
       string header = DEFAULT_HEADER
     ) {
       try {
         Task.Factory.StartNew(() => {
           try {
-            if (!ExecuteSync(content: content, resource: resource, header: header)) {
-              LogIt.W("unable to publish to slack");
+            if (!ExecuteSync(content: content, resource: resource, header: header, cancellationToken: cancellationToken)) {
+              LogIt.W("unable to publish to slack", cancellationToken);
             }
           } catch (Exception ex) {
-            LogIt.E(ex);
+            LogIt.I(ex, cancellationToken);
           }
         });
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
       }
     }
 
@@ -32,6 +33,7 @@ namespace CoarUtils.commands.slack {
     public static bool ExecuteSync(
       string content,
       string resource,
+      CancellationToken cancellationToken,
       string header = DEFAULT_HEADER
     ) {
       //TODO: do this async in task
@@ -56,11 +58,11 @@ namespace CoarUtils.commands.slack {
           throw restResponse.ErrorException;
         }
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          LogIt.W(restResponse.StatusCode);
+          LogIt.W(restResponse.StatusCode, cancellationToken);
         }
         return (restResponse.StatusCode == HttpStatusCode.OK);
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
       }
       return false;
     }

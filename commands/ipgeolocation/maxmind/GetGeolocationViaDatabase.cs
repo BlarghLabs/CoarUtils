@@ -63,7 +63,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
             postalCode = response.cityResponse?.Postal?.Code, // '55455'
             lat = response.cityResponse?.Location?.Latitude,  // 44.9733
             lng = response.cityResponse?.Location?.Longitude, // -93.2323
-          }, Formatting.Indented));
+          }, Formatting.Indented), cancellationToken);
         }
 
         response.httpStatusCode = HttpStatusCode.OK;
@@ -72,7 +72,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
@@ -88,7 +88,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
           lat = response.cityResponse?.Location?.Latitude,  // 44.9733
           lng = response.cityResponse?.Location?.Longitude, // -93.2323
           request,
-        }, Formatting.Indented));
+        }, Formatting.Indented), cancellationToken);
       }
     }
   }

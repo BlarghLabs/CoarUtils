@@ -25,13 +25,13 @@ namespace CoarUtils.commands.random {
         ;
         return result;
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
         throw;
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
           result,
           request,
-        }, Formatting.Indented));
+        }, Formatting.Indented), CancellationToken.None);
       }
     }
   }

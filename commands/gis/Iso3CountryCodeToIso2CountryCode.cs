@@ -30,14 +30,14 @@ namespace CoarUtils.commands.gis {
         }
         return iso2CountryCode;
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
         return iso2CountryCode;
       } finally {
         LogIt.I(JsonConvert.SerializeObject(
           new {
             iso3CountryCode,
             iso2CountryCode
-          }, Formatting.Indented));
+          }, Formatting.Indented), CancellationToken.None);
       }
 
     }

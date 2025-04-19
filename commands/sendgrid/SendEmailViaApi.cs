@@ -60,7 +60,7 @@ namespace CoarUtils.commands.sendgrid {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
         return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         request.apiKey = "DO_NOT_LOG";
@@ -77,7 +77,7 @@ namespace CoarUtils.commands.sendgrid {
           //replyTo = mm.ReplyToList.Select(x => new { x.Address, x.DisplayName }).ToList(),
           //subject = mm.Subject,
           request,
-        }));
+        }), cancellationToken);
       }
     }
   }

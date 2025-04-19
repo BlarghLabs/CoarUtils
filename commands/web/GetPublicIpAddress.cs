@@ -44,7 +44,7 @@ namespace CoarUtils.commands.web {
 
         return ip;
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
       } finally {
         if (log) {
           LogIt.D(JsonConvert.SerializeObject(new {
@@ -53,7 +53,7 @@ namespace CoarUtils.commands.web {
             remoteIpAddress,
             xForwardedFor,
             remoteAddr
-          }, Formatting.Indented));
+          }, Formatting.Indented), CancellationToken.None);
         }
       }
       return null;

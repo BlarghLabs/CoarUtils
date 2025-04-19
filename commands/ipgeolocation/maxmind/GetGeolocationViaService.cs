@@ -69,7 +69,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
 
             lat = response.cr.Location.Latitude,  // 44.9733
             lng = response.cr.Location.Longitude, // -93.2323
-          }, Formatting.Indented));
+          }, Formatting.Indented), cancellationToken);
         }
 
         hsc = HttpStatusCode.OK;
@@ -83,7 +83,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
 
         status = $"unexpected error";
         hsc = HttpStatusCode.InternalServerError;
-        LogIt.E(ex);
+        LogIt.I(ex, cancellationToken);
       } finally {
         request.maxmindAccountKey = "DO_LOG_LOG";
         request.maxmindAccountId = -1; //"DO_LOG_LOG";
@@ -93,7 +93,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
           status,
           //response,
           request,
-        }, Formatting.Indented));
+        }, Formatting.Indented), cancellationToken);
       }
     }
   }

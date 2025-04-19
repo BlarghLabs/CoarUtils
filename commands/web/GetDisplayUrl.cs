@@ -19,7 +19,7 @@ namespace CoarUtils.commands.web {
         return hc.Request.GetDisplayUrl();
       } catch (Exception ex) {
         //until I know the behavior
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
         return null;
       }
     }

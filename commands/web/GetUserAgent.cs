@@ -38,14 +38,14 @@ namespace CoarUtils.commands.web {
 
       //  return ip;
       //} catch (Exception ex) {
-      //  LogIt.E(ex);
+      //  LogIt.I(ex,cancellationToken);
       //} finally {
       //  LogIt.D(JsonConvert.SerializeObject(new {
       //    ip,
       //    remoteIpAddress,
       //    xForwardedFor,
       //    remoteAddr
-      //  }, Formatting.Indented));
+      //  }, Formatting.Indented), cancellationToken);
       //}
     }
   }

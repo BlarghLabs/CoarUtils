@@ -23,7 +23,7 @@ namespace CoarUtils.commands.aws.s3 {
           return listObjectResponse.S3Objects.Any();
         }
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.E(ex, cancellationToken);
         throw;
       }
     }
@@ -69,7 +69,7 @@ namespace CoarUtils.commands.aws.s3 {
         if (ex.Message.Contains("Error making request with Error Code NotFound and Http Status Code NotFound")) {
           return false;
         }
-        LogIt.E(ex);
+        LogIt.E(ex, CancellationToken.None);
         throw;
       }
     }
@@ -116,7 +116,7 @@ namespace CoarUtils.commands.aws.s3 {
           contentLength = 0;
           return false;
         }
-        LogIt.E(ex);
+        LogIt.E(ex, CancellationToken.None);
         throw;
       }
     }

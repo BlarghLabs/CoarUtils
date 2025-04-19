@@ -23,7 +23,7 @@ namespace CoarUtils.commands.currency {
             .GroupBy(ri => ri.ISOCurrencySymbol)
             .ToDictionary(x => x.Key, x => x.First().CurrencySymbol);
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
         throw ex;
       }
     }

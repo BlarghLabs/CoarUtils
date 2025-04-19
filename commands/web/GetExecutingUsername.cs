@@ -14,7 +14,7 @@ namespace CoarUtils.commands.web {
           ? null
           : ip.Identity.Name;
       } catch (Exception ex) {
-        LogIt.E(ex);
+        LogIt.I(ex, CancellationToken.None);
       }
       return executedBy;
     }
