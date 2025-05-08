@@ -41,7 +41,7 @@ namespace CoarUtils.commands.logging {
     public static void Execute(
       Severity s,
       object o,
-      CancellationToken cancellationToken,
+      CancellationToken? cancellationToken = null,
       string instanceId = null,
       bool removeNewlinesFromMessage = true,
       bool beepOnWarning = DEFAULT_BEEP_BEHAVIOR,
@@ -129,7 +129,7 @@ namespace CoarUtils.commands.logging {
         //}
         nlogger.Log(level: GetNLoggerLogLevel(s), message: log);
       } catch (Exception ex) {
-        if (cancellationToken.IsCancellationRequested) {
+        if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) {
           return;
         }
         E("error in LogIt|" + ex.Message, cancellationToken);
@@ -138,7 +138,7 @@ namespace CoarUtils.commands.logging {
     public static void Execute(
       HttpStatusCode hsc,
       object o,
-      CancellationToken cancellationToken,
+      CancellationToken? cancellationToken = null,
       bool removeNewlinesFromMessage = true
     ) {
       try {
@@ -212,7 +212,7 @@ namespace CoarUtils.commands.logging {
         //}
         nlogger.Log(level: GetNLoggerLogLevel(s), message: log);
       } catch (Exception ex) {
-        if (cancellationToken.IsCancellationRequested) {
+        if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) {
           return;
         }
         E("error in LogIt|" + ex.Message, cancellationToken);
@@ -221,7 +221,7 @@ namespace CoarUtils.commands.logging {
     public static void Execute(
       Severity s,
       string message,
-      CancellationToken cancellationToken
+      CancellationToken? cancellationToken = null
     ) {
       try {
         var log = $"{s.ToString().ToUpper()}|{WhereAmI.Execute(stepUp: 3)}|{message}";
@@ -235,7 +235,7 @@ namespace CoarUtils.commands.logging {
         LogIt.E("error in LogIt|" + ex.Message, cancellationToken);
       }
     }
-    public static void E(object o, CancellationToken cancellationToken, string instanceId = null) {
+    public static void E(object o, CancellationToken? cancellationToken = null, string instanceId = null) {
       try {
         o = o ?? "";
         var t = o.GetType();
@@ -280,7 +280,7 @@ namespace CoarUtils.commands.logging {
           return; //?
         }
       } catch (Exception ex) {
-        if (cancellationToken.IsCancellationRequested) {
+        if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested) {
           return;
         }
         Console.Error.WriteLine("I messed up, this all should be safe from exception");
@@ -290,16 +290,16 @@ namespace CoarUtils.commands.logging {
       Execute(s: Severity.error, o: o, cancellationToken: cancellationToken);
     }
     //public static void D(CancellationToken cancellationToken, object o = null, string instanceId = null) {
-    public static void D(object o, CancellationToken cancellationToken, string instanceId = null) {
+    public static void D(object o, CancellationToken? cancellationToken = null, string instanceId = null) {
       Execute(s: Severity.debug, o: o, instanceId: instanceId, cancellationToken: cancellationToken);
     }
-    public static void I(object o, CancellationToken cancellationToken, string instanceId = null) {
+    public static void I(object o, CancellationToken? cancellationToken = null, string instanceId = null) {
       Execute(s: Severity.info, o: o, instanceId: instanceId, cancellationToken: cancellationToken);
     }
-    public static void W(object o, CancellationToken cancellationToken, string instanceId = null, bool beep = DEFAULT_BEEP_BEHAVIOR) {
+    public static void W(object o, CancellationToken? cancellationToken = null, string instanceId = null, bool beep = DEFAULT_BEEP_BEHAVIOR) {
       Execute(s: Severity.warning, o: o, instanceId: instanceId, beepOnWarning: beep, cancellationToken: cancellationToken);
     }
-    public static void S(object o, CancellationToken cancellationToken, string instanceId = null) {
+    public static void S(object o, CancellationToken? cancellationToken = null, string instanceId = null) {
       Execute(s: Severity.success, o: o, instanceId: instanceId, cancellationToken: cancellationToken);
     }
   }
