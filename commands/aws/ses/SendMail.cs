@@ -56,7 +56,7 @@ namespace CoarUtils.commands.aws.ses {
           return;
         }
 
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;

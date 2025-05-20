@@ -80,7 +80,7 @@ namespace CoarUtils.commands.gis {
           status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
           return;
         }
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -90,7 +90,7 @@ namespace CoarUtils.commands.gis {
           status,
           request,
           response.coordinate
-        }), cancellationToken);
+        }, Formatting.Indented), cancellationToken);
       }
     }
   }

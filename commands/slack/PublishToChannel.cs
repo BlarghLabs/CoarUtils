@@ -21,11 +21,11 @@ namespace CoarUtils.commands.slack {
               LogIt.W("unable to publish to slack", cancellationToken);
             }
           } catch (Exception ex) {
-            LogIt.I(ex, cancellationToken);
+            LogIt.E(ex, cancellationToken);
           }
         });
       } catch (Exception ex) {
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
       }
     }
 
@@ -62,7 +62,7 @@ namespace CoarUtils.commands.slack {
         }
         return (restResponse.StatusCode == HttpStatusCode.OK);
       } catch (Exception ex) {
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
       }
       return false;
     }

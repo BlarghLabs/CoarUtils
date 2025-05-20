@@ -27,7 +27,7 @@ namespace CoarUtils.commands.aws.sns {
         }
         return true;
       } catch (Exception ex) {
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         return false;
       }
     }

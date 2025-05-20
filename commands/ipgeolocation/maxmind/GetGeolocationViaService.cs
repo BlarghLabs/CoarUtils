@@ -83,7 +83,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
 
         status = $"unexpected error";
         hsc = HttpStatusCode.InternalServerError;
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
       } finally {
         request.maxmindAccountKey = "DO_LOG_LOG";
         request.maxmindAccountId = -1; //"DO_LOG_LOG";

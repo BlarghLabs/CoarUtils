@@ -118,7 +118,7 @@ namespace CoarUtils.commands.gis.google {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         request.apiKey = "DO_NOT_LOG";

@@ -72,7 +72,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {

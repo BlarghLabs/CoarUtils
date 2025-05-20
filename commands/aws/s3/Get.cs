@@ -51,7 +51,7 @@ namespace CoarUtils.commands.aws.s3 {
           return;
         }
 
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -103,7 +103,7 @@ namespace CoarUtils.commands.aws.s3 {
           return;
         }
 
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         hsc = HttpStatusCode.InternalServerError;
         status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
         return;
@@ -146,7 +146,7 @@ namespace CoarUtils.commands.aws.s3 {
         if (cancellationToken.IsCancellationRequested) {
           return response = new ByteArrayResponse { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         return response = new ByteArrayResponse { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         LogIt.I(JsonConvert.SerializeObject(

@@ -47,13 +47,13 @@ namespace CoarUtils.commands.validation {
         hsc = HttpStatusCode.InternalServerError;
         //status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS; //maybe pass the ex.message here
         status = ex.Message;
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
           hsc,
           status,
           numberE164
-        }), cancellationToken);
+        }, Formatting.Indented), cancellationToken);
       }
     }
   }

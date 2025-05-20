@@ -87,7 +87,7 @@ namespace CoarUtils.commands.aws.s3 {
         if (cancellationToken.IsCancellationRequested) {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-        LogIt.I(ex, cancellationToken);
+        LogIt.E(ex, cancellationToken);
         return response = new Response { httpStatusCode = HttpStatusCode.InternalServerError, status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS };
       } finally {
         request.awsAccessKey = "DO_NOT_LOG";
