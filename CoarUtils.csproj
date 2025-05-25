@@ -35,7 +35,7 @@
     <PackageReference Include="AWSSDK.ElasticLoadBalancing" Version="3.7.401.119" />
     <PackageReference Include="AWSSDK.ElasticLoadBalancingV2" Version="3.7.409.12" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.415.26" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.12.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
     <PackageReference Include="libphonenumber-csharp" Version="9.0.1" />
 
     <PackageReference Include="MaxMind.GeoIP2" Version="5.2.0" />
