@@ -20,6 +20,7 @@ namespace CoarUtils.commands.gis.geoapify {
       public string addressLine2 { get; set; }
       public string city { get; set; }
       public string state { get; set; }
+      public string county { get; set; }
       public string postalCode { get; set; }
       public string country { get; set; }
     }
@@ -67,18 +68,20 @@ namespace CoarUtils.commands.gis.geoapify {
         response.addressLine1 = json.results[0].address_line1?.Value;
         response.addressLine2 = json.results[0].address_line2?.Value;
         response.city = json.results[0].city?.Value;
-        response.state = json.results[0].state_code?.Value; ;
+        response.state = json.results[0].state?.Value;
+        response.county = json.results[0].county?.Value;
         response.postalCode = json.results[0].postcode?.Value;
-        response.country = json.results[0].country_code?.Value;
+        response.country = json.results[0].country?.Value;
         response.formattedAddress = json.results[0].formatted?.Value;
-        if(string.IsNullOrWhiteSpace(response.formattedAddress)) {
+        if (string.IsNullOrWhiteSpace(response.formattedAddress)) {
           return response = new Response { status = $"formatted (address) not found" };
         }
-        var anonymizedAddressComponenets = new List<string> { 
-            response.city, 
-            response.state, 
-            response.postalCode, 
-            response.country 
+        var anonymizedAddressComponenets = new List<string> {
+            response.city,
+            response.county,
+            response.state,
+            response.postalCode,
+            response.country
           }.Where(x => !string.IsNullOrWhiteSpace(x))
           .ToList()
         ;
