@@ -6,6 +6,52 @@ namespace CoarUtils.commands.gis.google {
     private static readonly string ValidChars = "23456789CFGHJMPQRVWX";
 
     /// <summary>
+    /// LINQ-safe format detection - checks basic Plus Code pattern without exceptions
+    /// Safe to use in LINQ queries, won't throw on invalid input
+    /// </summary>
+    /// <param name="code">The code to check</param>
+    /// <returns>True if format appears to be a Plus Code pattern</returns>
+    public static bool IsLikelyPlusCodeFormat(string code) {
+      // Null/empty check - safe for LINQ
+      if (string.IsNullOrWhiteSpace(code))
+        return false;
+
+      try {
+        code = code.Trim().ToUpper();
+
+        // Must contain exactly one '+' 
+        int plusIndex = code.IndexOf('+');
+        if (plusIndex <= 0 || code.LastIndexOf('+') != plusIndex)
+          return false;
+
+        // Basic length check
+        if (code.Length < 3 || code.Length > 12) // minimum: "XX+" maximum: "XXXXXXXX+XXX"
+          return false;
+
+        // Split safely
+        string beforePlus = code.Substring(0, plusIndex);
+        string afterPlus = code.Substring(plusIndex + 1);
+
+        // Length constraints
+        if (beforePlus.Length < 2 || beforePlus.Length > 8 || beforePlus.Length % 2 != 0)
+          return false;
+
+        if (afterPlus.Length > 3)
+          return false;
+
+        // Character validation using LINQ (safe operations)
+        bool validMainChars = beforePlus.All(c => ValidChars.Contains(c));
+        bool validRefinementChars = afterPlus.All(c => ValidChars.Contains(c));
+
+        return validMainChars && validRefinementChars;
+      } catch {
+        // Any exception means it's not a valid format
+        return false;
+      }
+    }
+
+
+    /// <summary>
     /// Determines if a string is in valid Plus Code format
     /// </summary>
     /// <param name="code">The code to validate</param>
