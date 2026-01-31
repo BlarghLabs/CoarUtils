@@ -1,6 +1,8 @@
 ﻿using System.Net;
+using CoarUtils.models.commands;
 
 namespace CoarUtils.models.commands {
+  
   public class ResponseStatusModel {
     //why is this commented out?
     //public ResponseStatusModel(string status) {

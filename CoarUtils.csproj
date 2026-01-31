@@ -22,6 +22,8 @@
     <None Remove="commands\random\words\RandomWords.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="models\commands\TableRequestModel.cs" />
+    <Compile Include="models\commands\TableResponseStatusModel.cs" />
     <Compile Include="models\ExternalResultBaseModel.cs" />
     <Compile Include="models\SqsMessageModel.cs" />
     <Compile Include="models\commands\ResponseStatusModel.cs" />
