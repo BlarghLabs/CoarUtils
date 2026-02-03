@@ -1,4 +1,7 @@
-﻿namespace CoarUtils.commands.validation {
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+
+namespace CoarUtils.commands.validation {
   public static class IsValidCountryCode {
     public static readonly List<string> locc = new List<string>{
       "AD",
@@ -256,6 +259,19 @@
       countryCode = countryCode.Trim().ToUpper();
       var response = locc.Contains(countryCode);
       return response;
+    }
+
+
+    public static bool IsValidIso2Strict(string code) {
+      if (code is null || code.Length != 2) return false;
+      if (!Regex.IsMatch(code, "^[A-Za-z]{2}$")) return false;
+
+      try {
+        var region = new RegionInfo(code.ToUpperInvariant());
+        return region.TwoLetterISORegionName.Equals(code, StringComparison.OrdinalIgnoreCase);
+      } catch (ArgumentException) {
+        return false;
+      }
     }
   }
 }
