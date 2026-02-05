@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="models\commands\TableRequestModel.cs" />
+    <Compile Include="models\commands\AlternativeTableResponseStatusModel.cs" />
     <Compile Include="models\commands\TableResponseStatusModel.cs" />
     <Compile Include="models\ExternalResultBaseModel.cs" />
     <Compile Include="models\SqsMessageModel.cs" />

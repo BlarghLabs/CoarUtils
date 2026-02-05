@@ -2,7 +2,7 @@
 using CoarUtils.models.commands;
 
 namespace CoarUtils.models.commands {
-  
+
   public class ResponseStatusModel {
     //why is this commented out?
     //public ResponseStatusModel(string status) {
@@ -10,5 +10,6 @@ namespace CoarUtils.models.commands {
     //}
     public HttpStatusCode httpStatusCode { get; set; } = HttpStatusCode.BadRequest;
     public string status { get; set; }
+    public long requestTimestamp { get; set; }
   }
 }
