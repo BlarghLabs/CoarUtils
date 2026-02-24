@@ -11,10 +11,10 @@ namespace CoarUtils.commands.gis {
       public decimal lng { get; set; }
     }
     public class Request {
-      public List<Coordinate> coordinates { get; set; } = new List<Coordinate> { };
+      public List<Coordinate> coordinates=  new List<Coordinate> { };
     }
     public class Response : ResponseStatusModel {
-      public Coordinate coordinate { get; set; } = new Coordinate { };
+      public Coordinate coordinate=  new Coordinate { };
     }
     #endregion
 

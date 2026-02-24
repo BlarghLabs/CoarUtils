@@ -7,7 +7,7 @@
       public double lngA { get; set; }
       public double latB { get; set; }
       public double lngB { get; set; }
-      public Measurement measurement { get; set; } = Measurement.miles;
+      public Measurement measurement = Measurement.miles;
 
     }
     #endregion
