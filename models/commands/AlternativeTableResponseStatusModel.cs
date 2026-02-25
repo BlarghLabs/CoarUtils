@@ -1,7 +1,4 @@
-﻿using System.Net;
-using CoarUtils.models.commands;
-
-namespace CoarUtils.models.commands {
+﻿namespace CoarUtils.models.commands {
   public class AlternativeTableResponseStatusModel : ResponseStatusModel {
 
     public int totalRecordCount;
@@ -12,6 +9,6 @@ namespace CoarUtils.models.commands {
   }
 }
 
- 
+
 
 

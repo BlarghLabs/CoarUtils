@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using CoarUtils.models.commands;
 
 namespace CoarUtils.models.commands {
 

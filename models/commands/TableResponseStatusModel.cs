@@ -1,7 +1,4 @@
-﻿using System.Net;
-using CoarUtils.models.commands;
-
-namespace CoarUtils.models.commands {
+﻿namespace CoarUtils.models.commands {
   public class TableResponseStatusModel : ResponseStatusModel {
     public int pageSize; //= GlobalApplicationSettings.DefaultPageSize;
     public int pageNum; // = 1
@@ -14,6 +11,6 @@ namespace CoarUtils.models.commands {
   }
 }
 
- 
+
 
 
