@@ -6,7 +6,7 @@
       if (string.IsNullOrWhiteSpace(candidateUrl)) {
         return false;
       }
-     
+
       var isValidUrl =
         Uri.TryCreate(candidateUrl, UriKind.Absolute, out var uriResult)
         &&
