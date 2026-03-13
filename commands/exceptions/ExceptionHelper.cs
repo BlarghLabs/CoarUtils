@@ -113,17 +113,17 @@
       } catch (Exception ex) {
         // Get just the root cause message
         string rootMessage = ExceptionHelper.GetRootExceptionMessage(ex);
-        Console.WriteLine($"Root cause: {rootMessage}");
+        System.Diagnostics.Debug.WriteLine($"Root cause: {rootMessage}");
 
         // Get all messages for debugging
         var allMessages = ExceptionHelper.GetAllExceptionMessages(ex);
-        Console.WriteLine("\nAll exception messages:");
+        System.Diagnostics.Debug.WriteLine("\nAll exception messages:");
         foreach (var msg in allMessages) {
-          Console.WriteLine($"- {msg}");
+          System.Diagnostics.Debug.WriteLine($"- {msg}");
         }
 
         // Get formatted output
-        Console.WriteLine("\n" + ExceptionHelper.GetFormattedExceptionChain(ex));
+        System.Diagnostics.Debug.WriteLine("\n" + ExceptionHelper.GetFormattedExceptionChain(ex));
       }
     }
 
