@@ -16,6 +16,7 @@ namespace CoarUtils.commands.aws.s3 {
       string key,
       Amazon.RegionEndpoint regionEndpoint,
       CancellationToken cancellationToken,
+      string contentType = null,
       HttpContext hc = null,
       int numberOfMinutes = 30
     ) {
@@ -26,7 +27,8 @@ namespace CoarUtils.commands.aws.s3 {
             BucketName = bucketName,
             Key = key,
             Verb = HttpVerb.PUT,
-            Expires = DateTime.UtcNow.AddMinutes(numberOfMinutes)
+            Expires = DateTime.UtcNow.AddMinutes(numberOfMinutes),
+            ContentType = contentType,
           };
           response.url = await s3Client.GetPreSignedURLAsync(gpsur);
         }
