@@ -195,11 +195,11 @@ namespace CoarUtils.commands.gis.google {
         bool formatMatch = PlusCodeValidator.IsValidPlusCodeFormat(code);
         double precision = PlusCodeValidator.GetPrecisionInMeters(code);
 
-        Console.WriteLine($"Code: '{code}'");
-        Console.WriteLine($"  Valid: {isValid}");
-        Console.WriteLine($"  Format Match: {formatMatch}");
-        Console.WriteLine($"  Precision: {precision}m");
-        Console.WriteLine();
+        System.Diagnostics.Debug.WriteLine($"Code: '{code}'");
+        System.Diagnostics.Debug.WriteLine($"  Valid: {isValid}");
+        System.Diagnostics.Debug.WriteLine($"  Format Match: {formatMatch}");
+        System.Diagnostics.Debug.WriteLine($"  Precision: {precision}m");
+        //System.Diagnostics.Debug.WriteLine();
       }
     }
   }
