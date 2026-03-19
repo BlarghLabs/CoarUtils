@@ -59,7 +59,12 @@ namespace CoarUtils.commands.logging {
         var className = "";
         if (methodInfo.DeclaringType != null) {
           if (methodInfo.DeclaringType.Name.StartsWith("<") || methodInfo.DeclaringType.Name.EndsWith(">")) {
-            className = methodInfo.DeclaringType.ReflectedType.Name;
+            // walk up ReflectedType chain until we find a non-compiler-generated name
+            var resolvedType = methodInfo.DeclaringType.ReflectedType;
+            while (resolvedType != null && (resolvedType.Name.StartsWith("<") || resolvedType.Name.Contains("DisplayClass"))) {
+              resolvedType = resolvedType.DeclaringType;
+            }
+            className = resolvedType?.Name ?? methodInfo.DeclaringType.Name;
           } else {
             className = methodInfo.DeclaringType.Name;
           }
@@ -82,11 +87,27 @@ namespace CoarUtils.commands.logging {
             }
           } else {
             method = methodInfo.Name;
+            // handle compiler-generated lambda names like <Execute>b__15
+            if (method.Contains("<") && method.Contains(">")) {
+              int pFrom = method.IndexOf("<") + 1;
+              int pTo = method.IndexOf(">");
+              if (pFrom < pTo) {
+                method = method.Substring(pFrom, pTo - pFrom);
+              }
+            }
           }
         }
         var nameSpace = "";
         if (methodInfo.DeclaringType != null) {
+          // for compiler-generated types, namespace may be null — walk up to find it
           nameSpace = methodInfo.DeclaringType.Namespace;
+          if (string.IsNullOrEmpty(nameSpace)) {
+            var resolvedType = methodInfo.DeclaringType.ReflectedType ?? methodInfo.DeclaringType.DeclaringType;
+            while (resolvedType != null && string.IsNullOrEmpty(resolvedType.Namespace)) {
+              resolvedType = resolvedType.DeclaringType;
+            }
+            nameSpace = resolvedType?.Namespace ?? "";
+          }
         }
 
         //for format consistency
@@ -152,7 +173,12 @@ namespace CoarUtils.commands.logging {
         var className = "";
         if (methodInfo.DeclaringType != null) {
           if (methodInfo.DeclaringType.Name.StartsWith("<") || methodInfo.DeclaringType.Name.EndsWith(">")) {
-            className = methodInfo.DeclaringType.ReflectedType.Name;
+            // walk up ReflectedType chain until we find a non-compiler-generated name
+            var resolvedType = methodInfo.DeclaringType.ReflectedType;
+            while (resolvedType != null && (resolvedType.Name.StartsWith("<") || resolvedType.Name.Contains("DisplayClass"))) {
+              resolvedType = resolvedType.DeclaringType;
+            }
+            className = resolvedType?.Name ?? methodInfo.DeclaringType.Name;
           } else {
             className = methodInfo.DeclaringType.Name;
           }
@@ -175,11 +201,27 @@ namespace CoarUtils.commands.logging {
             }
           } else {
             method = methodInfo.Name;
+            // handle compiler-generated lambda names like <Execute>b__15
+            if (method.Contains("<") && method.Contains(">")) {
+              int pFrom = method.IndexOf("<") + 1;
+              int pTo = method.IndexOf(">");
+              if (pFrom < pTo) {
+                method = method.Substring(pFrom, pTo - pFrom);
+              }
+            }
           }
         }
         var nameSpace = "";
         if (methodInfo.DeclaringType != null) {
+          // for compiler-generated types, namespace may be null — walk up to find it
           nameSpace = methodInfo.DeclaringType.Namespace;
+          if (string.IsNullOrEmpty(nameSpace)) {
+            var resolvedType = methodInfo.DeclaringType.ReflectedType ?? methodInfo.DeclaringType.DeclaringType;
+            while (resolvedType != null && string.IsNullOrEmpty(resolvedType.Namespace)) {
+              resolvedType = resolvedType.DeclaringType;
+            }
+            nameSpace = resolvedType?.Namespace ?? "";
+          }
         }
         //for format consistency
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/bb926074-d593-4e0b-8754-7026acc607ec/datetime-tostring-colon-replaced-with-period?forum=csharpgeneral
