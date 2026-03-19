@@ -82,12 +82,22 @@ namespace CoarUtils.commands.logging {
               int pFrom = methodInfo.DeclaringType.Name.IndexOf("<") + "<".Length;
               int pTo = methodInfo.DeclaringType.Name.LastIndexOf(">");
               method = methodInfo.DeclaringType.Name.Substring(pFrom, pTo - pFrom);
+              // handle doubly-nested async lambdas like <<Execute>b__9>d → "Execute"
+              if (method.Contains("<") && method.Contains(">")) {
+                int innerFrom = method.IndexOf("<") + 1;
+                int innerTo = method.IndexOf(">");
+                if (innerFrom < innerTo) {
+                  method = method.Substring(innerFrom, innerTo - innerFrom);
+                }
+              } else if (method.Contains("b__")) {
+                method = method.Substring(0, method.IndexOf("b__")).TrimEnd('>');
+              }
             } else {
               method = methodInfo.DeclaringType.Name;
             }
           } else {
             method = methodInfo.Name;
-            // handle compiler-generated lambda names like <Execute>b__15
+            // handle compiler-generated lambda names like <Execute>b__15 → "Execute"
             if (method.Contains("<") && method.Contains(">")) {
               int pFrom = method.IndexOf("<") + 1;
               int pTo = method.IndexOf(">");
@@ -196,12 +206,22 @@ namespace CoarUtils.commands.logging {
               int pFrom = methodInfo.DeclaringType.Name.IndexOf("<") + "<".Length;
               int pTo = methodInfo.DeclaringType.Name.LastIndexOf(">");
               method = methodInfo.DeclaringType.Name.Substring(pFrom, pTo - pFrom);
+              // handle doubly-nested async lambdas like <<Execute>b__9>d → "Execute"
+              if (method.Contains("<") && method.Contains(">")) {
+                int innerFrom = method.IndexOf("<") + 1;
+                int innerTo = method.IndexOf(">");
+                if (innerFrom < innerTo) {
+                  method = method.Substring(innerFrom, innerTo - innerFrom);
+                }
+              } else if (method.Contains("b__")) {
+                method = method.Substring(0, method.IndexOf("b__")).TrimEnd('>');
+              }
             } else {
               method = methodInfo.DeclaringType.Name;
             }
           } else {
             method = methodInfo.Name;
-            // handle compiler-generated lambda names like <Execute>b__15
+            // handle compiler-generated lambda names like <Execute>b__15 → "Execute"
             if (method.Contains("<") && method.Contains(">")) {
               int pFrom = method.IndexOf("<") + 1;
               int pTo = method.IndexOf(">");
