@@ -29,6 +29,9 @@
     <Compile Include="models\ExternalResultBaseModel.cs" />
     <Compile Include="models\SqsMessageModel.cs" />
     <Compile Include="models\commands\ResponseStatusModel.cs" />
+    <Compile Include="models\gis\Coordinate.cs" />
+    <Compile Include="models\gis\Polygon.cs" />
+    <Compile Include="models\AddressFields.cs" />
   </ItemGroup>
 
   <ItemGroup>

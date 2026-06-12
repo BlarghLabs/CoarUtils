@@ -8,6 +8,24 @@ namespace CoarUtils.commands.slack {
     public const string BASE = "https://hooks.slack.com";
     public const string DEFAULT_HEADER = "BORP";
 
+    // Compat overload for callers ported from MoarUtils that didn't pass a CancellationToken.
+    public static void ExecuteAsync(
+      string content,
+      string resource,
+      string header = DEFAULT_HEADER
+    ) {
+      ExecuteAsync(content, resource, CancellationToken.None, header);
+    }
+
+    // Compat overload for ExecuteSync without cancellationToken.
+    public static bool ExecuteSync(
+      string content,
+      string resource,
+      string header = DEFAULT_HEADER
+    ) {
+      return ExecuteSync(content, resource, CancellationToken.None, header);
+    }
+
     public static void ExecuteAsync(
       string content,
       string resource,

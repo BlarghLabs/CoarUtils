@@ -364,5 +364,36 @@ namespace CoarUtils.commands.logging {
     public static void S(object o, CancellationToken? cancellationToken = null, string instanceId = null) {
       Execute(s: Severity.success, o: o, instanceId: instanceId, cancellationToken: cancellationToken);
     }
+
+    // Compat shims for callers ported from MoarUtils.
+    public static void Log() {
+      I("");
+    }
+
+    // Compat overload: MoarUtils `LogIt.E(ex, fireEmailAsWell: true)`. We ignore fireEmailAsWell.
+    public static void E(object o, bool fireEmailAsWell) {
+      Execute(s: Severity.error, o: o);
+    }
+
+    public static void I(object o, bool fireEmailAsWell) {
+      Execute(s: Severity.info, o: o);
+    }
+
+    public static void W(object o, bool fireEmailAsWell) {
+      Execute(s: Severity.warning, o: o);
+    }
+
+    public static void Log(object o, Severity severity, bool fireEmailAsWell = false, bool removeNewlinesFromMessage = true) {
+      Execute(s: severity, o: o, removeNewlinesFromMessage: removeNewlinesFromMessage);
+    }
+
+    public static string GetMethodAndClass() {
+      var mb = new StackFrame(1).GetMethod();
+      return $"{mb?.DeclaringType?.Name}|{mb?.Name}";
+    }
+
+    public static void FlushToFile() {
+      NLog.LogManager.Flush();
+    }
   }
 }
