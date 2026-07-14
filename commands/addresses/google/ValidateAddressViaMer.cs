@@ -20,31 +20,20 @@ namespace CoarUtils.commands.addresses.google {
       public string sublocality { get; set; }
     }
 
-    public static void Execute(
-      out HttpStatusCode hsc,
-      out string status,
-      out Response response,
+    public static async Task<Response> Execute(
       Request request,
       CancellationToken cancellationToken
     ) {
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
-      response = new Response { };
+      var response = new Response { };
       try {
         if (request == null) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "params were null";
-          return;
+          return response = new Response { status = "params were null" };
         }
         if (string.IsNullOrWhiteSpace(request.address)) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "address required";
-          return;
+          return response = new Response { status = "address required" };
         }
         if (string.IsNullOrWhiteSpace(request.apiKey)) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "apiKey required";
-          return;
+          return response = new Response { status = "apiKey required" };
         }
 
         var httpClient = new HttpClient();
@@ -63,9 +52,9 @@ namespace CoarUtils.commands.addresses.google {
         var resource = $"v1:validateAddress?alt=json&key={request.apiKey}";
         //var resource = $"v1%3AvalidateAddress?alt=json&key={request.apiKey}";
         //var resource = HttpUtility.UrlEncode($"v1:validateAddress?alt=json&key={request.apiKey}");
-        var restResponse = httpClient.PostAsync($"{baseUrl}{resource}", content).Result;
+        var restResponse = await httpClient.PostAsync($"{baseUrl}{resource}", content, cancellationToken).ConfigureAwait(false);
 
-        var responseString = restResponse.Content.ReadAsStringAsync().Result;
+        var responseString = await restResponse.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         LogIt.I(responseString, cancellationToken);
 
         ////https://content-addressvalidation.googleapis.com/v1:validateAddress?alt=json&key=KEY_HERE
@@ -158,25 +147,20 @@ namespace CoarUtils.commands.addresses.google {
         //  }
         //}
 
-        hsc = HttpStatusCode.OK;
-        return;
+        response.httpStatusCode = HttpStatusCode.OK;
+        return response;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
-          return;
+          return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-
         LogIt.E(ex, cancellationToken);
-        hsc = HttpStatusCode.InternalServerError;
-        status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
-        return;
+        return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         request.apiKey = "DO_NOT_LOG";
         LogIt.I(JsonConvert.SerializeObject(
           new {
-            hsc,
-            status,
+            response.httpStatusCode,
+            response.status,
             request,
             //ipAddress = GetPublicIpAddress.Execute(hc),
             //executedBy = GetExecutingUsername.Execute()

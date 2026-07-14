@@ -24,48 +24,35 @@ namespace CoarUtils.commands.aws.elb {
 
     #endregion
 
-    public static void Execute(
+    public static async Task<Response> Execute(
       Request request,
-      out HttpStatusCode hsc,
-      out Response response,
-      out string status,
       CancellationToken cancellationToken,
       HttpContext hc = null
     ) {
-      response = new Response { };
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
+      var response = new Response { };
       try {
         using (var aelbc = new AmazonElasticLoadBalancingClient(
           awsAccessKeyId: request.awsAccessKey,
           awsSecretAccessKey: request.awsSecretKey,
           region: request.re
         )) {
-          var dlbr = aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
+          var dlbr = await aelbc.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest {
             LoadBalancerNames = new List<string> {
                request.loadBalancerName
              },
-          }, cancellationToken: cancellationToken).Result;
+          }, cancellationToken: cancellationToken).ConfigureAwait(false);
           response.total = dlbr.LoadBalancerDescriptions[0].Instances.Count;
           //TODO: get health and unhelathy
 
-          hsc = dlbr.HttpStatusCode;
-          return;
+          response.httpStatusCode = dlbr.HttpStatusCode;
+          return response;
         }
-        //hsc = HttpStatusCode.OK;
-        //status = "";
-        //return;
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
-          return;
+          return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
-
         LogIt.E(ex, cancellationToken);
-        hsc = HttpStatusCode.InternalServerError;
-        status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
-        return;
+        return response = new Response { status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS, httpStatusCode = HttpStatusCode.InternalServerError };
       } finally {
         //DO NOT LOG KEYS
         request.awsAccessKey = "DO_NOT_LOG";
@@ -73,8 +60,8 @@ namespace CoarUtils.commands.aws.elb {
 
         LogIt.I(JsonConvert.SerializeObject(
           new {
-            hsc,
-            status,
+            response.httpStatusCode,
+            response.status,
             request,
             response,
             //ipAddress = GetPublicIpAddress.Execute(hc),

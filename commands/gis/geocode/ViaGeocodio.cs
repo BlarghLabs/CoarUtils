@@ -67,8 +67,7 @@ namespace CoarUtils.commands.gis.geocode {
         //if (wp != null) {
         //  client.Proxy = wp;
         //}
-        //var restResponse = await client.ExecuteAsync(restRequest).ConfigureAwait(false);
-        var restResponse = client.ExecuteAsync(restRequest).Result;
+        var restResponse = await client.ExecuteAsync(restRequest, cancellationToken).ConfigureAwait(false);
 
         if (restResponse.ErrorException != null) {
           return response = new Response { status = $"response had error exception: {restResponse.ErrorException.Message}" };

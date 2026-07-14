@@ -47,9 +47,9 @@ namespace CoarUtils.commands.aws.alb {
           //   TargetGroupArns =  new List<string> { request.targetGroupArn },
           //}, cancellationToken: cancellationToken).Result;
 
-          var describeTargetHealthResponse = aelbc.DescribeTargetHealthAsync(new DescribeTargetHealthRequest {
+          var describeTargetHealthResponse = await aelbc.DescribeTargetHealthAsync(new DescribeTargetHealthRequest {
             TargetGroupArn = request.targetGroupArn,
-          }, cancellationToken: cancellationToken).Result;
+          }, cancellationToken: cancellationToken).ConfigureAwait(false);
 
           response.healthy = describeTargetHealthResponse.TargetHealthDescriptions
             .Count(x => x.TargetHealth.State == TargetHealthStateEnum.Healthy)

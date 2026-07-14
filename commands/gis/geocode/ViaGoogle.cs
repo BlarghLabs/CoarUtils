@@ -27,7 +27,10 @@ namespace CoarUtils.commands.gis.geocode {
 
     private const double m_dThrottleSeconds = .9; //1.725; //0.1; //100ms //Convert.ToDouble(1.725);
     private static DateTime dtLastRequest = DateTime.UtcNow;
-    private static Mutex mLastRequest = new Mutex();
+    // Async gate, replacing a Mutex + lock + Thread.Sleep. Same inter-request spacing, but a caller that has to
+    // wait yields its thread instead of blocking one -- you cannot await inside a lock, and blocking a thread
+    // pool thread for up to .9s per address is how you starve the pool under concurrent geocoding.
+    private static readonly SemaphoreSlim throttleGate = new SemaphoreSlim(1, 1);
 
     private static string GetUrlSecondPart(string location, string key = null) {
       string locationUrl = "";
@@ -49,26 +52,22 @@ namespace CoarUtils.commands.gis.geocode {
       CancellationToken cancellationToken,
       WebProxy wp = null
     ) {
-      lock (mLastRequest) {
-        //Force delay of 1.725 seconds between requests: re: http://groups.google.com/group/Google-Maps-API/browse_thread/thread/906e871bcb8c15fd
-        TimeSpan tsDuration;
-        bool bRequiredWaitTimeHasElapsed;
-        do {
-          tsDuration = DateTime.UtcNow - dtLastRequest;
-          bRequiredWaitTimeHasElapsed = (tsDuration.TotalSeconds > m_dThrottleSeconds);
-          if (!bRequiredWaitTimeHasElapsed) {
-            int iMillisecondsToSleep = Convert.ToInt32((m_dThrottleSeconds - tsDuration.TotalSeconds) * Convert.ToDouble(1000));
-            Thread.Sleep(iMillisecondsToSleep);
-          }
-        } while (!bRequiredWaitTimeHasElapsed);
+      //Force delay of 1.725 seconds between requests: re: http://groups.google.com/group/Google-Maps-API/browse_thread/thread/906e871bcb8c15fd
+      await throttleGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+      try {
+        var remaining = TimeSpan.FromSeconds(m_dThrottleSeconds) - (DateTime.UtcNow - dtLastRequest);
+        if (remaining > TimeSpan.Zero) {
+          await Task.Delay(remaining, cancellationToken).ConfigureAwait(false);
+        }
+      } finally {
+        throttleGate.Release();
       }
 
-      //var response = await ExecuteNoRateLimit(
-      var response = ExecuteNoRateLimit(
+      var response = await ExecuteNoRateLimit(
         request: request,
         wp: wp,
         cancellationToken: cancellationToken
-      ).Result;
+      ).ConfigureAwait(false);
       if (response.httpStatusCode != HttpStatusCode.OK) {
         LogIt.E("unable to geocode");
       }
@@ -98,8 +97,7 @@ namespace CoarUtils.commands.gis.geocode {
           //if (wp != null) {
           //  client.Proxy = wp;
           //}
-          //var restResponse = await client.ExecuteAsync(restRequest).ConfigureAwait(false);
-          var restResponse = client.ExecuteAsync(restRequest).Result;
+          var restResponse = await client.ExecuteAsync(restRequest, cancellationToken).ConfigureAwait(false);
           if (restResponse.ErrorException != null) {
             return response = new Response { status = $"response had error exception: {restResponse.ErrorException.Message}" };
           }
@@ -145,7 +143,7 @@ namespace CoarUtils.commands.gis.geocode {
               };
             case "UNKNOWN_ERROR":
               if (trys < request.maxTriesIfQueryLimitReached) {
-                Thread.Sleep(1000 * trys);
+                await Task.Delay(1000 * trys, cancellationToken).ConfigureAwait(false);
               }
               break;
             default:

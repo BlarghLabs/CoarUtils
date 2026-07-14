@@ -17,15 +17,16 @@ namespace CoarUtils.commands.slack {
       ExecuteAsync(content, resource, CancellationToken.None, header);
     }
 
-    // Compat overload for ExecuteSync without cancellationToken.
-    public static bool ExecuteSync(
+    // Compat overload for Execute without cancellationToken.
+    public static async Task<bool> Execute(
       string content,
       string resource,
       string header = DEFAULT_HEADER
     ) {
-      return ExecuteSync(content, resource, CancellationToken.None, header);
+      return await Execute(content, resource, CancellationToken.None, header).ConfigureAwait(false);
     }
 
+    // Fire-and-forget: the caller does not care about the outcome and must not wait on the POST.
     public static void ExecuteAsync(
       string content,
       string resource,
@@ -33,9 +34,9 @@ namespace CoarUtils.commands.slack {
       string header = DEFAULT_HEADER
     ) {
       try {
-        Task.Factory.StartNew(() => {
+        _ = Task.Run(async () => {
           try {
-            if (!ExecuteSync(content: content, resource: resource, header: header, cancellationToken: cancellationToken)) {
+            if (!await Execute(content: content, resource: resource, header: header, cancellationToken: cancellationToken).ConfigureAwait(false)) {
               LogIt.W("unable to publish to slack", cancellationToken);
             }
           } catch (Exception ex) {
@@ -48,13 +49,13 @@ namespace CoarUtils.commands.slack {
     }
 
 
-    public static bool ExecuteSync(
+    // Awaitable: the caller needs to know the post landed (and, at shutdown, that it landed before exiting).
+    public static async Task<bool> Execute(
       string content,
       string resource,
       CancellationToken cancellationToken,
       string header = DEFAULT_HEADER
     ) {
-      //TODO: do this async in task
       try {
         var h = "----------" + (string.IsNullOrEmpty(header) ? DEFAULT_HEADER : header.ToUpper()) + "----------" + "\n";
         var client = new RestClient(BASE);
@@ -69,7 +70,7 @@ namespace CoarUtils.commands.slack {
           text = content
         });
 
-        var restResponse = client.ExecuteAsync(restRequest).Result;
+        var restResponse = await client.ExecuteAsync(restRequest, cancellationToken).ConfigureAwait(false);
 
         //var content = response.Content;
         if (restResponse.ErrorException != null) {

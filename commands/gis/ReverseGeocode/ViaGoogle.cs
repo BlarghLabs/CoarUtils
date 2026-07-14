@@ -1,6 +1,9 @@
-﻿using System;
+using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using CoarUtils.commands.logging;
+using CoarUtils.models.commands;
 using CoarUtils.models.gis;
 using RestSharp;
 
@@ -8,26 +11,35 @@ namespace CoarUtils.utils.gis.reversegeocode {
 
   //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
   public static class ViaGoogle {
-    public static bool Execute(
-      decimal lat,
-      decimal lng,
-      string apiKey,
-      out AddressFields af
+    #region models
+    public class Request {
+      public decimal lat { get; set; }
+      public decimal lng { get; set; }
+      public string apiKey { get; set; }
+    }
+    public class Response : ResponseStatusModel {
+      public AddressFields addressFields { get; set; }
+    }
+    #endregion
+
+    public static async Task<Response> Execute(
+      Request request,
+      CancellationToken cancellationToken
     ) {
-      af = new AddressFields { };
+      var response = new Response { addressFields = new AddressFields { } };
       try {
-        var resource = "maps/api/geocode/json?latlng=" + lat.ToString() + "," + lng.ToString() + "&key=" + apiKey;
+        var resource = "maps/api/geocode/json?latlng=" + request.lat.ToString() + "," + request.lng.ToString() + "&key=" + request.apiKey;
         var client = new RestClient("https://maps.googleapis.com/");
-        var request = new RestRequest(resource, Method.Get);
-        request.RequestFormat = DataFormat.Json;
-        var response = client.ExecuteAsync(request).Result;
-        if (response.ErrorException != null) {
-          LogIt.W(response.ErrorException);
+        var restRequest = new RestRequest(resource, Method.Get);
+        restRequest.RequestFormat = DataFormat.Json;
+        var restResponse = await client.ExecuteAsync(restRequest, cancellationToken).ConfigureAwait(false);
+        if (restResponse.ErrorException != null) {
+          LogIt.W(restResponse.ErrorException);
         }
-        if (response.StatusCode != HttpStatusCode.OK) {
-          LogIt.W(response.StatusCode);
+        if (restResponse.StatusCode != HttpStatusCode.OK) {
+          LogIt.W(restResponse.StatusCode);
         }
-        var content = response.Content;
+        var content = restResponse.Content;
         dynamic json = Newtonsoft.Json.Linq.JObject.Parse(content);
         dynamic address_components = json.results[0].address_components;
 
@@ -37,53 +49,54 @@ namespace CoarUtils.utils.gis.reversegeocode {
           for (int j = 0; j < ac.types.Count; j++) {
             var t = (string)ac.types[j].Value;
             if (t.Equals("street_number")) {
-              af.line1 = ac.short_name.Value;
+              response.addressFields.line1 = ac.short_name.Value;
               break;
             }
           }
           for (int j = 0; j < ac.types.Count; j++) {
             var t = (string)ac.types[j].Value;
             if (t.Equals("route")) {
-              af.street = ac.short_name.Value;
+              response.addressFields.street = ac.short_name.Value;
               break;
             }
           }
           for (int j = 0; j < ac.types.Count; j++) {
             var t = (string)ac.types[j].Value;
             if (t.Equals("sublocality")) {
-              af.city = ac.short_name.Value;
+              response.addressFields.city = ac.short_name.Value;
               break;
             }
           }
           for (int j = 0; j < ac.types.Count; j++) {
             var t = (string)ac.types[j].Value;
             if (t.Equals("administrative_area_level_1")) {
-              af.statecode = ac.short_name.Value;
-              af.state = ac.long_name.Value;
+              response.addressFields.statecode = ac.short_name.Value;
+              response.addressFields.state = ac.long_name.Value;
               break;
             }
           }
           for (int j = 0; j < ac.types.Count; j++) {
             var t = (string)ac.types[j].Value;
             if (t.Equals("country")) {
-              af.countrycode = ac.short_name.Value;
+              response.addressFields.countrycode = ac.short_name.Value;
               break;
             }
           }
           for (int j = 0; j < ac.types.Count; j++) {
             var t = (string)ac.types[j].Value;
             if (t.Equals("postal_code")) {
-              af.postal = ac.short_name.Value;
+              response.addressFields.postal = ac.short_name.Value;
               break;
             }
           }
 
         }
-        return true;
+        response.httpStatusCode = HttpStatusCode.OK;
+        return response;
       } catch (Exception ex) {
-        LogIt.W(ex.Message + "|" + lat + "|" + lng);
+        LogIt.W(ex.Message + "|" + request.lat + "|" + request.lng);
       }
-      return false;
+      return response;
     }
   }
 }
