@@ -55,7 +55,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />
 
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.400.121" />
-    <PackageReference Include="AWSSDK.EC2" Version="3.7.436.9" />
+    <!-- AWSSDK.EC2 removed 2026-07-14: referenced by NOTHING in CoarUtils (0 files), but it is 3.8MB
+         and every consuming app shipped it in every deploy. Re-add if a command ever needs EC2. -->
     <PackageReference Include="Tiny.RestClient" Version="1.7.1" />
   </ItemGroup>
 

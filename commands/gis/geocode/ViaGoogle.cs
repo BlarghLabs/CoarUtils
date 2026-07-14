@@ -32,7 +32,14 @@ namespace CoarUtils.commands.gis.geocode {
     private static string GetUrlSecondPart(string location, string key = null) {
       string locationUrl = "";
       if (!String.IsNullOrEmpty(location)) {
-        locationUrl = "address=" + Uri.EscapeDataString(CondenseWhiteSpace.Execute(Uri.EscapeDataString(location.Replace("+", " "))));
+        // Encode ONCE. This used to call Uri.EscapeDataString twice, nested — so a space became "%20" and
+        // then the '%' was itself escaped into "%2520". Google received the literal text
+        // "1600%2520Pennsylvania%2520Ave%2520NW%252C%2520Washington..." and fuzzy-matched the only real words
+        // left in it, returning Washington, PENNSYLVANIA for the White House — 128 miles off, and reported as
+        // a normal APPROXIMATE result rather than an error, so nothing ever surfaced it.
+        // Order matters: condense the whitespace on the RAW string, then escape — condensing after escaping
+        // is pointless, since escaping has already removed every space.
+        locationUrl = "address=" + Uri.EscapeDataString(CondenseWhiteSpace.Execute(location.Replace("+", " ")));
       }
       return "maps/api/geocode/json?" + locationUrl + "&sensor=false" + (string.IsNullOrEmpty(key) ? "" : $"&key={key}");
     }
