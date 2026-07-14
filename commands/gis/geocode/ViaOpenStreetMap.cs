@@ -20,7 +20,9 @@ namespace CoarUtils.commands.gis.geocode {
     public class Request {
       public string address { get; set; }
       public string userAgent { get; set; } = "MoarUtils Geocoder/1.0"; // Required by Nominatim
-      public int maxTriesIfQueryLimitReached { get; set; } = 1;
+      // 3, not 1. Every caller relies on this default (none of them set it), and at 1 the 429 back-off below
+      // can never fire -- which is the state we were effectively in while the retry block was commented out.
+      public int maxTriesIfQueryLimitReached { get; set; } = 3;
       public int limit { get; set; } = 1; // Number of results to return
       public string countryCode { get; set; } // Optional country code filter (e.g., "us", "ca")
       public bool addressDetails { get; set; } = false; // Include detailed address components
@@ -38,7 +40,11 @@ namespace CoarUtils.commands.gis.geocode {
 
     private const double m_dThrottleSeconds = 1.1; // Nominatim requires max 1 request per second
     private static DateTime dtLastRequest = DateTime.UtcNow;
-    private static Mutex mLastRequest = new Mutex();
+    // Async gate, replacing a Mutex + lock + Thread.Sleep. Same 1-request-per-second rate, but the waiting
+    // caller yields its thread instead of blocking one. That matters: callers geocode concurrently (GeoCompare
+    // runs three providers in parallel; mal bulk-geocodes lists), and blocking a thread pool thread for up to
+    // 1.1s per address is how you starve the pool.
+    private static readonly SemaphoreSlim throttleGate = new SemaphoreSlim(1, 1);
 
     private static string BuildQueryString(Request request) {
       var queryParams = new List<string>();
@@ -66,26 +72,23 @@ namespace CoarUtils.commands.gis.geocode {
       CancellationToken cancellationToken,
       WebProxy wp = null
     ) {
-      lock (mLastRequest) {
-        // Force delay to respect Nominatim rate limits (max 1 request per second)
-        TimeSpan tsDuration;
-        bool bRequiredWaitTimeHasElapsed;
-        do {
-          tsDuration = DateTime.UtcNow - dtLastRequest;
-          bRequiredWaitTimeHasElapsed = (tsDuration.TotalSeconds > m_dThrottleSeconds);
-          if (!bRequiredWaitTimeHasElapsed) {
-            int iMillisecondsToSleep = Convert.ToInt32((m_dThrottleSeconds - tsDuration.TotalSeconds) * Convert.ToDouble(1000));
-            Thread.Sleep(iMillisecondsToSleep);
-          }
-        } while (!bRequiredWaitTimeHasElapsed);
+      // Respect Nominatim's usage policy: an absolute maximum of 1 request/second. Exceeding it gets the
+      // caller's IP blocked, and GeoCompare is a PUBLIC site pointing at this, so that is a real risk.
+      await throttleGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+      try {
+        var remaining = TimeSpan.FromSeconds(m_dThrottleSeconds) - (DateTime.UtcNow - dtLastRequest);
+        if (remaining > TimeSpan.Zero) {
+          await Task.Delay(remaining, cancellationToken).ConfigureAwait(false);
+        }
+      } finally {
+        throttleGate.Release();
       }
 
-      //var response = await ExecuteNoRateLimit(
-      var response = ExecuteNoRateLimit(
+      var response = await ExecuteNoRateLimit(
         request: request,
         wp: wp,
         cancellationToken: cancellationToken
-      ).Result;
+      ).ConfigureAwait(false);
 
       if (response.httpStatusCode != HttpStatusCode.OK) {
         LogIt.E("unable to geocode via OpenStreetMap");
@@ -112,9 +115,10 @@ namespace CoarUtils.commands.gis.geocode {
           return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
 
+        var client = new RestClient("https://nominatim.openstreetmap.org/");
+
         int trys = 1;
         do {
-          var client = new RestClient("https://nominatim.openstreetmap.org/");
           var restRequest = new RestRequest(
             resource: $"search?{BuildQueryString(request)}",
             method: Method.Get
@@ -127,21 +131,25 @@ namespace CoarUtils.commands.gis.geocode {
           //  client.Proxy = wp;
           //}
 
-          //var restResponse = await client.ExecuteAsync(restRequest).ConfigureAwait(false);
-          var restResponse = client.ExecuteAsync(restRequest).Result;
+          var restResponse = await client.ExecuteAsync(restRequest, cancellationToken).ConfigureAwait(false);
 
           if (restResponse.ErrorException != null) {
             return response = new Response { status = $"response had error exception: {restResponse.ErrorException.Message}" };
           }
 
-          //if (restResponse.StatusCode == HttpStatusCode.TooManyRequests) {
-          //  if (trys < request.maxTriesIfQueryLimitReached) {
-          //    Thread.Sleep(2000 * trys); // Wait longer for rate limit
-          //    trys++;
-          //    continue;
-          //  }
-          //  return response = new Response { status = "rate limit exceeded" };
-          //}
+          // 429 back-off. This block was COMMENTED OUT, which made the whole do/while dead: with no `continue`
+          // left in the loop every path returned, so `trys` never advanced, maxTriesIfQueryLimitReached was
+          // silently ignored, and a Nominatim rate-limit surfaced to the caller as a plain failure. In mal's
+          // bulk wizard geocode that meant the address was simply skipped; in GeoCompare the user just saw
+          // "TooManyRequests". Task.Delay, not Thread.Sleep -- see the throttle note above.
+          if (restResponse.StatusCode == HttpStatusCode.TooManyRequests) {
+            if (trys < request.maxTriesIfQueryLimitReached) {
+              await Task.Delay(2000 * trys, cancellationToken).ConfigureAwait(false); // linear back-off: 2s, 4s, ...
+              trys++;
+              continue;
+            }
+            return response = new Response { status = "rate limit exceeded" };
+          }
 
           if (restResponse.StatusCode != HttpStatusCode.OK) {
             return response = new Response { status = $"StatusCode was {restResponse.StatusCode}" };
