@@ -64,11 +64,11 @@ namespace CoarUtils.commands.gis.geocode {
       }
 
       //var response = await ExecuteNoRateLimit(
-      var response = ExecuteNoRateLimit(
+      var response = await ExecuteNoRateLimit(
         request: request,
         wp: wp,
         cancellationToken: cancellationToken
-      ).Result;
+      );
       if (response.httpStatusCode != HttpStatusCode.OK) {
         LogIt.E("unable to geocode");
       }
