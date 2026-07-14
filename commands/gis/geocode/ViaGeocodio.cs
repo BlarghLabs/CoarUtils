@@ -90,14 +90,11 @@ namespace CoarUtils.commands.gis.geocode {
 
         var location = json.results[0].location;
         if (location != null) {
-          var lng = Convert.ToDecimal(location.lat.Value);
-          var lat = Convert.ToDecimal(location.lng.Value);
+          // Geocodio returns {"location":{"lat":..,"lng":..}}. These two were transposed (lat read into lng
+          // and vice versa), which handed back swapped coordinates.
+          var lat = Convert.ToDecimal(location.lat.Value);
+          var lng = Convert.ToDecimal(location.lng.Value);
           if ((lat != 0) && (lng != 0)) {
-
-            if (response.coordinate.lat == 0 || response.coordinate.lng == 0) {
-              LogIt.W("here");
-            }
-
             return response = new Response {
               coordinate = new Coordinate {
                 geocoder = Geocoder.Geocodio,
