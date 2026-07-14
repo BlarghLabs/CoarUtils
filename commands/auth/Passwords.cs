@@ -16,8 +16,7 @@ namespace CoarUtils.Utils {
     public static string CreateRandomPassword(int PasswordLength) {
       String _allowedChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ23456789";
       Byte[] randomBytes = new Byte[PasswordLength];
-      RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-      rng.GetBytes(randomBytes);
+      RandomNumberGenerator.Fill(randomBytes);
       char[] chars = new char[PasswordLength];
       int allowedCharCount = _allowedChars.Length;
 
@@ -30,8 +29,7 @@ namespace CoarUtils.Utils {
 
     public static int CreateRandomSalt() {
       Byte[] _saltBytes = new Byte[4];
-      RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-      rng.GetBytes(_saltBytes);
+      RandomNumberGenerator.Fill(_saltBytes);
 
       return ((((int)_saltBytes[0]) << 24) + (((int)_saltBytes[1]) << 16) +
         (((int)_saltBytes[2]) << 8) + ((int)_saltBytes[3]));

@@ -24,7 +24,7 @@ namespace CoarUtils.commands.currency {
             .ToDictionary(x => x.Key, x => x.First().CurrencySymbol);
       } catch (Exception ex) {
         LogIt.I(ex, CancellationToken.None);
-        throw ex;
+        throw;
       }
     }
     public static bool TryGet(

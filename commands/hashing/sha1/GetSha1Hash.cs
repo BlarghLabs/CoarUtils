@@ -6,7 +6,7 @@ namespace CoarUtils.commands.hashing.sha1 {
     //this is converting 160 byte sha1 array to 40 char hex
     public static string Execute(byte[] ba) {
       string hexStringHash;
-      using (var sha1 = new SHA1CryptoServiceProvider()) {
+      using (var sha1 = SHA1.Create()) {
         hexStringHash = Convert.ToHexString(sha1.ComputeHash(ba));
       }
       return hexStringHash;

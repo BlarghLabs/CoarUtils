@@ -13,14 +13,14 @@ namespace CoarUtils.commands.hashing {
         }
       } catch (Exception ex) {
         LogIt.E(ex);
-        throw ex;
+        throw;
       }
     }
 
     public static string Execute(Stream s) {
       try {
         using (var bs = new BufferedStream(s)) {
-          using (var sha1 = new SHA1Managed()) {
+          using (var sha1 = SHA1.Create()) {
             byte[] hash = sha1.ComputeHash(bs);
             var formatted = new StringBuilder(2 * hash.Length);
             foreach (var b in hash) {
@@ -32,13 +32,13 @@ namespace CoarUtils.commands.hashing {
         }
       } catch (Exception ex) {
         LogIt.E(ex);
-        throw ex;
+        throw;
       }
     }
 
     public static string Execute(byte[] ba) {
       try {
-        using (var sha1 = new SHA1Managed()) {
+        using (var sha1 = SHA1.Create()) {
           byte[] hash = sha1.ComputeHash(ba);
           var formatted = new StringBuilder(2 * hash.Length);
           foreach (var b in hash) {
@@ -49,13 +49,13 @@ namespace CoarUtils.commands.hashing {
         }
       } catch (Exception ex) {
         LogIt.E(ex);
-        throw ex;
+        throw;
       }
     }
 
 
     public static string Execute(string input) {
-      using (var sha1 = new SHA1Managed()) {
+      using (var sha1 = SHA1.Create()) {
         var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(input));
         var sb = new StringBuilder(hash.Length * 2);
 

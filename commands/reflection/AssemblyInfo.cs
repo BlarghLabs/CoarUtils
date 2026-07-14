@@ -38,7 +38,7 @@ namespace CoarUtils.Utils {
     public static string ExecutingAssemblyPath {
       get {
         //made this lame
-        return Assembly.GetExecutingAssembly().CodeBase.ToLower().Replace("\\", "/");
+        return Assembly.GetExecutingAssembly().Location.ToLower().Replace("\\", "/");
       }
     }
 

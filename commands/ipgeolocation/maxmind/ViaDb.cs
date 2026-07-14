@@ -63,7 +63,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
           LogIt.W(ip + "|" + ex.Message);
         }
         if (throwOnError) {
-          throw ex;
+          throw;
         } else {
           return null;
         }
@@ -80,7 +80,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
       } catch (Exception ex) {
         LogIt.E(ex);
         LogIt.W(ip);
-        throw ex;
+        throw;
       }
     }
 
@@ -92,7 +92,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
       } catch (Exception ex) {
         LogIt.W(ip + "|" + ex.Message);
         if (throwOnError) {
-          throw ex;
+          throw;
         } else {
           return null;
         }
@@ -106,7 +106,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
       } catch (Exception ex) {
         LogIt.W(ip + "|" + ex.Message);
         if (throwOnError) {
-          throw ex;
+          throw;
         } else {
           return null;
         }
@@ -129,7 +129,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
           LogIt.W(ip + "|" + ex.Message);
         }
         if (throwOnError) {
-          throw ex;
+          throw;
         } else {
           return null;
         }
@@ -148,7 +148,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
           LogIt.W(ip + "|" + ex.Message);
         }
         if (throwOnError) {
-          throw ex;
+          throw;
         } else {
           return null;
         }
@@ -175,7 +175,7 @@ namespace CoarUtils.commands.ipgeolocation.maxmind {
           LogIt.W(ip + "|" + ex.Message);
         }
         if (throwOnError) {
-          throw ex;
+          throw;
         } else {
           return null;
         }

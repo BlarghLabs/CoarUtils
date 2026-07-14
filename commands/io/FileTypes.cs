@@ -22,10 +22,9 @@ namespace CoarUtils.Utils.IO {
 
       byte[] buffer = new byte[256];
       using (FileStream fs = new FileStream(filename, FileMode.Open)) {
-        if (fs.Length >= 256)
-          fs.Read(buffer, 0, 256);
-        else
-          fs.Read(buffer, 0, (int)fs.Length);
+        //ReadExactly loops until the requested count is filled; a plain Read can return short and silently truncate the sniffed header
+        var bytesToRead = (int)Math.Min(256L, fs.Length);
+        fs.ReadExactly(buffer, 0, bytesToRead);
       }
       try {
         System.UInt32 mimetype;

@@ -8,11 +8,16 @@ namespace CoarUtils.commands.cryptography {
     /// </summary>
     /// <param name="secret">The secret.</param>
     private static SymmetricAlgorithm GetAlgorithm(string secret) {
-      var algorithm = Rijndael.Create();
+      //Aes is a drop-in for Rijndael here: this code never set BlockSize, and on .NET (Core) Rijndael only
+      //supports the 128-bit block that Aes uses, so key/IV/ciphertext are unchanged.
+      var algorithm = Aes.Create();
+      //SHA1 + 1000 iterations are exactly what the obsolete Rfc2898DeriveBytes(string, byte[]) ctor used.
+      //They are stated explicitly here to silence SYSLIB0041 WITHOUT changing the derived key/IV --
+      //raising the iteration count or the hash would make every existing ciphertext undecryptable.
       var rdb = new Rfc2898DeriveBytes(secret, new byte[] {
         0x53,0x6f,0x64,0x69,0x75,0x6d,0x20,             // salty goodness
         0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x65
-    });
+    }, 1000, HashAlgorithmName.SHA1);
       algorithm.Padding = PaddingMode.ISO10126;
       algorithm.Key = rdb.GetBytes(32);
       algorithm.IV = rdb.GetBytes(16);

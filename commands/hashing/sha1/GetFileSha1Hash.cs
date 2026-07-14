@@ -5,7 +5,7 @@ namespace CoarUtils.commands.hashing.sha1 {
     public static string Execute(string path) {
       using (var fs = new FileStream(path, FileMode.Open)) {
         using (var bs = new BufferedStream(fs)) {
-          using (var sha1 = new SHA1Managed()) {
+          using (var sha1 = SHA1.Create()) {
             var ba = sha1.ComputeHash(bs);
             var hexStringHash = Convert.ToHexString(ba);
             return hexStringHash;

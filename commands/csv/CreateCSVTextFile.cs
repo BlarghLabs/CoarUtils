@@ -29,7 +29,7 @@ namespace CoarUtils.commands.csv {
         return result.ToString();
       } catch (Exception ex) {
         LogIt.I(ex, CancellationToken.None);
-        throw ex;
+        throw;
       }
     }
 
@@ -51,7 +51,7 @@ namespace CoarUtils.commands.csv {
         return str;
       } catch (Exception ex) {
         LogIt.I(ex, CancellationToken.None);
-        throw ex;
+        throw;
       }
     }
 
