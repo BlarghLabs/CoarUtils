@@ -91,7 +91,16 @@ namespace CoarUtils.commands.gis.geocode {
       ).ConfigureAwait(false);
 
       if (response.httpStatusCode != HttpStatusCode.OK) {
-        LogIt.E("unable to geocode via OpenStreetMap");
+        // "address genuinely not found" and "rate limited" are expected outcomes when bulk-geocoding
+        // user-entered addresses -- they must NOT page #firefight (the alarm keys on [ERROR] lines), so
+        // log them at Warning. Reserve ERROR for genuinely unexpected upstream/parse failures. Include
+        // the address either way so the line is actionable (the bare literal before it never was).
+        var message = $"unable to geocode via OpenStreetMap: '{request?.address}' ({response.status})";
+        if (response.status == "ZERO_RESULTS" || response.status == "rate limit exceeded") {
+          LogIt.W(message);
+        } else {
+          LogIt.E(message);
+        }
       }
       return response;
     }
