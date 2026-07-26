@@ -16,8 +16,11 @@ namespace CoarUtils.commands.logging {
     };
     #endregion
 
-    //this was causing innocious double console log (but only once to file)
-    public static bool doNotlogToLambda { get; set; } = false; // = true;
+    // Set true on non-Lambda hosts (e.g. mal.web on IIS/EC2, console apps) so LogIt does NOT push every line
+    // through Amazon.Lambda.Core.LambdaLogger. Off Lambda, that logger just writes to stdout, which duplicated
+    // the console output (NLog already writes console + file). Default false preserves Lambda behavior for
+    // CoarUtils consumers that ARE Lambdas; a non-Lambda app sets LogIt.doNotlogToLambda = true at startup.
+    public static bool doNotlogToLambda { get; set; } = false;
     private static readonly NLog.Logger nlogger = NLog.LogManager.GetCurrentClassLogger();
     public const bool DEFAULT_BEEP_BEHAVIOR = false;
 
@@ -268,7 +271,9 @@ namespace CoarUtils.commands.logging {
         var space = " ";
         var log = $"{dts}{space}|{ss}|{nameSpace}|{className}|{method}|{msg}";
         //TODO: check exists
-        LambdaLogger.Log(log);
+        if (!doNotlogToLambda) {
+          LambdaLogger.Log(log);
+        }
         //if (_log != null) {
         //  _log.Log(logLevel: GetLogLevel(s), log);
         //}
@@ -288,7 +293,9 @@ namespace CoarUtils.commands.logging {
       try {
         var log = $"{s.ToString().ToUpper()}|{WhereAmI.Execute(stepUp: 3)}|{message}";
         //TODO: check exists
-        LambdaLogger.Log(log);
+        if (!doNotlogToLambda) {
+          LambdaLogger.Log(log);
+        }
         //if (_log != null) {
         //  _log.Log(logLevel: GetLogLevel(s), log);
         //}
