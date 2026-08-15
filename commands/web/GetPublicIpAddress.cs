@@ -74,6 +74,90 @@ namespace CoarUtils.commands.web {
     }
 
     /// <summary>
+    /// The raw forwarding headers the caller sent, as compact JSON, or null when it sent none.
+    ///
+    /// Execute() above deliberately discards the caller-supplied half of X-Forwarded-For, which is the right
+    /// thing for attribution and the wrong thing for detection: it also discards the evidence that somebody
+    /// tried to spoof. This is that evidence, stored alongside the resolved address.
+    ///
+    /// ip_address is the value we BELIEVE. This is what the caller CLAIMED. Read together:
+    ///   * more than one X-Forwarded-For entry -> the caller supplied its own (our ALB appends exactly one).
+    ///     Suspicious, but a corporate proxy does it innocently.
+    ///   * an entry that cannot be an IP address -> forged. No legitimate client does this.
+    ///
+    /// The extra headers are ones we do NOT consume: anything arriving in them is a caller probing for a proxy
+    /// layer that would honour them. Recorded so that probing is visible too.
+    ///
+    /// Never returns the connection's real address - only what the client sent, so the column is unambiguously
+    /// "untrusted input" and can never be mistaken for a resolved value.
+    /// </summary>
+    public static string GetForwardedHeadersJson(HttpContext hc, int maxLength = 1024) {
+      try {
+        if ((hc == null) || (hc.Request == null)) {
+          return null;
+        }
+        var captured = new Dictionary<string, string>();
+        foreach (var headerName in new[] {
+          "X-Forwarded-For", "REMOTE_ADDR", "X-Real-IP", "True-Client-IP", "CF-Connecting-IP",
+          "X-Client-IP", "X-Cluster-Client-IP", "X-Originating-IP", "Forwarded", "Via",
+        }) {
+          var value = hc.Request.Headers[headerName].ToString();
+          if (!string.IsNullOrWhiteSpace(value)) {
+            captured[headerName] = value;
+          }
+        }
+        if (captured.Count == 0) {
+          return null;
+        }
+
+        // The verdict is decided HERE, where the headers can be parsed properly, and stored in the JSON — not
+        // re-derived later in SQL. Downstream detection then does an exact string match on the verdict instead
+        // of trying to guess intent out of a header value with LIKE patterns, which is both fragile and easy to
+        // get subtly wrong. Only recorded when there is something to say, so its presence is itself the signal.
+        var verdict = GetForwardedHeaderSpoofVerdict(hc.Request.Headers["X-Forwarded-For"].ToString());
+        if (verdict != ForwardedHeaderSpoofVerdict.none) {
+          captured["spoof"] = verdict.GetLabel();
+        }
+
+        var json = JsonConvert.SerializeObject(captured, Formatting.None);
+        // Truncate rather than drop: a chain long enough to overflow the column is itself worth seeing, and
+        // losing the row entirely would be the worse outcome.
+        return json.Length > maxLength ? json.Substring(0, maxLength) : json;
+      } catch (Exception ex) {
+        // Never let evidence capture break the request it is describing.
+        LogIt.I(ex, CancellationToken.None);
+        return null;
+      }
+    }
+
+    /// <summary>
+    /// Classifies an X-Forwarded-For chain — see ForwardedHeaderSpoofVerdict for what each value means.
+    /// Public and side-effect free so it can be unit tested directly without an HttpContext.
+    /// </summary>
+    public static ForwardedHeaderSpoofVerdict GetForwardedHeaderSpoofVerdict(string forwardedForChain) {
+      if (string.IsNullOrWhiteSpace(forwardedForChain)) {
+        return ForwardedHeaderSpoofVerdict.none;
+      }
+      var entries = forwardedForChain
+        .Split(',')
+        .Select(x => x.Trim())
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .ToList();
+      if (entries.Count == 0) {
+        return ForwardedHeaderSpoofVerdict.none;
+      }
+      // An unparseable entry anywhere in the chain is forged — it outranks the count, because a caller that
+      // sent garbage has already told us what it is regardless of how many entries there are.
+      if (entries.Any(x => !IsValidIpAddress(x))) {
+        return ForwardedHeaderSpoofVerdict.forged;
+      }
+      // All entries parse. More than one means the caller supplied its own on top of our proxy's.
+      return entries.Count > 1
+        ? ForwardedHeaderSpoofVerdict.clientSupplied
+        : ForwardedHeaderSpoofVerdict.none;
+    }
+
+    /// <summary>
     /// Last entry of a comma-separated forwarded-for chain that parses as an IP address, or null.
     /// Right-to-left because our proxy appends: the rightmost entry is the one it wrote, everything to the
     /// left of it was supplied by the caller and can say anything.
