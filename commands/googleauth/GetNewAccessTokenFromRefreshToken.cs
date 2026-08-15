@@ -60,7 +60,13 @@ namespace CoarUtils.Utils.GoogleAuth {
         var restResponse = await client.ExecuteAsync(restRequest, cancellationToken).ConfigureAwait(false);
         //valid response: { "access_token":"1/XXX", "expires_in":3920, "token_type":"Bearer",}
         if (restResponse.StatusCode != HttpStatusCode.OK) {
-          return response = new Response { status = "StatusCode was " + restResponse.StatusCode };
+          // Keep the body. Google distinguishes a revoked/expired grant ({"error":"invalid_grant"}) from
+          // every other 400 here, and a caller can only tell the user "reconnect your Google account" if we
+          // hand that detail up. Failure bodies carry no tokens, so this is safe to surface and log.
+          return response = new Response {
+            status = "StatusCode was " + restResponse.StatusCode,
+            jsonResult = restResponse.Content,
+          };
         }
 
         response.jsonResult = restResponse.Content;
@@ -92,6 +98,8 @@ namespace CoarUtils.Utils.GoogleAuth {
           new {
             response.httpStatusCode,
             response.status,
+            // only on the failure path — the success body IS the access token
+            errorContent = response.httpStatusCode == HttpStatusCode.OK ? null : response.jsonResult,
             //request,
             //r,
           }));
