@@ -21,9 +21,6 @@ namespace CoarUtils.commands.gis {
     }
     #endregion
 
-    // No await in the body - this is arithmetic. Rather than keeping the method `async` and padding
-    // it with a no-op await to silence CS1998, the work stays synchronous and this wrapper supplies
-    // the Task the target command shape requires.
     // Not async: this command does no I/O. Declaring Task<Response> without `async` is the
     // honest way to satisfy the target command shape - there is no fake await to silence a
     // warning, and no second method pretending to be the real one. When real async work
