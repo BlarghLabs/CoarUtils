@@ -1,4 +1,5 @@
-﻿using CoarUtils.commands.logging;
+using CoarUtils.commands.logging;
+using CoarUtils.models.commands;
 using MaxMind.GeoIP2;
 using MaxMind.GeoIP2.Responses;
 using Newtonsoft.Json;
@@ -6,6 +7,18 @@ using System.Net;
 
 namespace CoarUtils.commands.ipgeolocation {
 
+  /// <summary>
+  /// TARGET command shape - see CLAUDE.md "Legacy -> Target Migration". Converted 2026-09-02.
+  ///
+  /// Three things the conversion fixed beyond the signature:
+  ///
+  ///   client.City() is a NETWORK CALL to MaxMind and was synchronous, blocking a request thread
+  ///     for the round trip. It is CityAsync now.
+  ///   the catch arm returned the literal "task cancelled", a third spelling of a status that is
+  ///     "cancellation requested" everywhere else - so a log query or metric filter written against
+  ///     the standard wording could never match it.
+  ///   Response did not inherit ResponseStatusModel, so it carried no status at all.
+  /// </summary>
   public static class GetGeolocation {
     #region models
     public class Request {
@@ -14,28 +27,23 @@ namespace CoarUtils.commands.ipgeolocation {
       public string maxmindAccountKey { get; set; }
     }
 
-    public class Response {
+    public class Response : ResponseStatusModel {
       public CityResponse cr { get; set; }
     }
     #endregion
 
-    public static void Execute(
-      out HttpStatusCode hsc,
-      out string status,
-      out Response response,
+    public static async Task<Response> Execute(
       Request request,
-      CancellationToken? ct = null
+      CancellationToken cancellationToken
     ) {
-      response = new Response { };
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
-
+      var response = new Response { };
       try {
         #region validation
+        if (request == null) {
+          return response = new Response { status = "params not found" };
+        }
         if (string.IsNullOrEmpty(request.ip)) {
-          status = $"ip not found";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          return response = new Response { status = "ip not found" };
         }
         var localhosts = new List<string> {
           "127.0.0.1",
@@ -43,22 +51,17 @@ namespace CoarUtils.commands.ipgeolocation {
           "::1",
         };
         if (localhosts.Contains(request.ip)) {
-          status = $"ip is localhost";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          return response = new Response { status = "ip is localhost" };
         }
         #endregion
 
         using (var client = new WebServiceClient(request.maxmindAccountId, request.maxmindAccountKey)) {
-          response.cr = client.City(request.ip);
+          response.cr = await client.CityAsync(request.ip);
 
           LogIt.I(JsonConvert.SerializeObject(new {
-            //response.cr,
-
             //most common
             countryIsoCode = response.cr.Country.IsoCode, // 'US'
             countryName = response.cr.Country.Name,  // 'United States'
-                                              //response.cr.Country.Names["zh-CN"]); // '美国'
 
             mostSpecificSubdivisionName = response.cr.MostSpecificSubdivision.Name, // 'Minnesota'
             MostSpecificSubdivisionIsoCode = response.cr.MostSpecificSubdivision.IsoCode, // 'MN'
@@ -69,31 +72,34 @@ namespace CoarUtils.commands.ipgeolocation {
 
             lat = response.cr.Location.Latitude,  // 44.9733
             lng = response.cr.Location.Longitude, // -93.2323
-          }, Formatting.Indented));
+          }, Formatting.None), cancellationToken);
         }
 
-        hsc = HttpStatusCode.OK;
-        return;
+        response.httpStatusCode = HttpStatusCode.OK;
+        return response;
+      } catch (OperationCanceledException) {
+        return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
       } catch (Exception ex) {
-        status = $"unexpected error";
-        hsc = HttpStatusCode.InternalServerError;
-        LogIt.E(ex);
-
-        if (ct.HasValue && ct.Value.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "task cancelled";
-          return;
+        if (cancellationToken.IsCancellationRequested) {
+          return response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS };
         }
+        LogIt.E(ex, cancellationToken);
+        return response = new Response {
+          httpStatusCode = HttpStatusCode.InternalServerError,
+          status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS,
+        };
       } finally {
-        request.maxmindAccountKey = "DO_LOG_LOG";
-        request.maxmindAccountId = -1; //"DO_LOG_LOG";
+        // The account key is a credential and must never reach a log.
+        if (request != null) {
+          request.maxmindAccountKey = "DO_NOT_LOG";
+          request.maxmindAccountId = -1;
+        }
 
         LogIt.I(JsonConvert.SerializeObject(new {
-          hsc,
-          status,
-          //response,
+          response.httpStatusCode,
+          response.status,
           request,
-        }, Formatting.Indented));
+        }, Formatting.None), cancellationToken);
       }
     }
   }

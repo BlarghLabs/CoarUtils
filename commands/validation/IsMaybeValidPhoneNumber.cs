@@ -1,59 +1,74 @@
 ﻿using System.Net;
 using CoarUtils.commands.logging;
+using CoarUtils.models.commands;
 using Newtonsoft.Json;
 using PhoneNumbers;
 
 namespace CoarUtils.commands.validation {
+  /// <summary>
+  /// TARGET command shape - see CLAUDE.md "Legacy -> Target Migration". Converted 2026-09-02.
+  ///
+  /// The generic catch used to return ex.Message as the status, which puts an exception message
+  /// from a third-party parser in front of a caller. It returns UNEXPECTED_ERROR_STATUS now, like
+  /// every other command, and the exception is in the log where it belongs.
+  /// </summary>
   public class IsMaybeValidPhoneNumber {
-    public static void Execute(
-      string numberE164,
-      out HttpStatusCode hsc,
-      out string status,
+    #region models
+    public class Request {
+      public string numberE164 { get; set; }
+    }
+
+    public class Response : ResponseStatusModel { }
+    #endregion
+
+    // No await in the body - parsing is local and synchronous. Rather than keeping the method
+    // `async` and padding it with a no-op await to silence CS1998, the work stays synchronous and
+    // this wrapper supplies the Task the target command shape requires.
+    // Not async: this command does no I/O. Declaring Task<Response> without `async` is the
+    // honest way to satisfy the target command shape - there is no fake await to silence a
+    // warning, and no second method pretending to be the real one. When real async work
+    // arrives, add `async` and drop the Task.FromResult wrappers.
+    public static Task<Response> Execute(
+      Request request,
       CancellationToken cancellationToken
     ) {
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
-
+      var response = new Response { };
       try {
-        if (string.IsNullOrWhiteSpace(numberE164)) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "number not found";
-          return;
+        if (request == null) {
+          return Task.FromResult(response = new Response { status = "params not found" });
+        }
+        if (string.IsNullOrWhiteSpace(request.numberE164)) {
+          return Task.FromResult(response = new Response { status = "number not found" });
+        }
+        if (request.numberE164[0] != '+') {
+          return Task.FromResult(response = new Response { status = "e164 format number should start with +" });
         }
 
-        if (numberE164[0] != '+') {
-          hsc = HttpStatusCode.BadRequest;
-          status = "e164 format number should start with +";
-          return;
+        var phoneNumberUtil = PhoneNumberUtil.GetInstance();
+        var phoneNumber = phoneNumberUtil.Parse(request.numberE164, null);
+        if (!phoneNumberUtil.IsValidNumber(phoneNumber)) {
+          return Task.FromResult(response = new Response { status = "number is not valid" });
         }
 
-        var pnu = PhoneNumberUtil.GetInstance();
-        var pn = pnu.Parse(numberE164, null);
-        if (!pnu.IsValidNumber(pn)) {
-          hsc = HttpStatusCode.BadRequest;
-          status = "number is not valid";
-          return;
-        }
-
-        hsc = HttpStatusCode.OK;
-        return;
+        response.httpStatusCode = HttpStatusCode.OK;
+        return Task.FromResult(response);
+      } catch (OperationCanceledException) {
+        return Task.FromResult(response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS });
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
-          return;
+          return Task.FromResult(response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS });
         }
-
-        hsc = HttpStatusCode.InternalServerError;
-        //status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS; //maybe pass the ex.message here
-        status = ex.Message;
         LogIt.E(ex, cancellationToken);
+        return Task.FromResult(response = new Response {
+          httpStatusCode = HttpStatusCode.InternalServerError,
+          status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS,
+        });
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
-          hsc,
-          status,
-          numberE164
-        }, Formatting.Indented), cancellationToken);
+          response.httpStatusCode,
+          response.status,
+          request,
+        }, Formatting.None), cancellationToken);
       }
     }
   }

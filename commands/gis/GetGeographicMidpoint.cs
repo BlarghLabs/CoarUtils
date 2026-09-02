@@ -4,6 +4,9 @@ using CoarUtils.models.commands;
 using Newtonsoft.Json;
 
 namespace CoarUtils.commands.gis {
+  /// <summary>
+  /// TARGET command shape - see CLAUDE.md "Legacy -> Target Migration". Converted 2026-09-02.
+  /// </summary>
   public static class GetGeographicMidpoint {
     #region models
     public class Coordinate {
@@ -11,44 +14,40 @@ namespace CoarUtils.commands.gis {
       public decimal lng { get; set; }
     }
     public class Request {
-      public List<Coordinate> coordinates = new List<Coordinate> { };
+      public List<Coordinate> coordinates { get; set; } = new List<Coordinate> { };
     }
     public class Response : ResponseStatusModel {
-      public Coordinate coordinate = new Coordinate { };
+      public Coordinate coordinate { get; set; } = new Coordinate { };
     }
     #endregion
 
-
-    public static void Execute(
+    // No await in the body - this is arithmetic. Rather than keeping the method `async` and padding
+    // it with a no-op await to silence CS1998, the work stays synchronous and this wrapper supplies
+    // the Task the target command shape requires.
+    // Not async: this command does no I/O. Declaring Task<Response> without `async` is the
+    // honest way to satisfy the target command shape - there is no fake await to silence a
+    // warning, and no second method pretending to be the real one. When real async work
+    // arrives, add `async` and drop the Task.FromResult wrappers.
+    public static Task<Response> Execute(
       Request request,
-      out Response response,
-      out HttpStatusCode hsc,
-      out string status,
       CancellationToken cancellationToken
     ) {
-      response = new Response { };
-      hsc = HttpStatusCode.BadRequest;
-      status = "";
-
+      var response = new Response { };
       try {
-        //temp:
-        //request.loc.Add(new Coordinate { lat = 22.9833M, lng = 72.5000M }); //Sarkhej
-        //request.loc.Add(new Coordinate { lat = 18.9750M, lng = 72.8258M }); //Mumbai
-        //request.loc.Add(new Coordinate { lat = 22.3000M, lng = 73.2003M }); //Vadodara
-        //request.loc.Add(new Coordinate { lat = 26.9260M, lng = 75.8235M }); //Jaipur
-        //request.loc.Add(new Coordinate { lat = 28.6100M, lng = 77.2300M }); //Delhi
-        //request.loc.Add(new Coordinate { lat = 22.3000M, lng = 70.7833M }); //Rajkot
-
+        if (request == null) {
+          return Task.FromResult(response = new Response { status = "params not found" });
+        }
         if (request.coordinates == null || request.coordinates.Count == 0) {
-          status = "no coordinates provided";
-          hsc = HttpStatusCode.BadRequest;
-          return;
+          return Task.FromResult(response = new Response { status = "no coordinates provided" });
         }
         if (request.coordinates.Count == 1) {
+          // A success return sets the fields on the existing response - building a new one here
+          // would discard the coordinate just assigned. See CLAUDE.md "Success Returns Must Return
+          // the Response They Filled In".
           response.coordinate = request.coordinates.Single();
-          hsc = HttpStatusCode.OK;
-          status = "only one provided";
-          return;
+          response.status = "only one provided";
+          response.httpStatusCode = HttpStatusCode.OK;
+          return Task.FromResult(response);
         }
 
         double x = 0, y = 0, z = 0;
@@ -72,25 +71,26 @@ namespace CoarUtils.commands.gis {
           lng = ((decimal)centralLongitude * 180 / (decimal)Math.PI)
         };
 
-        hsc = HttpStatusCode.OK;
-        return;
+        response.httpStatusCode = HttpStatusCode.OK;
+        return Task.FromResult(response);
+      } catch (OperationCanceledException) {
+        return Task.FromResult(response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS });
       } catch (Exception ex) {
         if (cancellationToken.IsCancellationRequested) {
-          hsc = HttpStatusCode.BadRequest;
-          status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS;
-          return;
+          return Task.FromResult(response = new Response { status = Constants.ErrorMessages.CANCELLATION_REQUESTED_STATUS });
         }
         LogIt.E(ex, cancellationToken);
-        hsc = HttpStatusCode.InternalServerError;
-        status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS;
-        return;
+        return Task.FromResult(response = new Response {
+          httpStatusCode = HttpStatusCode.InternalServerError,
+          status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS,
+        });
       } finally {
         LogIt.I(JsonConvert.SerializeObject(new {
-          hsc,
-          status,
+          response.httpStatusCode,
+          response.status,
           request,
-          response.coordinate
-        }, Formatting.Indented), cancellationToken);
+          response.coordinate,
+        }, Formatting.None), cancellationToken);
       }
     }
   }
