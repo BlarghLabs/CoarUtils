@@ -82,10 +82,14 @@ namespace CoarUtils.commands.gis {
           status = Constants.ErrorMessages.UNEXPECTED_ERROR_STATUS,
         });
       } finally {
+        //Deliberately NOT logging `request`: its only member is an unbounded coordinate list, and callers
+        //typically pass one point per item of whatever they are rendering. Serializing it makes the log line
+        //scale with the caller's input, so a large input turns a sub-millisecond calculation into hundreds of
+        //KB of JSON written on every call. The count is what makes the line useful; the raw points never were.
         LogIt.I(JsonConvert.SerializeObject(new {
           response.httpStatusCode,
           response.status,
-          request,
+          coordinateCount = request?.coordinates?.Count ?? 0,
           response.coordinate,
         }, Formatting.None), cancellationToken);
       }
